@@ -140,8 +140,8 @@ AS
 SELECT 
   s.*,
   COUNT(t.id)::INTEGER as system_transactions,
-  SUM(CASE WHEN t.metode_bayar = 'cash' OR t.metode_bayar = 'tunai' THEN t.total_bayar ELSE 0 END)::INTEGER as system_cash_total,
-  SUM(CASE WHEN t.metode_bayar != 'cash' AND t.metode_bayar != 'tunai' THEN t.total_bayar ELSE 0 END)::INTEGER as system_digital,
+  SUM(CASE WHEN t.metode_bayar::text IN ('cash', 'tunai') THEN t.total_bayar ELSE 0 END)::INTEGER as system_cash_total,
+  SUM(CASE WHEN t.metode_bayar::text NOT IN ('cash', 'tunai') THEN t.total_bayar ELSE 0 END)::INTEGER as system_digital,
   SUM(
     COALESCE(it.qty, 0)
   )::INTEGER as system_items
