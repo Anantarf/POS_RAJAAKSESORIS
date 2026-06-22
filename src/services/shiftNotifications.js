@@ -1,7 +1,7 @@
 import { recordOperationalEventSoon } from "./observability";
 import { supabase } from "../lib/supabase";
 
-const DEFAULT_BACKEND_API_BASE_URL = import.meta.env.PROD ? "" : "http://localhost:3001";
+const DEFAULT_BACKEND_API_BASE_URL = import.meta.env.PROD ? "" : "http://localhost:3002";
 const BACKEND_API_BASE_URL = String(
   import.meta.env.VITE_BACKEND_URL ||
     import.meta.env.VITE_API_BASE_URL ||
