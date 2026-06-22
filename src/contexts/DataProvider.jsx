@@ -335,7 +335,6 @@ const PRODUCT_SELECT = [
   "harga_beli",
   "harga_jual",
   "satuan",
-  "aktif",
   "status",
   "deleted_at",
   "deleted_by",
