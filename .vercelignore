@@ -1,0 +1,16 @@
+.env
+.env.*
+.vscode/
+dist/
+node_modules/
+POS-RAJA-AKSESORIS-REVISI/
+POS-RAJA-AKSESORIS/
+*.log
+*.err.log
+*.pid
+playwright*.png
+test-results/
+supabase/.temp/
+supabase/migrations-combined.sql
+*.md
+TODO*

@@ -1,0 +1,7 @@
+dist
+node_modules
+dev-server.log
+dev-server.err.log
+POS-RAJA-AKSESORIS/
+POS-RAJA-AKSESORIS-REVISI/
+backend/
