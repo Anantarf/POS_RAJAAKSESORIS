@@ -104,7 +104,7 @@ export async function authenticateRequest(req) {
   );
 
   const profileRows = await serviceRest(
-    `users?select=id,email,role,status,archived_at&id=eq.${encodeURIComponent(authUser.id)}&limit=1`
+    `users?select=id,role,status,archived_at&id=eq.${encodeURIComponent(authUser.id)}&limit=1`
   );
   const profile = Array.isArray(profileRows) ? profileRows[0] : null;
 
@@ -118,7 +118,7 @@ export async function authenticateRequest(req) {
 
   return {
     id: profile.id,
-    email: profile.email || authUser.email || "",
+    email: authUser.email || "",
     role: profile.role,
     accessToken: token,
   };

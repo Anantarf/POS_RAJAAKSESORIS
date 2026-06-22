@@ -52,13 +52,6 @@ alter table public.users
   add column if not exists status      text not null default 'active',
   add column if not exists archived_at timestamptz;
 
--- Hapus kolom email jika masih ada (migrasi dari sistem lama)
-do $$ begin
-  alter table public.users drop column if exists email;
-exception
-  when others then null; -- abaikan jika sudah tidak ada
-end $$;
-
 -- Index unik untuk username
 create unique index if not exists idx_users_username_unique
   on public.users (lower(username))

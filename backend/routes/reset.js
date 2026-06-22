@@ -24,7 +24,6 @@ const RESET_TABLES = [
   "transaksi_logistik",
   "transaksi_dompet",
   "kas",
-  "stok_masuk",
   "stok_mutasi",
   "product_activity_logs",
   "audit_logs",
