@@ -290,7 +290,7 @@ const guides = [
     description: "Pahami akses kasir, akses owner, dan PIN untuk aksi sensitif.",
     tags: ["akun", "pin", "role", "login"],
     steps: [
-      "Login memakai email dan password akun masing-masing.",
+      "Login memakai username dan password akun masing-masing.",
       "Kasir mendapat akses operasional harian.",
       "Owner mendapat akses laporan, audit, retur, opname, dan approval.",
       "Gunakan PIN saat closing shift atau aksi sensitif.",
@@ -459,7 +459,7 @@ export default function HelpPage() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-lg border border-[var(--brand-gold)]/24 bg-[linear-gradient(135deg,#ffffff_0%,#fffaf0_100%)] p-5 shadow-[0_16px_34px_rgba(15,23,42,0.08)] sm:p-6">
+      <section className="rounded-lg border border-[var(--brand-gold)]/24 bg-[var(--brand-surface-tint)] p-5 shadow-[var(--brand-shadow-md)] sm:p-6">
         <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
           <div className="min-w-0">
             <span className="brand-chip">

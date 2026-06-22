@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap");
+﻿@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -27,46 +27,22 @@
   --brand-text: #0f172a;
   --brand-text-muted: #64748b;
   --brand-text-soft: #94a3b8;
-  --brand-shadow: 0 18px 42px rgba(15, 23, 42, 0.09);
-  --brand-shadow-soft: 0 8px 22px rgba(15, 23, 42, 0.055);
-  --brand-shadow-lift: 0 22px 58px rgba(15, 23, 42, 0.12);
-  --brand-shadow-gold: 0 14px 30px rgba(180, 126, 20, 0.22);
+  --brand-shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06);
+  --brand-shadow-md: 0 8px 24px rgba(15, 23, 42, 0.09);
   --brand-ring: 0 0 0 4px rgba(212, 175, 55, 0.16);
   --brand-radius: 8px;
   --brand-radius-sm: 6px;
   --button-radius-sm: 6px;
   --button-radius-md: 8px;
   --button-radius-lg: 10px;
-  --control-height-sm: 44px;
-  --control-height-md: 48px;
-  --control-height-lg: 56px;
+  --control-height-sm: 32px;
+  --control-height-md: 40px;
+  --control-height-lg: 48px;
   --modal-width-sm: 420px;
   --modal-width-md: 560px;
   --table-cell-py: 0.75rem;
   --table-cell-px: 1rem;
   --table-header-bg: rgba(248, 250, 252, 0.96);
-  --surface: #ffffff;
-  --surface-secondary: #f8fafc;
-  --surface-tertiary: #eef2f7;
-  --surface-hover: #fffaf0;
-  --surface-selected: rgba(212, 175, 55, 0.12);
-  --border-muted: #e2e8f0;
-  --border-strong: #cbd5e1;
-  --text: #0f172a;
-  --text-secondary: #64748b;
-  --text-tertiary: #94a3b8;
-  --danger: #dc2626;
-  --danger-soft: rgba(220, 38, 38, 0.1);
-  --success: #15803d;
-  --success-soft: rgba(21, 128, 61, 0.1);
-  --warning: #b45309;
-  --warning-soft: rgba(180, 83, 9, 0.12);
-  --info: #2563eb;
-  --info-soft: rgba(37, 99, 235, 0.1);
-  --shadow-soft: var(--brand-shadow-soft);
-  --shadow-card: var(--brand-shadow);
-  --focus-ring: 0 0 0 3px rgba(212, 175, 55, 0.22);
-  --radius-control: 8px;
 }
 
 @layer base {
@@ -105,7 +81,7 @@
 
   :focus-visible {
     outline: none;
-    box-shadow: var(--focus-ring);
+    box-shadow: var(--brand-ring);
   }
 
   button:not(:disabled):active {
@@ -125,9 +101,7 @@
 @layer components {
   .brand-shell {
     @apply min-h-screen;
-    background:
-      radial-gradient(circle at 18% 0%, rgba(212, 175, 55, 0.08), transparent 28%),
-      linear-gradient(180deg, #f8fafc 0%, var(--brand-bg) 46%, #eef3f8 100%);
+    background: var(--brand-bg);
   }
 
   .brand-sidebar {
@@ -139,34 +113,28 @@
   .brand-panel {
     @apply rounded-lg border;
     border-radius: var(--brand-radius);
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.94)),
-      var(--brand-surface);
+    background: var(--brand-surface);
     border-color: rgba(203, 213, 225, 0.82);
-    box-shadow: var(--brand-shadow-soft);
+    box-shadow: var(--brand-shadow-sm);
   }
 
   .brand-panel-muted {
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(248, 250, 252, 0.95)),
-      var(--brand-surface-soft);
+    background: var(--brand-surface-soft);
     border-color: rgba(226, 232, 240, 0.92);
   }
 
   .brand-panel-strong {
-    background:
-      radial-gradient(circle at 0% 0%, rgba(212, 175, 55, 0.09), transparent 34%),
-      var(--brand-surface);
+    background: var(--brand-surface);
     border-color: rgba(203, 213, 225, 0.9);
-    box-shadow: var(--brand-shadow);
+    box-shadow: var(--brand-shadow-md);
   }
 
   .brand-ops-header {
     @apply flex flex-col gap-3 rounded-lg border px-4 py-4 md:flex-row md:items-center md:justify-between;
     border-radius: var(--brand-radius);
     border-color: rgba(212, 175, 55, 0.26);
-    background: linear-gradient(135deg, #ffffff 0%, #fffaf0 100%);
-    box-shadow: var(--brand-shadow-soft);
+    background: var(--brand-surface-tint);
+    box-shadow: var(--brand-shadow-sm);
   }
 
   .brand-shortcut-strip {
@@ -202,46 +170,46 @@
 
   .brand-alert-command {
     @apply flex flex-col gap-4 rounded-lg border p-4 md:flex-row md:items-center md:justify-between;
-    border-color: var(--border-muted);
-    background: var(--surface);
+    border-color: var(--brand-border);
+    background: var(--brand-surface);
   }
 
   .brand-alert-command-danger {
     border-color: rgba(220, 38, 38, 0.3);
-    background: var(--danger-soft);
+    background: var(--brand-danger-soft);
   }
 
   .brand-alert-command-warning {
     border-color: rgba(180, 83, 9, 0.28);
-    background: var(--warning-soft);
+    background: var(--brand-warning-soft);
   }
 
   .brand-alert-command-info {
     border-color: rgba(37, 99, 235, 0.25);
-    background: var(--info-soft);
+    background: var(--brand-info-soft);
   }
 
   .brand-command-strip {
     @apply rounded-lg border p-4;
     border-color: rgba(203, 213, 225, 0.92);
-    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-    box-shadow: var(--shadow-soft);
+    background: var(--brand-surface);
+    box-shadow: var(--brand-shadow-sm);
   }
 
   .brand-payment-summary {
     @apply flex flex-wrap items-center gap-x-5 gap-y-2 rounded-lg border px-4 py-3 text-sm font-semibold;
-    border-color: var(--border-muted);
-    background: var(--surface-secondary);
-    color: var(--text-secondary);
+    border-color: var(--brand-border);
+    background: var(--brand-surface-soft);
+    color: var(--brand-text-muted);
   }
 
   .brand-payment-summary strong {
-    color: var(--text);
+    color: var(--brand-text);
   }
 
   .brand-form-section {
     @apply border-b pb-5;
-    border-color: var(--border-muted);
+    border-color: var(--brand-border);
   }
 
   .brand-form-section:last-child {
@@ -250,8 +218,8 @@
 
   .brand-sticky-paybar {
     @apply sticky bottom-0 z-10 -mx-5 border-t px-5 pb-2 pt-4;
-    border-color: var(--border-muted);
-    background: color-mix(in srgb, var(--surface) 94%, transparent);
+    border-color: var(--brand-border);
+    background: color-mix(in srgb, var(--brand-surface) 94%, transparent);
     backdrop-filter: blur(12px);
   }
 
@@ -271,44 +239,35 @@
     border-top: 4px solid #dc2626;
   }
 
-  .brand-modal-surface.brand-modal-destructive::before {
-    background: linear-gradient(90deg, #b91c1c, #ef4444 48%, #991b1b);
+  .brand-modal-surface.brand-modal-destructive {
+    border-top-color: #dc2626;
   }
 
   .brand-modal-consequence {
     @apply rounded-lg border px-4 py-3 text-sm leading-6;
     border-color: rgba(220, 38, 38, 0.24);
-    background: var(--danger-soft);
-    color: var(--text);
+    background: var(--brand-danger-soft);
+    color: var(--brand-text);
   }
 
   .brand-modal-backdrop {
-    background:
-      radial-gradient(circle at 50% 20%, rgba(212, 175, 55, 0.12), transparent 34%),
-      rgba(15, 23, 42, 0.48);
-    backdrop-filter: blur(8px);
+    background: rgba(15, 23, 42, 0.48);
+    backdrop-filter: blur(6px);
   }
 
   .brand-modal-surface {
     position: relative;
     overflow: hidden;
     border: 1px solid rgba(203, 213, 225, 0.72);
+    border-top: 2px solid var(--brand-gold);
     border-radius: var(--brand-radius);
     background: #ffffff;
-    box-shadow: var(--brand-shadow-lift);
-  }
-
-  .brand-modal-surface::before {
-    content: "";
-    position: absolute;
-    inset: 0 0 auto;
-    height: 3px;
-    background: linear-gradient(90deg, #93620a, #e5c24a 48%, #b37b12);
+    box-shadow: var(--brand-shadow-md);
   }
 
   .brand-modal-header {
     border-bottom: 1px solid rgba(226, 232, 240, 0.9);
-    background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+    background: var(--brand-surface);
   }
 
   .brand-modal-footer {
@@ -323,37 +282,7 @@
   .login-os-shell {
     position: relative;
     isolation: isolate;
-    background:
-      radial-gradient(circle at 22% 16%, rgba(212, 175, 55, 0.20), transparent 26%),
-      radial-gradient(circle at 78% 82%, rgba(122, 79, 7, 0.11), transparent 30%),
-      radial-gradient(circle at 50% 112%, rgba(15, 23, 42, 0.13), transparent 34%),
-      linear-gradient(135deg, #fbfaf6 0%, #f4f7fb 45%, #edf2f7 100%);
-  }
-
-  .login-os-shell::before,
-  .login-os-shell::after {
-    content: "";
-    position: fixed;
-    z-index: -1;
-    pointer-events: none;
-    border-radius: 999px;
-    filter: blur(18px);
-  }
-
-  .login-os-shell::before {
-    width: 520px;
-    height: 520px;
-    left: max(-180px, calc(50% - 720px));
-    top: 5%;
-    background: rgba(212, 175, 55, 0.12);
-  }
-
-  .login-os-shell::after {
-    width: 560px;
-    height: 560px;
-    right: max(-220px, calc(50% - 760px));
-    bottom: -170px;
-    background: rgba(15, 23, 42, 0.08);
+    background: linear-gradient(135deg, #fbfaf6 0%, #f4f7fb 55%, #edf2f7 100%);
   }
 
   .login-os-main {
@@ -384,8 +313,8 @@
     position: absolute;
     inset: 0 0 auto;
     z-index: 1;
-    height: 3px;
-    background: linear-gradient(90deg, #93620a 0%, #e5c24a 48%, #b37b12 100%);
+    height: 2px;
+    background: var(--brand-gold);
   }
 
   .login-os-brand-panel {
@@ -394,9 +323,7 @@
     min-height: 524px;
     flex-direction: column;
     padding: 44px 42px 34px;
-    background:
-      radial-gradient(circle at 18% 14%, rgba(212, 175, 55, 0.20), transparent 30%),
-      linear-gradient(145deg, #fffdf8 0%, #f8fafc 62%, #eef3f8 100%);
+    background: var(--brand-surface-soft);
     border-right: 1px solid rgba(226, 232, 240, 0.86);
   }
 
@@ -413,10 +340,7 @@
     height: 124px;
     border: 1px solid rgba(203, 213, 225, 0.82);
     border-radius: var(--brand-radius);
-    box-shadow:
-      0 24px 54px rgba(15, 23, 42, 0.12),
-      0 0 0 8px rgba(255, 255, 255, 0.58),
-      0 0 52px rgba(212, 175, 55, 0.16);
+    box-shadow: var(--brand-shadow-md);
   }
 
   .login-operation-grid {
@@ -450,25 +374,14 @@
     margin-top: 5px;
     color: #0f172a;
     font-size: 13px;
-    font-weight: 850;
+    font-weight: 800;
     line-height: 1.25;
   }
 
-  .login-os-footnote {
-    margin-top: 16px;
-    color: #94a3b8;
-    font-size: 11px;
-    font-weight: 850;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-  }
-
-  .login-os-form-panel {
+.login-os-form-panel {
     display: flex;
     align-items: center;
-    background:
-      radial-gradient(circle at 100% 0%, rgba(212, 175, 55, 0.08), transparent 26%),
-      #ffffff;
+    background: #ffffff;
     padding: 44px 46px;
   }
 
@@ -482,44 +395,30 @@
     flex-shrink: 0;
     border: 1px solid rgba(212, 175, 55, 0.28);
     border-radius: var(--brand-radius);
-    background: linear-gradient(180deg, rgba(212, 175, 55, 0.14), rgba(255, 255, 255, 0.72));
+    background: var(--brand-gold-soft);
     padding: 13px;
     color: var(--brand-gold-strong);
-    box-shadow:
-      0 10px 24px rgba(15, 23, 42, 0.06),
-      inset 0 1px 0 rgba(255, 255, 255, 0.84);
   }
 
   .login-input-wrap {
     display: flex;
-    height: 56px;
+    height: 44px;
     align-items: center;
     gap: 11px;
     border: 1px solid rgba(203, 213, 225, 0.94);
     border-radius: var(--brand-radius);
-    background: linear-gradient(180deg, #fbfcfe 0%, #f7fafc 100%);
+    background: #ffffff;
     padding: 0 15px;
-    box-shadow:
-      inset 0 1px 2px rgba(15, 23, 42, 0.035),
-      0 1px 0 rgba(255, 255, 255, 0.9);
-    transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease, transform 180ms ease;
+    transition: border-color 180ms ease, box-shadow 180ms ease;
   }
 
   .login-input-wrap:hover {
     border-color: rgba(148, 163, 184, 0.96);
-    background: #ffffff;
-    box-shadow:
-      inset 0 1px 2px rgba(15, 23, 42, 0.025),
-      0 8px 22px rgba(15, 23, 42, 0.045);
   }
 
   .login-input-wrap:focus-within {
-    transform: translateY(-1px);
     border-color: rgba(180, 126, 20, 0.86);
-    background: #ffffff;
-    box-shadow:
-      0 0 0 4px rgba(212, 175, 55, 0.14),
-      0 14px 28px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--brand-ring);
   }
 
   .login-input {
@@ -529,7 +428,7 @@
     background: transparent;
     color: var(--brand-text);
     font-size: 15px;
-    font-weight: 750;
+    font-weight: 700;
     line-height: 1;
     outline: none;
   }
@@ -551,7 +450,7 @@
       linear-gradient(180deg, #e8c747 0%, #d2a72a 100%);
     color: #161104;
     font-size: 14px;
-    font-weight: 950;
+    font-weight: 800;
     line-height: 1.25;
     box-shadow:
       0 16px 32px rgba(180, 126, 20, 0.28),
@@ -596,8 +495,7 @@
     }
 
     .login-os-brand-panel::after,
-    .login-operation-grid,
-    .login-os-footnote {
+    .login-operation-grid {
       display: none;
     }
 
@@ -709,7 +607,7 @@
       linear-gradient(180deg, #e2bd3d 0%, #d1a528 100%);
     color: var(--brand-text);
     box-shadow:
-      var(--brand-shadow-gold),
+      0 4px 14px rgba(180, 126, 20, 0.22),
       0 1px 0 rgba(255, 255, 255, 0.42) inset;
   }
 
@@ -775,6 +673,29 @@
     transform: translateY(-1px);
     background: #b91c1c;
     box-shadow: 0 10px 22px rgba(185, 28, 28, 0.2);
+  }
+
+  .brand-button-outline {
+    @apply inline-flex max-w-full items-center justify-center gap-2 rounded-lg border text-center text-sm font-semibold leading-5 transition;
+    border-color: var(--brand-border);
+    background: transparent;
+    color: var(--brand-text);
+  }
+
+  .brand-button-outline:hover {
+    border-color: rgba(212, 175, 55, 0.36);
+    background: var(--brand-surface-tint);
+  }
+
+  .brand-button-ghost {
+    @apply inline-flex max-w-full items-center justify-center gap-2 rounded-lg text-center text-sm font-semibold leading-5 transition;
+    background: transparent;
+    color: var(--brand-text-muted);
+  }
+
+  .brand-button-ghost:hover {
+    background: var(--brand-surface-tint);
+    color: var(--brand-text);
   }
 
   .brand-chip {
@@ -1189,7 +1110,7 @@
     background: var(--table-header-bg);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(203, 213, 225, 0.9);
-    font-weight: 850;
+    font-weight: 800;
   }
 
   .brand-table tbody tr {
@@ -1211,7 +1132,7 @@
     @apply grid gap-3 rounded-lg border bg-white p-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-center;
     border-color: rgba(203, 213, 225, 0.82);
     background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
-    box-shadow: var(--brand-shadow-soft);
+    box-shadow: var(--brand-shadow-sm);
   }
 
   .brand-scroll-region {
@@ -1582,3 +1503,4 @@
     -webkit-print-color-adjust: exact;
   }
 }
+

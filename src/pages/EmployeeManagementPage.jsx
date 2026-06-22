@@ -591,7 +591,6 @@ function EmployeeFormModal({ employee, onClose, onSave, submitting = false }) {
   });
   const [form, setForm] = useState({
     name: employee?.name || "",
-    email: employee?.email || "",
     username: employee?.username || "",
     phone: employee?.phone === "-" ? "" : employee?.phone || "",
     role: employee?.role || "kasir",
@@ -660,7 +659,6 @@ function EmployeeFormModal({ employee, onClose, onSave, submitting = false }) {
     const nextErrors = {};
     if (!form.name.trim()) nextErrors.name = "Nama lengkap wajib diisi.";
     if (!form.username.trim()) nextErrors.username = "Username wajib diisi.";
-    if (!isEdit && !form.email.trim()) nextErrors.email = "Email login wajib diisi.";
     if (!isEdit && form.password.length < 8) {
       nextErrors.password = "Password minimal 8 karakter.";
     }
@@ -678,7 +676,6 @@ function EmployeeFormModal({ employee, onClose, onSave, submitting = false }) {
     onSave({
       id: employee?.id,
       name: form.name.trim(),
-      email: form.email.trim(),
       username: form.username.trim(),
       password: form.password,
       phone: form.phone.trim(),
@@ -699,7 +696,7 @@ function EmployeeFormModal({ employee, onClose, onSave, submitting = false }) {
         aria-labelledby="employee-form-title"
         className="brand-success-popover flex max-h-[100dvh] w-full flex-col overflow-hidden rounded-t-3xl border border-slate-200/60 bg-white shadow-2xl sm:max-h-[calc(100dvh-2rem)] sm:max-w-3xl sm:rounded-3xl"
       >
-        <div className="flex items-start justify-between gap-4 border-b border-slate-100 bg-gradient-to-br from-white to-amber-50/60 px-4 py-5 sm:px-7 sm:py-6">
+        <div className="flex items-start justify-between gap-4 border-b border-slate-100 bg-[var(--brand-surface-soft)] px-4 py-5 sm:px-7 sm:py-6">
           <div className="flex min-w-0 items-start gap-3 sm:gap-4">
             <div className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-[var(--brand-gold)] shadow-sm">
               <UserRound className="h-5 w-5" strokeWidth={1.9} />
@@ -733,23 +730,6 @@ function EmployeeFormModal({ employee, onClose, onSave, submitting = false }) {
               helper="Kredensial aman untuk login dan otorisasi tindakan operasional."
             >
               <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <label htmlFor="employee-email" className="block text-sm font-semibold text-slate-700">
-                    Email login
-                  </label>
-                  <input
-                    id="employee-email"
-                    type="email"
-                    autoComplete="email"
-                    value={form.email}
-                    onChange={(event) => updateField("email", event.target.value)}
-                    className={`${employeeFormFieldClass} ${errors.email ? "border-rose-300" : ""}`}
-                    placeholder="kasir@rajaaksesoris.local"
-                    disabled={isEdit}
-                    aria-invalid={Boolean(errors.email)}
-                  />
-                  {errors.email ? <p className="text-xs font-semibold text-rose-600" role="alert">{errors.email}</p> : null}
-                </div>
                 <div className="space-y-2">
                   <label htmlFor="employee-username" className="block text-sm font-semibold text-slate-700">
                     Username
@@ -2488,4 +2468,3 @@ export default function EmployeeManagementPage() {
     </div>
   );
 }
-

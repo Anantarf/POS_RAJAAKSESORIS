@@ -14,12 +14,10 @@ const Button = ({
     primary: "brand-button-primary",
     secondary: "brand-button-secondary",
     accent: "brand-button-success",
-    outline:
-      "inline-flex max-w-full items-center justify-center gap-2 rounded-lg border border-[var(--brand-border)] bg-transparent text-center text-sm font-semibold leading-5 text-[var(--brand-text)] transition hover:border-[rgba(212,175,55,0.36)] hover:bg-[var(--surface-hover)]",
+    outline: "brand-button-outline",
     danger: "brand-button-danger",
     warning: "brand-button-warning",
-    ghost:
-      "inline-flex max-w-full items-center justify-center gap-2 rounded-lg bg-transparent text-center text-sm font-semibold leading-5 text-[var(--brand-text-muted)] transition hover:bg-[var(--surface-hover)] hover:text-[var(--brand-text)]",
+    ghost: "brand-button-ghost",
   };
 
   const sizes = {

@@ -145,7 +145,7 @@ function toReadableError(error, fallback) {
   const lowered = message.toLowerCase();
 
   if (lowered.includes("invalid login") || lowered.includes("invalid credentials")) {
-    return "Email atau password tidak sesuai.";
+    return "Username atau password tidak sesuai.";
   }
 
   if (lowered.includes("email not confirmed")) {
@@ -166,6 +166,28 @@ function isMissingVerifyPinRpc(error) {
     error?.code === "42883" ||
     message.includes("could not find the function")
   );
+}
+
+function isEmailIdentifier(identifier) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(identifier || "").trim());
+}
+
+async function resolveLoginEmail(identifier) {
+  const normalizedIdentifier = String(identifier || "").trim().toLowerCase();
+  if (isEmailIdentifier(normalizedIdentifier)) return normalizedIdentifier;
+
+  const { data, error } = await withTimeout(
+    supabase.rpc("resolve_login_email", {
+      p_identifier: normalizedIdentifier,
+    }),
+    LOGIN_TIMEOUT_MS,
+    "Login terlalu lama. Periksa koneksi internet lalu coba lagi."
+  );
+
+  if (error) throw error;
+  if (!data) throw new Error("Username atau password tidak sesuai.");
+
+  return String(data).trim().toLowerCase();
 }
 
 function buildUser(session, profile) {
@@ -360,19 +382,20 @@ function AuthProvider({ children }) {
   }, [commitProfileError, commitUser, goSignedOut, setState, verifySession]);
 
   const login = useCallback(
-    async (email, password) => {
-      const normalizedEmail = String(email || "").trim().toLowerCase();
+    async (identifier, password) => {
+      const normalizedIdentifier = String(identifier || "").trim().toLowerCase();
 
-      if (!normalizedEmail || !password) {
-        throw new Error("Email dan password wajib diisi.");
+      if (!normalizedIdentifier || !password) {
+        throw new Error("Username dan password wajib diisi.");
       }
 
       commitProfileError("");
 
       try {
+        const email = await resolveLoginEmail(normalizedIdentifier);
         const { data, error } = await withTimeout(
           supabase.auth.signInWithPassword({
-            email: normalizedEmail,
+            email,
             password,
           }),
           LOGIN_TIMEOUT_MS,

@@ -35,7 +35,7 @@ export function toClientMessage(message, fallback = DEFAULT_ERROR_MESSAGE) {
   }
 
   if (normalized.includes("invalid login credentials") || normalized.includes("invalid_credentials")) {
-    return "Email atau password belum cocok.";
+    return "Username atau password belum cocok.";
   }
 
   if (normalized.includes("email not confirmed")) {

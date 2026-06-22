@@ -40,6 +40,6 @@ test("route-loaded report modules defer Excel while action modules are imported 
   });
 
   const loader = await readSource("src/utils/loadExcelTools.js");
-  assert.match(loader, /import\(["']exceljs["']\)/);
+  assert.match(loader, /import\(["']exceljs\/dist\/exceljs\.bare\.min\.js["']\)/);
   assert.match(loader, /import\(["']file-saver["']\)/);
 });

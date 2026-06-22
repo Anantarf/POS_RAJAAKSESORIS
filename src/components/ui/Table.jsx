@@ -1,4 +1,4 @@
-import { memo, useMemo } from "react";
+﻿import { memo, useMemo } from "react";
 import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { List } from "react-window";
 
@@ -132,7 +132,7 @@ const VirtualRow = memo(function VirtualRow({ index, rows, style }) {
 
   return (
     <div
-      className="grid border-b border-[var(--border-muted)] bg-white text-sm text-slate-900 transition hover:bg-[var(--surface-hover)]"
+      className="grid border-b border-[var(--brand-border)] bg-white text-sm text-slate-900 transition hover:bg-[var(--brand-surface-tint)]"
       style={{
         ...style,
         gridTemplateColumns: `repeat(${row.getVisibleCells().length}, minmax(160px, 1fr))`,
@@ -173,9 +173,9 @@ function VirtualizedDataTable({
   }
 
   return (
-    <div className={`overflow-hidden rounded-lg border border-[var(--border-muted)] bg-white shadow-[var(--brand-shadow-soft)] ${className}`.trim()}>
+    <div className={`overflow-hidden rounded-lg border border-[var(--brand-border)] bg-white shadow-[var(--brand-shadow-sm)] ${className}`.trim()}>
       <div
-        className="grid border-b border-[var(--border-muted)] bg-[var(--table-header-bg)] text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500"
+        className="grid border-b border-[var(--brand-border)] bg-[var(--table-header-bg)] text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500"
         style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(160px, 1fr))` }}
         role="row"
       >

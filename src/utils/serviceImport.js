@@ -1,8 +1,7 @@
-import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
 import { showNotification } from "../contexts/NotificationContext";
 import { serviceCategories } from "../data/serviceProducts";
 import { validateExcelImportFile } from "./excelFileGuard";
+import { loadExcelTools } from "./loadExcelTools";
 
 const categoryLabelByKey = serviceCategories.reduce((acc, category) => {
   acc[category.value] = category.label;
@@ -141,6 +140,7 @@ function parseMoneyNumber(value) {
 export async function parseServiceWorkbook(file) {
   validateExcelImportFile(file);
   try {
+    const { ExcelJS } = await loadExcelTools();
     const buffer = await file.arrayBuffer();
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.load(buffer);
@@ -267,6 +267,7 @@ export async function parseServiceWorkbook(file) {
 }
 
 async function saveWorkbook(workbook, fileName) {
+  const { saveAs } = await loadExcelTools();
   const buffer = await workbook.xlsx.writeBuffer();
   saveAs(
     new Blob([buffer], {
@@ -277,6 +278,7 @@ async function saveWorkbook(workbook, fileName) {
 }
 
 export async function downloadServiceTemplate() {
+  const { ExcelJS } = await loadExcelTools();
   const rows = [
     ["kategori", "Provider", "nama_Layanan", "jenis", "modal", "harga_jual"],
     ["KUOTA", "XL", "48 GB 28 HR", "COMBO MAX 28 HARI", 84400, 89000],
@@ -303,6 +305,7 @@ export async function downloadServiceTemplate() {
 }
 
 export async function exportServicesToExcel(services) {
+  const { ExcelJS } = await loadExcelTools();
   const headers = ["kategori", "Provider", "nama_Layanan", "jenis", "modal", "harga_jual", "Status"];
   const rows = services.map((service) => [
     categoryLabelByKey[service.category] || service.category,

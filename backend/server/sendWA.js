@@ -1,8 +1,11 @@
-import axios from "axios";
 import dotenv from "dotenv";
 import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
+import {
+  hasQueuedNotificationBeenSent,
+  isNotificationQueueConfigured,
+} from "./notificationQueue.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const backendRoot = path.resolve(__dirname, "..");
@@ -22,6 +25,37 @@ const STORE_PATH =
   process.env.WA_NOTIFICATION_STORE_PATH ||
   defaultStorePath;
 const inFlightNotificationKeys = new Set();
+
+async function postFonnteMessage(payload) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
+
+  try {
+    const response = await fetch(FONNTE_SEND_URL, {
+      method: "POST",
+      headers: {
+        Authorization: process.env.FONNTE_TOKEN,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    });
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(data?.reason || data?.message || `Fonnte HTTP ${response.status}`);
+    }
+
+    return data;
+  } catch (error) {
+    if (error.name === "AbortError") {
+      throw new Error("Pengiriman WhatsApp ke Fonnte timeout.");
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
 
 function normalizeText(value, fallback = "-") {
   const text = String(value ?? "").trim();
@@ -119,12 +153,18 @@ async function writeNotificationStore(store) {
 
 export async function hasNotificationBeenSent(idempotencyKey) {
   if (!idempotencyKey) return false;
+  if (isNotificationQueueConfigured()) {
+    return hasQueuedNotificationBeenSent(idempotencyKey);
+  }
+
   const store = await readNotificationStore();
   return Boolean(store.sent?.[idempotencyKey]);
 }
 
 async function recordNotificationSent(idempotencyKey, metadata = {}) {
   if (!idempotencyKey) return null;
+  if (isNotificationQueueConfigured()) return null;
+
   const store = await readNotificationStore();
   store.sent ||= {};
   store.sent[idempotencyKey] = {
@@ -233,17 +273,12 @@ export async function sendWA(message, options = {}) {
       throw new Error("FONNTE_TOKEN belum diatur di backend .env.");
     }
 
-    const response = await axios.post(FONNTE_SEND_URL, payload, {
-      headers: {
-        Authorization: process.env.FONNTE_TOKEN,
-      },
-      timeout: 15000,
-    });
+    const fonnteResponse = await postFonnteMessage(payload);
 
-    if (response.data?.status === false) {
+    if (fonnteResponse?.status === false) {
       throw new Error(
-        response.data?.reason ||
-          response.data?.message ||
+        fonnteResponse?.reason ||
+          fonnteResponse?.message ||
           "Fonnte menolak pengiriman WhatsApp."
       );
     }
@@ -251,14 +286,14 @@ export async function sendWA(message, options = {}) {
     await recordNotificationSent(idempotencyKey, {
       ...options.metadata,
       target,
-      fonnteResponse: response.data,
+      fonnteResponse,
     });
 
     return {
       sent: true,
       duplicate: false,
       target,
-      fonnteResponse: response.data,
+      fonnteResponse,
     };
   } finally {
     if (idempotencyKey) {

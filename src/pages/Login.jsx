@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { LockKeyhole, LogIn, Mail, RefreshCcw, ShieldCheck } from "lucide-react";
+import { LockKeyhole, LogIn, RefreshCcw, ShieldCheck, UserRound } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import BrandMark from "../components/BrandMark";
 import LoadingState from "../components/LoadingState";
@@ -10,9 +10,9 @@ import { resetBrowserAppStateAndReload } from "../utils/browserRecovery";
 
 const OPERATIONAL_POINTS = [
   ["Kasir", "Transaksi cepat"],
-  ["Stok", "Inventory aktif"],
+  ["Stok", "Kelola produk"],
   ["Saldo", "Kas & dompet"],
-  ["Digital", "Layanan harian"],
+  ["Digital", "PPOB & layanan"],
 ];
 
 export default function Login() {
@@ -27,7 +27,7 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const redirectPath = location.state?.from?.pathname;
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -44,9 +44,9 @@ export default function Login() {
     setSubmitting(true);
 
     try {
-      await login(email, password);
+      await login(identifier, password);
     } catch (err) {
-      setError(err?.message || "Login belum berhasil. Cek email dan password, lalu coba lagi.");
+      setError(err?.message || "Login belum berhasil. Cek username dan password, lalu coba lagi.");
     } finally {
       setSubmitting(false);
     }
@@ -135,20 +135,14 @@ export default function Login() {
               ))}
             </div>
 
-            <p className="login-os-footnote">Retail Operations Platform</p>
           </div>
 
           <div className="login-os-form-panel">
             <form onSubmit={handleSubmit} className="login-os-form">
-              <div className="mb-7 flex items-start justify-between gap-4">
-                <div>
-                  <h2 className="font-display text-[30px] font-black leading-tight text-slate-950">
-                    Masuk ke POS
-                  </h2>
-                  <p className="mt-2 text-sm font-medium leading-6 text-slate-500">
-                    Akses aman untuk operasional toko hari ini.
-                  </p>
-                </div>
+              <div className="mb-7 flex items-center justify-between gap-4">
+                <h2 className="font-display text-xl font-bold text-slate-950">
+                  Masuk
+                </h2>
                 <span className="login-security-mark">
                   <ShieldCheck className="h-5 w-5" aria-hidden="true" />
                 </span>
@@ -156,25 +150,25 @@ export default function Login() {
 
               <div className="space-y-4">
                 <div>
-                  <label className="mb-2 block text-xs font-black uppercase tracking-[0.12em] text-slate-500">
-                    Email
+                  <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.1em] text-slate-500">
+                    Username
                   </label>
                   <div className="login-input-wrap">
-                    <Mail className="h-4 w-4 text-slate-400" aria-hidden="true" />
+                    <UserRound className="h-4 w-4 text-slate-400" aria-hidden="true" />
                     <input
-                      type="email"
-                      value={email}
-                      onChange={(event) => setEmail(event.target.value)}
+                      type="text"
+                      value={identifier}
+                      onChange={(event) => setIdentifier(event.target.value)}
                       className="login-input brand-login-input"
-                      placeholder="nama@rajaaksesoris.com"
-                      autoComplete="email"
+                      placeholder="username"
+                      autoComplete="username"
                       required
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-black uppercase tracking-[0.12em] text-slate-500">
+                  <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.1em] text-slate-500">
                     Password
                   </label>
                   <div className="login-input-wrap">
@@ -184,7 +178,7 @@ export default function Login() {
                       value={password}
                       onChange={(event) => setPassword(event.target.value)}
                       className="login-input brand-login-input"
-                      placeholder="Masukkan password"
+                      placeholder="password"
                       autoComplete="current-password"
                       required
                     />
@@ -222,4 +216,3 @@ export default function Login() {
     </div>
   );
 }
-

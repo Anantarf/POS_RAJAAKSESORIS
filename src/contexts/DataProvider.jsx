@@ -5,6 +5,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useSecurityDomain } from "./domains/useSecurityDomain";
 import { useAuth } from "./useAuth";
 import { useAppMode } from "./AppModeContext";
 import { supabase } from "../lib/supabase";
@@ -93,7 +94,6 @@ import { normalizeShiftRecord } from "../core/normalizers/shiftNormalizer";
 import {
   normalizeAppSetting,
   normalizeEmployeePayroll,
-  normalizeSecurityControls,
   normalizeStaffUser,
 } from "../core/normalizers/employeeNormalizer";
 import {
@@ -661,6 +661,14 @@ export function DataProvider({
   );
   const activeDomainsRef = useRef(activeDomains);
   activeDomainsRef.current = activeDomains;
+
+  // ─── STATE ────────────────────────────────────────────────────────────────
+  // Semua domain state dikumpulkan di sini karena saling bergantung melalui
+  // refresh callbacks dan version refs. Security domain sudah diekstrak ke
+  // src/contexts/domains/useSecurityDomain.js sebagai contoh pola yang bisa
+  // diikuti ketika sebuah domain benar-benar independen.
+
+  // [Product domain] → refresh: line ~951 | mutations: line ~3360 | value: line ~5093
   const [products, setProducts] = useState([]);
 
   const realtimeRefreshGuardRef = useRef(null);
@@ -692,10 +700,12 @@ export function DataProvider({
 
   const [deletedProducts, setDeletedProducts] = useState([]);
   const [serviceProducts, setServiceProducts] = useState([]);
+  // [Transaction domain] → refresh: line ~985 | mutations: line ~2645 | value: line ~5173
   const [accessoryTransactions, setAccessoryTransactions] = useState([]);
   const [digitalTransactions, setDigitalTransactions] = useState([]);
   const [deletedTransactions, setDeletedTransactions] = useState([]);
 
+  // [Wallet domain] → refresh: line ~1071 | mutations: line ~2812 | value: line ~5234
   const [walletTransactions, setWalletTransactions] = useState([]);
   const [logisticsTransactions, setLogisticsTransactions] = useState([]);
   const [cashEntries, setCashEntries] = useState([]);
@@ -704,7 +714,9 @@ export function DataProvider({
   const [supplierReturns, setSupplierReturns] = useState([]);
   const [customerReturns, setCustomerReturns] = useState([]);
   const [productActivityLogs, setProductActivityLogs] = useState([]);
+  // [Shift domain] → refresh: line ~848 | mutations: line ~1988 | value: line ~5257
   const [shiftRecords, setShiftRecords] = useState([]);
+  // [Employee domain] → refresh: line ~898 | mutations: line ~2276 | value: line ~5341
   const [staffUsers, setStaffUsers] = useState([]);
   const [employeePayrolls, setEmployeePayrolls] = useState([]);
   const [appSettings, setAppSettings] = useState({});
@@ -1826,73 +1838,8 @@ export function DataProvider({
     [walletTransactions]
   );
 
-  const globalPinSettingEnabled =
-    appSettings.pin_required_enabled?.value?.enabled !== false;
-  const securityControls = useMemo(
-    () => normalizeSecurityControls(appSettings.security_controls?.value, globalPinSettingEnabled),
-    [appSettings.security_controls?.value, globalPinSettingEnabled]
-  );
-  const pinRequiredEnabled =
-    globalPinSettingEnabled && Object.values(securityControls).some((control) => control.enabled);
-
-  const setPinRequiredEnabled = useCallback(
-    async (enabled) => {
-      if (user?.role !== "pemilik") {
-        throw new Error("Hanya pemilik yang dapat mengubah pengaturan PIN.");
-      }
-
-      const { data, error } = await supabase.rpc("owner_set_pin_required_enabled", {
-        p_enabled: Boolean(enabled),
-      });
-
-      if (error) {
-        throw new Error(toClientMessage(error.message, "Gagal mengubah pengaturan PIN."));
-      }
-
-      setAppSettings((current) => ({
-        ...current,
-        pin_required_enabled: {
-          key: "pin_required_enabled",
-          value: data || { enabled: Boolean(enabled) },
-          updated_by: user.id,
-          updated_at: new Date().toISOString(),
-        },
-      }));
-
-      return data;
-    },
-    [user]
-  );
-
-  const setSecurityControls = useCallback(
-    async (controls) => {
-      if (user?.role !== "pemilik") {
-        throw new Error("Hanya pemilik yang dapat mengubah kontrol keamanan.");
-      }
-
-      const nextControls = normalizeSecurityControls(controls, true);
-      const { data, error } = await supabase.rpc("owner_set_security_controls", {
-        p_controls: nextControls,
-      });
-
-      if (error) {
-        throw new Error(toClientMessage(error.message, "Gagal mengubah kontrol keamanan."));
-      }
-
-      setAppSettings((current) => ({
-        ...current,
-        security_controls: {
-          key: "security_controls",
-          value: data || nextControls,
-          updated_by: user.id,
-          updated_at: new Date().toISOString(),
-        },
-      }));
-
-      return data || nextControls;
-    },
-    [user]
-  );
+  const { securityControls, pinRequiredEnabled, setPinRequiredEnabled, setSecurityControls } =
+    useSecurityDomain({ appSettings, setAppSettings, user, supabase });
 
   const cashierUsers = useMemo(() => {
     const rows = staffUsers.filter((item) => item.role === "kasir");
@@ -2336,6 +2283,8 @@ export function DataProvider({
     return session.access_token;
   }, []);
 
+  // ponytail: pakai /api/employees (serverless) karena Supabase admin.createUser
+  // butuh service role key — tidak bisa dipanggil langsung dari browser.
   const createEmployee = useCallback(
     async (payload) => {
       if (user?.role !== "pemilik") {

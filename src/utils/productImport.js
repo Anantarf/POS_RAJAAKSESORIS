@@ -1,6 +1,5 @@
-import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
 import { validateExcelImportFile } from "./excelFileGuard";
+import { loadExcelTools } from "./loadExcelTools";
 
 export const productImportColumns = [
   "kategori",
@@ -248,6 +247,7 @@ export function parseProductWorkbookData(workbook) {
 
 export async function parseProductWorkbook(file) {
   validateExcelImportFile(file);
+  const { ExcelJS } = await loadExcelTools();
   const buffer = await file.arrayBuffer();
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.load(buffer);
@@ -256,6 +256,7 @@ export async function parseProductWorkbook(file) {
 }
 
 export async function downloadProductImportTemplate() {
+  const { ExcelJS, saveAs } = await loadExcelTools();
   const sampleRows = [
     ["Casing", "Casing Samsung A15 Anti Crack", "Aksesoris", "RAJA-CS-A15-001", 18000, 30000, 10],
     ["Tempered Glass", "Tempered Glass Oppo A38", "Aksesoris", "RAJA-TG-A38-001", 7000, 15000, 20],
@@ -321,6 +322,7 @@ export async function downloadProductImportTemplate() {
 }
 
 export async function exportProductsToExcel(products = [], fileName = "stok-barang.xlsx") {
+  const { ExcelJS, saveAs } = await loadExcelTools();
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("Stok Barang");
   const headerRow = worksheet.addRow([

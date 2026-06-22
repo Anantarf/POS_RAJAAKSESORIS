@@ -1,8 +1,8 @@
-import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
 import { formatCashierName } from "./cashier";
+import { loadExcelTools } from "./loadExcelTools";
 
 export async function exportExcel(data, fileName = "laporan-raja-aksesoris.xlsx") {
+  const { ExcelJS, saveAs } = await loadExcelTools();
   const formatted = Array.isArray(data)
     ? data.map((item) => ({
         "No Transaksi": item.id,

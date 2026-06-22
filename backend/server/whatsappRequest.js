@@ -128,7 +128,7 @@ export async function handleWhatsappNotificationRequest(type, req, res) {
     }
 
     user ||= await authenticateRequest(req);
-    enforceIntegrationRateLimit(req, user, `whatsapp:${type}`);
+    await enforceIntegrationRateLimit(req, user, `whatsapp:${type}`);
 
     const { shift, ownerOverride } = await authorizeShiftNotification({
       type,

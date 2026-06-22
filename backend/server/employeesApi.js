@@ -18,12 +18,15 @@ function getBearerToken(req) {
   return match?.[1] || "";
 }
 
-function normalizeEmail(value) {
+function normalizeUsername(value) {
   return String(value || "").trim().toLowerCase();
 }
 
-function normalizeUsername(value) {
-  return String(value || "").trim().toLowerCase();
+function buildAuthEmail(username) {
+  const domain = String(process.env.AUTH_INTERNAL_EMAIL_DOMAIN || "rajaaksesoris.local")
+    .trim()
+    .toLowerCase();
+  return `${username}@${domain}`;
 }
 
 function isMissingStationColumnError(error = {}) {
@@ -40,8 +43,7 @@ function isMissingStationColumnError(error = {}) {
 
 function validatePayload(body) {
   const nama = String(body?.nama || body?.name || "").trim();
-  const email = normalizeEmail(body?.email);
-  const username = normalizeUsername(body?.username || email.split("@")[0]);
+  const username = normalizeUsername(body?.username);
   const password = String(body?.password || "");
   const pin = String(body?.pin || "").trim();
   const role = body?.role === "pemilik" ? "pemilik" : "kasir";
@@ -53,7 +55,6 @@ function validatePayload(body) {
   const validStations = new Set(["", "Kasir 1", "Kasir 2", "Kasir 3", "Kasir 4"]);
 
   if (!nama) throw new Error("Nama karyawan wajib diisi.");
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Email karyawan tidak valid.");
   if (!/^[a-z0-9._-]{3,40}$/.test(username)) {
     throw new Error("Username harus 3-40 karakter dan hanya boleh huruf, angka, titik, underscore, atau strip.");
   }
@@ -69,8 +70,8 @@ function validatePayload(body) {
 
   return {
     nama,
-    email,
     username,
+    authEmail: buildAuthEmail(username),
     password,
     pin,
     role,
@@ -157,7 +158,7 @@ export async function employeesHandler(req, res) {
     if (existingUsername) throw new Error("Username sudah dipakai.");
 
     const { data: authResult, error: createError } = await adminClient.auth.admin.createUser({
-      email: payload.email,
+      email: payload.authEmail,
       password: payload.password,
       email_confirm: true,
       user_metadata: {
@@ -171,7 +172,7 @@ export async function employeesHandler(req, res) {
     const profilePayload = {
       id: createdUser.id,
       nama: payload.nama,
-      email: payload.email,
+      email: null,
       username: payload.username,
       phone: payload.phone || null,
       role: payload.role,
@@ -228,7 +229,6 @@ export async function employeesHandler(req, res) {
       after_value: {
         id: profile.id,
         nama: profile.nama,
-        email: profile.email,
         username: profile.username,
         role: profile.role,
         status: profile.status,

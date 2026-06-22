@@ -1,4 +1,4 @@
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+﻿import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/useAuth";
 import {
   buildNavigationSections,
@@ -34,8 +34,8 @@ function SidebarLink({ item, collapsed, onNavigate }) {
         className={({ isActive }) =>
           `group relative block rounded-lg transition ${
             isActive || isParentActive
-              ? "bg-[var(--surface-selected)] text-slate-950"
-              : "text-slate-600 hover:bg-[var(--surface-hover)] hover:text-slate-950"
+              ? "bg-[rgba(212, 175, 55, 0.12)] text-slate-950"
+              : "text-slate-600 hover:bg-[var(--brand-surface-tint)] hover:text-slate-950"
           }`
         }
       >
@@ -84,8 +84,8 @@ function SidebarLink({ item, collapsed, onNavigate }) {
                 onClick={onNavigate}
                 className={`block rounded-md px-3 py-2 text-xs font-semibold transition ${
                   isChildActive
-                    ? "bg-[var(--surface-selected)] text-slate-950"
-                    : "text-slate-500 hover:bg-[var(--surface-hover)] hover:text-slate-900"
+                    ? "bg-[rgba(212, 175, 55, 0.12)] text-slate-950"
+                    : "text-slate-500 hover:bg-[var(--brand-surface-tint)] hover:text-slate-900"
                 }`}
               >
                 {child.label}
@@ -126,7 +126,7 @@ export default function Sidebar({
         .join(" ")}
     >
       <div className="flex min-h-full flex-col">
-        <div className={`flex items-center ${collapsed && !isMobile ? "justify-center" : "justify-between"} gap-3 rounded-lg border border-[var(--border-muted)] bg-white p-3 shadow-[var(--shadow-soft)]`}>
+        <div className={`flex items-center ${collapsed && !isMobile ? "justify-center" : "justify-between"} gap-3 rounded-lg border border-[var(--brand-border)] bg-white p-3 shadow-[var(--brand-shadow-sm)]`}>
           <button
             type="button"
             onClick={() => {
@@ -170,7 +170,7 @@ export default function Sidebar({
                 key={action.to}
                 to={action.to}
                 onClick={onNavigate}
-                className="flex min-h-[62px] flex-col items-center justify-center gap-1 rounded-lg border border-[var(--border-muted)] bg-[var(--surface-secondary)] text-xs font-bold text-slate-600 transition hover:-translate-y-px hover:border-[rgba(212,175,55,0.3)] hover:bg-[var(--surface-hover)] hover:text-slate-950"
+                className="flex min-h-[62px] flex-col items-center justify-center gap-1 rounded-lg border border-[var(--brand-border)] bg-[var(--brand-surface-soft)] text-xs font-bold text-slate-600 transition hover:-translate-y-px hover:border-[rgba(212,175,55,0.3)] hover:bg-[var(--brand-surface-tint)] hover:text-slate-950"
               >
                 <AppIcon name={action.icon} className="h-4 w-4" />
                 {action.label}
@@ -201,9 +201,9 @@ export default function Sidebar({
           ))}
         </nav>
 
-        <div className="mt-5 space-y-3 border-t border-[var(--border-muted)] pt-4">
+        <div className="mt-5 space-y-3 border-t border-[var(--brand-border)] pt-4">
           {(!collapsed || isMobile) ? (
-            <div className="rounded-lg border border-[var(--border-muted)] bg-[var(--surface-secondary)] p-3">
+            <div className="rounded-lg border border-[var(--brand-border)] bg-[var(--brand-surface-soft)] p-3">
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">
                 Login sebagai
               </p>

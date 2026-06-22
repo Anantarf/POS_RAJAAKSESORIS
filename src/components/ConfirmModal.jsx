@@ -1,4 +1,4 @@
-export default function ConfirmModal({
+﻿export default function ConfirmModal({
   isOpen,
   title = "Konfirmasi",
   message,
@@ -37,11 +37,11 @@ export default function ConfirmModal({
         </div>
 
         {target ? (
-          <div className="mt-5 rounded-lg border border-[var(--border-muted)] bg-[var(--surface-secondary)] px-4 py-3">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--text-secondary)]">
+          <div className="mt-5 rounded-lg border border-[var(--brand-border)] bg-[var(--brand-surface-soft)] px-4 py-3">
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--brand-text-muted)]">
               Target
             </p>
-            <p className="mt-1 break-words text-sm font-bold text-[var(--text)]">{target}</p>
+            <p className="mt-1 break-words text-sm font-bold text-[var(--brand-text)]">{target}</p>
           </div>
         ) : null}
 
@@ -53,7 +53,7 @@ export default function ConfirmModal({
         ) : null}
 
         {requiresPin ? (
-          <p className="mt-3 text-sm font-semibold text-[var(--warning)]">
+          <p className="mt-3 text-sm font-semibold text-[var(--brand-warning)]">
             Verifikasi PIN diwajibkan untuk melanjutkan aksi sensitif ini.
           </p>
         ) : null}

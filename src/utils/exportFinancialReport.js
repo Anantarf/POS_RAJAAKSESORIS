@@ -1,7 +1,6 @@
-import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
 import { formatCashierName } from "./cashier";
 import { formatDateInput, formatDateTime } from "./format";
+import { loadExcelTools } from "./loadExcelTools";
 
 const REPORT_TITLE = "LAPORAN KEUANGAN RAJA AKSESORIS";
 const CURRENCY_FORMAT = '"Rp" #,##0';
@@ -551,6 +550,7 @@ function buildTransactionSheet(workbook, transactionRows, periodLabel, exportedA
 }
 
 export async function exportFinancialReport(data = {}) {
+  const { ExcelJS, saveAs } = await loadExcelTools();
   const exportedAt = data.exportedAt ? new Date(data.exportedAt) : new Date();
   const periodLabel = normalizeText(data.periodLabel, "Semua periode");
   const exportedAtLabel = formatDateTime(exportedAt, {

@@ -1,6 +1,5 @@
-import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
 import { formatDateInput, formatRupiah } from "./format";
+import { loadExcelTools } from "./loadExcelTools";
 
 const HEADER_FILL = "D4AF37";
 const META_FILL = "E5E7EB";
@@ -169,6 +168,7 @@ function buildWorksheet(workbook, config) {
 }
 
 export async function exportWorkbook(config) {
+  const { ExcelJS, saveAs } = await loadExcelTools();
   const exportedAt = config.exportedAt ? new Date(config.exportedAt) : new Date();
   const workbook = new ExcelJS.Workbook();
   const sheets = Array.isArray(config.sheets) ? config.sheets : [];

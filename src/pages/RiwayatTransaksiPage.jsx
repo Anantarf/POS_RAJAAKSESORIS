@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import MetricCard from "../components/app/MetricCard";
 import PaginationBar from "../components/PaginationBar";
 import PageHeader from "../components/app/PageHeader";
@@ -912,7 +912,7 @@ export default function RiwayatTransaksiPage() {
                   className={`rounded-lg border p-4 ${
                     selectedId === row.id
                       ? "border-[var(--brand-gold)] bg-[var(--brand-surface-tint)]"
-                      : "border-[var(--border-muted)] bg-[var(--surface)]"
+                      : "border-[var(--brand-border)] bg-[var(--brand-surface)]"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -1285,7 +1285,7 @@ export default function RiwayatTransaksiPage() {
                   ? "Restore transaksi?"
                   : "Hapus permanen?"}
             </h2>
-            <div className="mt-4 rounded-lg border border-[var(--border-muted)] bg-[var(--surface-secondary)] px-4 py-3">
+            <div className="mt-4 rounded-lg border border-[var(--brand-border)] bg-[var(--brand-surface-soft)] px-4 py-3">
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Target</p>
               <p className="mt-1 break-words text-sm font-bold text-slate-950">
                 {pendingAction.row.reference || pendingAction.row.raw?.id}
@@ -1301,7 +1301,7 @@ export default function RiwayatTransaksiPage() {
                     : "Transaksi dihapus permanen dan tidak dapat direstore."}
               </p>
             </div>
-            <p className="mt-3 text-sm font-semibold text-[var(--warning)]">
+            <p className="mt-3 text-sm font-semibold text-[var(--brand-warning)]">
               Verifikasi PIN pemilik diwajibkan sebelum perubahan disimpan.
             </p>
             <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">

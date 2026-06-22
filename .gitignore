@@ -18,3 +18,4 @@ supabase/.temp/
 .vscode/
 **/.vscode/
 supabase/migrations-combined.sql
+supabase/reset-*.sql

@@ -136,6 +136,25 @@ export function requireAuthenticatedUser(req, res, next) {
     });
 }
 
+function enforceLocalIntegrationRateLimit(user, action) {
+  const limit = Math.max(1, Number(process.env.INTEGRATION_RATE_LIMIT_MAX || 10));
+  const windowMs = Math.max(1000, Number(process.env.INTEGRATION_RATE_LIMIT_WINDOW_MS || 60000));
+  const key = `${action}:${user.id}`;
+  const now = Date.now();
+  const current = RATE_LIMIT_BUCKETS.get(key);
+
+  if (!current || current.expiresAt <= now) {
+    RATE_LIMIT_BUCKETS.set(key, { count: 1, expiresAt: now + windowMs });
+    return;
+  }
+
+  if (current.count >= limit) {
+    throw createRequestError(429, "Terlalu banyak permintaan. Coba lagi sebentar.");
+  }
+
+  current.count += 1;
+}
+
 function requireUuid(value, fieldName) {
   const normalized = String(value || "").trim();
   if (!UUID_PATTERN.test(normalized)) {
@@ -185,23 +204,30 @@ export async function authorizeShiftNotification({ type, shiftId, user, ownerOve
   };
 }
 
-export function enforceIntegrationRateLimit(_req, user, action) {
+export async function enforceIntegrationRateLimit(_req, user, action) {
   const limit = Math.max(1, Number(process.env.INTEGRATION_RATE_LIMIT_MAX || 10));
   const windowMs = Math.max(1000, Number(process.env.INTEGRATION_RATE_LIMIT_WINDOW_MS || 60000));
   const key = `${action}:${user.id}`;
-  const now = Date.now();
-  const current = RATE_LIMIT_BUCKETS.get(key);
 
-  if (!current || current.expiresAt <= now) {
-    RATE_LIMIT_BUCKETS.set(key, { count: 1, expiresAt: now + windowMs });
-    return;
+  try {
+    const rows = await serviceRest("rpc/consume_integration_rate_limit", {
+      method: "POST",
+      body: JSON.stringify({
+        p_key: key,
+        p_limit: limit,
+        p_window_seconds: Math.ceil(windowMs / 1000),
+      }),
+    });
+    const result = Array.isArray(rows) ? rows[0] : rows;
+
+    if (result?.allowed === false) {
+      throw createRequestError(429, "Terlalu banyak permintaan. Coba lagi sebentar.");
+    }
+  } catch (error) {
+    if (error.status === 429) throw error;
+    console.warn("Rate limit Supabase tidak tersedia, fallback ke memory lokal:", error.message || error);
+    enforceLocalIntegrationRateLimit(user, action);
   }
-
-  if (current.count >= limit) {
-    throw createRequestError(429, "Terlalu banyak permintaan. Coba lagi sebentar.");
-  }
-
-  current.count += 1;
 }
 
 export async function appendIntegrationAudit({

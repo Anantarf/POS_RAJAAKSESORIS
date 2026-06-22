@@ -1,8 +1,7 @@
-import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
 import { walletPlatformLabelMap } from "../data/businessOptions";
 import { formatCashierName } from "./cashier";
 import { formatDateInput, formatDateTime } from "./format";
+import { loadExcelTools } from "./loadExcelTools";
 
 const REPORT_TITLE = "LAPORAN TRANSAKSI RAJA AKSESORIS";
 const GOLD = "FFD4AF37";
@@ -137,6 +136,7 @@ function autoFitColumns(sheet, rows) {
 }
 
 export async function exportExcel(transactions, options = {}) {
+  const { ExcelJS, saveAs } = await loadExcelTools();
   const exportedAt = options.exportedAt ? new Date(options.exportedAt) : new Date();
   const safeTransactions = Array.isArray(transactions) ? transactions : [];
   const rows = normalizeTransactionRows(safeTransactions);
