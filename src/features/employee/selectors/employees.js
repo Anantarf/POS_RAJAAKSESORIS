@@ -181,8 +181,7 @@ export function buildEmployees(staffUsers, user, activeShifts, payrolls = [], ro
     return {
       id: row.id || `employee-${index}`,
       name: row.nama || row.name || "Kasir",
-      email: row.email || "",
-      username: row.username || row.email || createUsername(row.nama || row.name, index),
+      username: row.username || createUsername(row.nama || row.name, index),
       phone: row.phone || row.nomor_hp || "-",
       role,
       cashierStation,

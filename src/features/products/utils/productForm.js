@@ -8,7 +8,6 @@ const baseEmptyForm = {
   stok: "",
   stok_minimum: "3",
   satuan: "pcs",
-  aktif: true,
 };
 
 export function formatImportAction(action) {
@@ -38,7 +37,7 @@ export function focusElement(ref) {
 }
 
 export function getProductStatus(product) {
-  if (product.status === "inactive" || product.aktif === false) {
+  if (product.status === "inactive") {
     return {
       label: "Nonaktif",
       className: "bg-slate-200 text-slate-600",

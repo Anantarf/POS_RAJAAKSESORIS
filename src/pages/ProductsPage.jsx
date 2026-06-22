@@ -228,7 +228,7 @@ function ProductActionMenu({
                 className="inventory-action-item"
               >
                 <AppIcon name="power" className="h-4 w-4" />
-                {product.aktif ? "Nonaktifkan" : "Aktifkan"}
+                {product.status === "active" ? "Nonaktifkan" : "Aktifkan"}
               </button>
               <button
                 type="button"
@@ -356,9 +356,9 @@ export default function ProductsPage() {
         (product.kode_produk || "").toLowerCase().includes(keyword);
       let matchStatus = true;
       if (statusFilter === "aktif") {
-        matchStatus = product.status === "active" && product.aktif !== false;
+        matchStatus = product.status === "active";
       } else if (statusFilter === "nonaktif") {
-        matchStatus = product.status === "inactive" || product.aktif === false;
+        matchStatus = product.status === "inactive";
       } else if (statusFilter === "menipis") {
         matchStatus = product.stok > 0 && product.stok <= product.stok_minimum;
       } else if (statusFilter === "habis") {
@@ -432,7 +432,7 @@ export default function ProductsPage() {
           const minimum = Number(item.stok_minimum || 0);
           acc.totalProduk += 1;
           acc.nilaiStok += Number(item.harga_beli || 0) * stock;
-          if (item.status !== "inactive" && item.aktif !== false) acc.produkAktif += 1;
+          if (item.status === "active") acc.produkAktif += 1;
           if (stock > 0 && stock <= minimum) acc.stokMenipis += 1;
           if (stock <= 0) acc.stokHabis += 1;
           return acc;
@@ -457,8 +457,7 @@ export default function ProductsPage() {
       products
         .filter(
           (product) =>
-            product.status !== "deleted" &&
-            product.aktif !== false &&
+            product.status === "active" &&
             Number(product.stok || 0) <= Number(product.stok_minimum || 0)
         )
         .sort((left, right) => Number(left.stok || 0) - Number(right.stok || 0) || left.nama.localeCompare(right.nama)),
@@ -653,8 +652,7 @@ export default function ProductsPage() {
       stok: String(product.stok),
       stok_minimum: String(product.stok_minimum),
       satuan: product.satuan || "pcs",
-      aktif: product.aktif,
-      status: product.status || (product.aktif ? "active" : "inactive"),
+      status: product.status || "active",
     });
   };
 
@@ -1998,7 +1996,7 @@ export default function ProductsPage() {
                           }}
                           onToggleStatus={() => {
                             setOpenActionProductId(null);
-                            handleToggleStatus(product.id, !product.aktif);
+                            handleToggleStatus(product.id, product.status !== "active");
                           }}
                         />
                       </td>

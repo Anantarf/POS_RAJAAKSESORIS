@@ -17,7 +17,6 @@ const LARGE_REFRESH_THROTTLE_MS = 30000;
 const EMPLOYEE_ROSTER_SELECT = [
   "id",
   "nama",
-  "email",
   "username",
   "phone",
   "role",
@@ -53,6 +52,7 @@ const EMPLOYEE_ROSTER_SELECT = [
   "today_refund",
   "today_closing_difference",
 ].join(", ");
+
 
 function getBrowserSessionId() {
   if (typeof window === "undefined") return "";
@@ -125,8 +125,7 @@ function isPermissionDeniedForTable(error, tableNames = []) {
 function normalizeEmployeeRoster(row) {
   return {
     id: row.id,
-    nama: row.nama || formatCashierName(row.id || row.email || row.role),
-    email: row.email || "",
+    nama: row.nama || formatCashierName(row.id || row.username || row.role),
     username: row.username || "",
     phone: row.phone || "",
     role: row.role || "kasir",

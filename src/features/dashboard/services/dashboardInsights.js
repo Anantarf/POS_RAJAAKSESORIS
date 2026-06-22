@@ -84,7 +84,7 @@ export function getTrendTextClass(tone) {
 }
 
 export function isActiveProduct(product) {
-  return product.aktif && product.status !== "deleted";
+  return product.status === "active";
 }
 
 export function isLowStockProduct(product) {

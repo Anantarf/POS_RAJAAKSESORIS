@@ -181,7 +181,6 @@ function parseProductRow({ worksheet, row, rowIndex, headerMap, importedCodes })
       harga_beli: modal,
       harga_jual: hargaJual,
       satuan: "pcs",
-      aktif: true,
     },
   };
 }
@@ -340,7 +339,7 @@ export async function exportProductsToExcel(products = [], fileName = "stok-bara
     const stock = Number(product.stok || 0);
     const minimumStock = Number(product.stok_minimum || 0);
     const status =
-      product.status === "inactive" || product.aktif === false
+      product.status === "inactive"
         ? "Nonaktif"
         : stock === 0
           ? "Habis"

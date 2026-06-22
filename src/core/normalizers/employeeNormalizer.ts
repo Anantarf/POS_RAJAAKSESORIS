@@ -13,8 +13,7 @@ export const DEFAULT_SECURITY_CONTROLS = {
 export function normalizeStaffUser(user: Record<string, any>): StaffUser {
   return {
     id: user.id,
-    nama: user.nama || formatCashierName(user.id || user.email || user.role),
-    email: user.email || "",
+    nama: user.nama || formatCashierName(user.id || user.username || user.role),
     username: user.username || "",
     phone: user.phone || "",
     role: user.role || "kasir",

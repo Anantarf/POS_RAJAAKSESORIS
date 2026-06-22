@@ -1,7 +1,6 @@
 export interface StaffUser {
   id?: string;
   nama: string;
-  email?: string;
   username?: string;
   phone?: string;
   role: string;

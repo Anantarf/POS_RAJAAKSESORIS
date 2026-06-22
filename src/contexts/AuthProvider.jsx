@@ -26,8 +26,7 @@ function readCachedUser() {
 
     return {
       id: String(cachedUser.id),
-      email: String(cachedUser.email || ""),
-      name: String(cachedUser.name || cachedUser.email || "Pengguna"),
+      name: String(cachedUser.name || cachedUser.username || "Pengguna"),
       role,
       profile: cachedUser.profile || { id: cachedUser.id, role },
       pinHash: null,
@@ -51,13 +50,12 @@ function writeCachedUser(nextUser) {
       AUTH_USER_CACHE_KEY,
       JSON.stringify({
         id: nextUser.id,
-        email: nextUser.email || "",
-        name: nextUser.name || nextUser.email || "Pengguna",
+        name: nextUser.name || nextUser.profile?.username || "Pengguna",
         role: nextUser.role,
         profile: {
           id: nextUser.profile?.id || nextUser.id,
-          email: nextUser.profile?.email || nextUser.email || "",
           nama: nextUser.profile?.nama || nextUser.name || "",
+          username: nextUser.profile?.username || "",
           role: nextUser.role,
         },
       })
@@ -137,7 +135,7 @@ function normalizeRole(role) {
 }
 
 function getUserName(profile, fallbackEmail = "") {
-  return String(profile?.nama || profile?.name || profile?.email || fallbackEmail || "Pengguna").trim();
+  return String(profile?.nama || profile?.name || profile?.username || fallbackEmail || "Pengguna").trim();
 }
 
 function toReadableError(error, fallback) {
@@ -199,8 +197,7 @@ function buildUser(session, profile) {
 
   return {
     id: session.user.id,
-    email: profile?.email || session.user.email || "",
-    name: getUserName(profile, session.user.email),
+    name: getUserName(profile, profile?.username || ""),
     role,
     profile,
     pinHash: profile?.pin_hash || null,

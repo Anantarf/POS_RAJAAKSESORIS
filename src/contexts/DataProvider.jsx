@@ -220,7 +220,6 @@ async function runDataStageResult(stageName, task, fallbackValue, options) {
 const USER_SELECT = [
   "id",
   "nama",
-  "email",
   "username",
   "phone",
   "role",
@@ -241,7 +240,6 @@ const USER_SELECT = [
 const USER_SELECT_FALLBACK = [
   "id",
   "nama",
-  "email",
   "username",
   "phone",
   "role",
@@ -750,7 +748,7 @@ export function DataProvider({
     if (Notification.permission !== "granted") return;
 
     const lowStockProducts = products.filter(
-      (product) => product.aktif && product.stok > 0 && product.stok <= product.stok_minimum
+      (product) => product.status === productStatuses.active && product.stok > 0 && product.stok <= product.stok_minimum
     );
 
     if (lowStockProducts.length > 0) {
@@ -1214,28 +1212,10 @@ export function DataProvider({
       .order("created_at", { ascending: false })
       .limit(DATA_LOAD_LIMITS.stockMutations);
 
-    let stockRows = [];
-    if (stockMutationRes.error && isOptionalResetTableError(stockMutationRes.error)) {
-      const legacyStockRes = await supabase
-        .from("stok_masuk")
-        .select("id, produk_id, jumlah, catatan, created_at")
-        .order("created_at", { ascending: false })
-        .limit(DATA_LOAD_LIMITS.stockMutations);
-      if (legacyStockRes.error && !isOptionalResetTableError(legacyStockRes.error)) {
-        throw legacyStockRes.error;
-      }
-      stockRows = (legacyStockRes.data || []).map((log) =>
-        normalizeStockLog({
-          ...log,
-          tipe: "masuk",
-          catatan: "Migrasi dari stok masuk",
-        })
-      );
-    } else if (stockMutationRes.error) {
-      throw stockMutationRes.error;
-    } else {
-      stockRows = (stockMutationRes.data || []).map(normalizeStockLog);
+    if (stockMutationRes.error) {
+      if (!isOptionalResetTableError(stockMutationRes.error)) throw stockMutationRes.error;
     }
+    const stockRows = (stockMutationRes.data || []).map(normalizeStockLog);
 
     if (
       requestVersion !== stockRefreshVersionRef.current ||
@@ -3122,7 +3102,7 @@ export function DataProvider({
 
       const selectedCategory = String(category || "semua").trim();
       const filteredProducts = products.filter((product) => {
-        if (product.status === productStatuses.deleted || product.aktif === false) return false;
+        if (product.status === productStatuses.deleted || product.status === productStatuses.inactive) return false;
         return selectedCategory === "semua" ? true : product.kategori === selectedCategory;
       });
 
@@ -3397,9 +3377,7 @@ export function DataProvider({
         normalizeProductCode(payload.kode_produk) ||
         existingProduct?.kode_produk ||
         createGeneratedProductCode(payload.nama);
-      const nextStatus =
-        payload.status ||
-        (payload.aktif === false ? productStatuses.inactive : productStatuses.active);
+      const nextStatus = payload.status || productStatuses.active;
 
       const product = normalizeProduct({
         ...payload,
@@ -3409,7 +3387,6 @@ export function DataProvider({
         stok: stock,
         stok_minimum: minimumStock,
         status: nextStatus,
-        aktif: nextStatus === productStatuses.active,
         deleted_at: existingProduct?.deleted_at || null,
         deleted_by: existingProduct?.deleted_by || null,
       });
@@ -3544,13 +3521,12 @@ export function DataProvider({
         const action = existingProduct ? "updated" : "created";
         const product = existingProduct
           ? {
-            ...existingProduct,
-            stok: importedProduct.stok,
-            status: productStatuses.active,
-            aktif: true,
-            deleted_at: null,
-            deleted_by: null,
-          }
+              ...existingProduct,
+              stok: importedProduct.stok,
+              status: productStatuses.active,
+              deleted_at: null,
+              deleted_by: null,
+            }
           : {
               ...importedProduct,
               id: null,
@@ -3559,11 +3535,7 @@ export function DataProvider({
                 ? Math.max(0, Number(entry.stok_minimum))
                 : 3,
               satuan: importedProduct.satuan || "pcs",
-              aktif: typeof entry.aktif === "boolean" ? entry.aktif : importedProduct.aktif,
-              status:
-                typeof entry.aktif === "boolean" && !entry.aktif
-                  ? productStatuses.inactive
-                  : productStatuses.active,
+              status: productStatuses.active,
               deleted_at: null,
               deleted_by: null,
             };
@@ -3609,7 +3581,6 @@ export function DataProvider({
               harga_beli: product.harga_beli,
               harga_jual: product.harga_jual,
               satuan: product.satuan,
-              aktif: product.aktif,
               status: product.status,
               deleted_at: product.deleted_at,
               deleted_by: product.deleted_by,
@@ -3991,7 +3962,7 @@ export function DataProvider({
   );
 
   const updateProductStatus = useCallback(
-    async (id, aktif) => {
+    async (id, newIsActive) => {
       requireOwnerProductAccess();
 
       const product = products.find((item) => item.id === id);
@@ -3999,10 +3970,9 @@ export function DataProvider({
         throw new Error("Produk tidak ditemukan.");
       }
 
-      const nextStatus = aktif ? productStatuses.active : productStatuses.inactive;
+      const nextStatus = newIsActive ? productStatuses.active : productStatuses.inactive;
       const nextProduct = normalizeProduct({
         ...product,
-        aktif,
         status: nextStatus,
         deleted_at: null,
         deleted_by: null,
@@ -4026,7 +3996,6 @@ export function DataProvider({
         const { error } = await supabase
           .from("produk")
           .update({
-            aktif,
             status: nextStatus,
             deleted_at: null,
             deleted_by: null,
@@ -4058,7 +4027,6 @@ export function DataProvider({
       const deletedAt = new Date().toISOString();
       const deletedProduct = normalizeProduct({
         ...product,
-        aktif: false,
         status: productStatuses.deleted,
         deleted_at: deletedAt,
         deleted_by: user?.id || null,
@@ -4082,7 +4050,6 @@ export function DataProvider({
         const { error } = await supabase
           .from("produk")
           .update({
-            aktif: false,
             status: productStatuses.deleted,
             deleted_at: deletedAt,
             deleted_by: user?.id || null,
@@ -4113,7 +4080,6 @@ export function DataProvider({
 
       const restoredProduct = normalizeProduct({
         ...product,
-        aktif: true,
         status: productStatuses.active,
         deleted_at: null,
         deleted_by: null,
@@ -4136,7 +4102,6 @@ export function DataProvider({
         const { error } = await supabase
           .from("produk")
           .update({
-            aktif: true,
             status: productStatuses.active,
             deleted_at: null,
             deleted_by: null,
@@ -4559,7 +4524,7 @@ export function DataProvider({
         if (!replacementProduct) {
           throw new Error("Produk pengganti wajib dipilih.");
         }
-        if (replacementProduct.status === productStatuses.deleted || replacementProduct.aktif === false) {
+        if (replacementProduct.status === productStatuses.deleted || replacementProduct.status === productStatuses.inactive) {
           throw new Error("Produk pengganti tidak aktif.");
         }
         if (replacementQty <= 0) {

@@ -138,7 +138,7 @@ export default function CashierPage() {
   } = usePinConfirmation();
 
   const activeProducts = useMemo(
-    () => products.filter((product) => product.aktif && product.status !== "deleted"),
+    () => products.filter((product) => product.status === "active"),
     [products]
   );
 

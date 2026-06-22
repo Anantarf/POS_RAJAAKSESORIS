@@ -288,7 +288,7 @@ export default function SupplierReturnsPage() {
   const activeProducts = useMemo(
     () =>
       products
-        .filter((product) => product.status !== "deleted" && product.aktif !== false)
+        .filter((product) => product.status === "active")
         .sort((left, right) => left.nama.localeCompare(right.nama, "id")),
     [products]
   );
