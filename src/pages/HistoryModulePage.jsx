@@ -25,13 +25,18 @@ export default function HistoryModulePage() {
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const tabs = BASE_TABS.filter((t) => !t.ownerOnly || user?.role === "pemilik");
-  const requested = searchParams.get("tab") === "laporan" ? "laporan" : "riwayat";
+  const rawTab = searchParams.get("tab");
+  const canAccessLaporan = user?.role === "pemilik";
+  const requested = rawTab === "laporan" && canAccessLaporan ? "laporan" : "riwayat";
   const [activeTab, setActiveTab] = useState(requested);
   const activeTabMeta = tabs.find((t) => t.id === activeTab) || tabs[0];
 
   useEffect(() => {
+    if (rawTab === "laporan" && !canAccessLaporan) {
+      setSearchParams({}, { replace: true });
+    }
     setActiveTab(requested);
-  }, [requested]);
+  }, [requested, rawTab, canAccessLaporan, setSearchParams]);
 
   function selectTab(tabId) {
     setActiveTab(tabId);

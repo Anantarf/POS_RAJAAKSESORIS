@@ -322,6 +322,16 @@ export default function WalletPage() {
             <Link to="/saldo" className="underline underline-offset-4">Tampilkan semua saldo</Link>
           </div>
         ) : null}
+        {walletHydrating && visibleWalletBalances.length === 0
+          ? Array.from({ length: 4 }).map((_, i) => (
+              <Panel key={i} className="animate-pulse p-5">
+                <div className="mb-4 h-1.5 w-14 rounded-full bg-slate-200" />
+                <div className="h-3 w-20 rounded bg-slate-200" />
+                <div className="mt-3 h-8 w-32 rounded bg-slate-200" />
+                <div className="mt-2 h-3 w-24 rounded bg-slate-100" />
+              </Panel>
+            ))
+          : null}
         {visibleWalletBalances.map((wallet) => {
           const balanceClass =
             wallet.balance < 0

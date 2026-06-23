@@ -97,7 +97,7 @@ function mergePaymentSummary(summary, next) {
 export function normalizeShiftStatus(status) {
   const normalized = String(status || "active").trim().toLowerCase();
 
-  if (normalized === "pending_close" || normalized === "closed") {
+  if (normalized === "closed") {
     return "pending";
   }
 

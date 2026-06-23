@@ -1055,7 +1055,7 @@ export default function CashierPage() {
           </h1>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <div className="brand-shortcut-strip">
+          <div className="brand-shortcut-strip hidden md:flex">
             <span>F2 Cari</span>
             <span>F4 Checkout</span>
             <span>F8 Uang Pas</span>
