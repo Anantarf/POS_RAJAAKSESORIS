@@ -13,6 +13,7 @@ import { SplitPaymentWidget } from "../features/cashier/components/SplitPaymentW
 import { CartMobileSheet } from "../features/cashier/components/CartMobileSheet";
 import { PaymentMethodSelector } from "../features/cashier/components/PaymentMethodSelector";
 import { SmartCashInput } from "../features/cashier/components/SmartCashInput";
+import { PaymentValidationFeedback } from "../features/cashier/components/PaymentValidationFeedback";
 import {
   customerPaymentPlatforms,
   walletPlatformLabelMap,
@@ -1130,6 +1131,8 @@ export default function CashierPage() {
                               inCart ? "brand-product-card-selected" : ""
                             }`
                       }`}
+                      aria-label={`${getProductDisplayName(product)}${inCart ? ` (${inCart.qty} di keranjang)` : ""}${isOutOfStock ? " - Stok habis" : ""}`}
+                      title={isOutOfStock ? "Stok habis - tidak bisa ditambahkan" : `Klik untuk tambahkan ke keranjang`}
                     >
                       {inCart ? (
                         <span className="absolute right-3 top-3 rounded-md bg-[var(--brand-gold)] px-2.5 py-1 text-[11px] font-bold text-slate-950">
@@ -1489,6 +1492,17 @@ export default function CashierPage() {
                   </span>
                 </div>
               </div>
+
+              {/* Payment Validation Feedback */}
+              <PaymentValidationFeedback
+                isSplitPayment={isSplitPayment}
+                splitPayments={splitPayments}
+                cartTotal={cartTotal}
+                splitPaidTotal={splitPaidTotal}
+                cashReceived={cashReceived}
+                cartValue={cartValue}
+                isReadyToCheckout={!checkoutDisabled}
+              />
 
               <button
                 type="submit"
