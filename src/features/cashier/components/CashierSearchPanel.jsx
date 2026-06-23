@@ -22,11 +22,11 @@ const CashierSearchPanel = memo(
     searchInputRef
   ) {
     return (
-      <Panel variant="strong" className="p-5">
+      <Panel variant="accent" className="p-5">
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_260px] xl:items-end">
           <div>
             <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-              <label className="block text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              <label className="brand-section-label block">
                 Cari / Scan
               </label>
               <span className="brand-badge-success">Scanner mode - Enter tambah item</span>
@@ -66,14 +66,14 @@ const CashierSearchPanel = memo(
 
           <div className="grid grid-cols-2 gap-3">
             <div className="brand-subtle-block">
-              <p className="brand-kicker">Produk tampil</p>
-              <p className="mt-2 text-2xl font-black tracking-tight text-slate-950">
+              <p className="brand-section-label">Produk tampil</p>
+              <p className="brand-metric-value-lg mt-2">
                 {filteredProductCount}
               </p>
             </div>
             <div className="brand-subtle-block">
-              <p className="brand-kicker">Keranjang</p>
-              <p className="mt-2 text-2xl font-black tracking-tight text-slate-950">
+              <p className="brand-section-label">Keranjang</p>
+              <p className="brand-metric-value-lg mt-2">
                 {cartItemCount}
               </p>
               <p className="mt-1 text-xs text-slate-500">

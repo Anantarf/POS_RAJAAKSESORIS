@@ -10,15 +10,15 @@ export default function BottomSheet({
 }) {
   const sheetRef = useRef(null);
 
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
   useEffect(() => {
     if (!isOpen) return;
 
     const handleEscape = (e) => {
       if (e.key === "Escape") onClose();
-    };
-
-    const handleBackdropClick = (e) => {
-      if (e.target === e.currentTarget) onClose();
     };
 
     document.addEventListener("keydown", handleEscape);

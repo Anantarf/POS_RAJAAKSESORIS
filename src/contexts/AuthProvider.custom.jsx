@@ -360,7 +360,7 @@ function AuthProvider({ children }) {
       commitProfileError(message);
       setState(AUTH_STATUS.PROFILE_ERROR);
     }
-  }, [setState, commitUser, commitProfileError]);
+  }, [setState, commitUser, commitProfileError, goSignedOut]);
 
   const contextValue = useMemo(
     () => ({

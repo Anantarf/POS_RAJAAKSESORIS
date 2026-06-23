@@ -16,13 +16,12 @@ const Input = ({
     lg: "brand-input-lg",
   }[size] || "";
 
-  const hasStatus = error || success;
   const statusColor = error ? "border-red-500" : success ? "border-green-600" : "";
 
   return (
     <div className="space-y-1.5">
       {label && (
-        <label className="block text-xs font-black uppercase tracking-[0.12em] text-[var(--brand-text-muted)]">
+        <label className="brand-section-label block">
           {label}
           {required && <span className="ml-1 text-red-600">*</span>}
         </label>

@@ -20,7 +20,7 @@ export function useFormValidation(initialValues, onSubmit, validate) {
       success: !error && isTouched && hasValue ? "Valid" : null,
       isTouched,
     };
-  }, [errors, touched, values, getFieldError]);
+  }, [touched, values, getFieldError]);
 
   const handleChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
@@ -31,15 +31,13 @@ export function useFormValidation(initialValues, onSubmit, validate) {
       [name]: fieldValue,
     }));
 
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[name];
-        return newErrors;
-      });
-    }
-  }, [errors]);
+    setErrors((prev) => {
+      if (!prev[name]) return prev;
+      const newErrors = { ...prev };
+      delete newErrors[name];
+      return newErrors;
+    });
+  }, []);
 
   const handleBlur = useCallback((e) => {
     const { name, value } = e.target;

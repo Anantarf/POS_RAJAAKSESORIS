@@ -1174,7 +1174,7 @@ export default function CashierPage() {
           </section>
 
           <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_340px] xl:grid-cols-[minmax(0,1.18fr)_420px]">
-          <Panel className="p-6">
+          <Panel variant="accent" className="p-6">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="brand-section-label">Checkout</p>
@@ -1298,7 +1298,7 @@ export default function CashierPage() {
             </div>
           </Panel>
 
-          <Panel variant="strong" className="p-5 md:sticky md:top-[184px] md:self-start lg:top-24 sm:p-6">
+          <Panel variant="success" className="p-5 md:sticky md:top-[184px] md:self-start lg:top-24 sm:p-6">
             <form id="cashier-checkout-form" onSubmit={handleCheckout} className="space-y-5">
               <div className="rounded-lg bg-slate-950 px-5 py-5 text-white shadow-[0_16px_34px_rgba(15,23,42,0.18)]">
                 <p className="text-xs font-semibold text-slate-300">

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import LoadingState from "../components/LoadingState";
 import LottieState from "../components/LottieState";
 import MetricCard from "../components/app/MetricCard";
@@ -52,30 +52,6 @@ const cashierMutationTypes = [{ value: "masuk", label: "Stok Masuk" }];
 const preferredCategoryOrder = productCategoryGroups
   .filter((group) => !["digital"].includes(group.slug))
   .flatMap((group) => group.categories);
-const stockSectionMenu = [
-  {
-    id: "kelola-kategori",
-    label: "Kelola Kategori",
-    eyebrow: "Kategori",
-    description: "Ubah nama, hapus, dan rapikan kategori aktif.",
-    ownerOnly: true,
-  },
-  {
-    id: "tambah-kelola",
-    label: "Tambah & Kelola",
-    eyebrow: "Stok",
-    description: "Cari barang, tambah stok, edit, dan nonaktifkan produk.",
-    ownerOnly: false,
-  },
-  {
-    id: "tambah-produk",
-    label: "Tambah Produk",
-    eyebrow: "Produk baru",
-    description: "Input produk manual dan import barang lewat Excel.",
-    ownerOnly: true,
-  },
-];
-
 const productStatusFilterLabels = {
   semua: "Semua status",
   aktif: "Aktif",
@@ -250,7 +226,6 @@ function ProductActionMenu({
 
 export default function ProductsPage() {
   const location = useLocation();
-  const navigate = useNavigate();
   const {
     loading,
     products,

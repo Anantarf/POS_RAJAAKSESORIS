@@ -42,10 +42,7 @@ export default function CashierModulePage() {
   return (
     <div className="min-h-full bg-[var(--brand-bg)]">
       <div className="mx-auto max-w-[1600px] px-4 py-4 sm:px-6 lg:px-8">
-        <div className="mb-3 flex items-center justify-between gap-3 rounded-lg border border-[var(--brand-border)] bg-white px-3 py-2 shadow-[var(--brand-shadow-sm)]">
-          <h1 className="min-w-0 truncate text-sm font-black text-slate-950">
-            Kasir {activeTabMeta.label}
-          </h1>
+        <div className="mb-3 flex justify-end">
           <div
             className="brand-segmented shrink-0"
             role="tablist"
