@@ -57,7 +57,13 @@ export function useEmployeePermissions(employeeId, enabled) {
     } catch (err) {
       if (requestVersion === requestVersionRef.current) {
         setLoaded(false);
-        setError(err.message || "Gagal memuat akses karyawan.");
+        const rawMsg = err.message || "";
+        const isTechnicalError = 
+          rawMsg.includes("column reference") || 
+          rawMsg.includes("ambiguous") || 
+          rawMsg.includes("syntax") ||
+          rawMsg.includes("relation");
+        setError(isTechnicalError ? "Gagal memuat hak akses karena kendala sistem." : (rawMsg || "Gagal memuat akses karyawan."));
       }
       return [];
     } finally {

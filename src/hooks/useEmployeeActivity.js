@@ -88,7 +88,13 @@ export function useEmployeeActivity(employeeId, enabled, options = {}) {
         return nextRows;
       } catch (err) {
         if (requestVersion === requestVersionRef.current) {
-          setError(err.message || "Gagal memuat aktivitas karyawan.");
+          const rawMsg = err.message || "";
+          const isTechnicalError = 
+            rawMsg.includes("column reference") || 
+            rawMsg.includes("ambiguous") || 
+            rawMsg.includes("syntax") ||
+            rawMsg.includes("relation");
+          setError(isTechnicalError ? "Gagal memuat riwayat aktivitas karena kendala sistem." : (rawMsg || "Gagal memuat aktivitas karyawan."));
         }
         return [];
       } finally {
