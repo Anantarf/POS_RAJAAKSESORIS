@@ -64,7 +64,8 @@ npm install
 ```bash
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-VITE_BACKEND_URL=http://localhost:3001
+# Opsional untuk local dev backend WhatsApp. Jangan set di Vercel.
+VITE_BACKEND_URL=http://localhost:3002
 
 # Backend-only, jangan pakai prefix VITE_
 FONNTE_TOKEN=YOUR_TOKEN_HERE

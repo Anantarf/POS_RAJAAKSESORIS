@@ -22,8 +22,11 @@ function SidebarLink({ item, collapsed, onNavigate }) {
   const location = useLocation();
   const itemPathname = getPathname(item.to);
   const currentPathname = normalizePathname(location.pathname);
-  const isParentActive = currentPathname === itemPathname;
   const hasChildren = Array.isArray(item.children) && item.children.length > 0;
+  const isChildActive = hasChildren
+    ? item.children.some((child) => currentPathname === getPathname(child.to))
+    : false;
+  const isParentActive = currentPathname === itemPathname || isChildActive;
 
   return (
     <div>

@@ -16,89 +16,87 @@ export { filterNavigationByFeatureFlags, filterNavigationByPermissions };
 
 export const ownerNavigationSections = [
   {
-    title: "Utama",
+    title: "Operasional",
     items: [
-      { to: "/dashboard", label: "Dashboard", icon: "dashboard" },
-      { to: "/karyawan", label: "Karyawan", icon: "users", feature: "employees" },
+      { to: "/dashboard", label: "Ringkasan", icon: "dashboard" },
+      { to: "/kasir", label: "POS", icon: "pos", feature: "cashier" },
       { to: "/shift", label: "Shift", icon: "history", feature: "shift" },
-      { to: "/keuangan", label: "Layanan Digital", icon: "wallet", feature: "digital" },
-      { to: "/layanan-produk", label: "Kelola Layanan", icon: "settings", feature: "serviceProducts" },
-      { to: "/kasir", label: "Kasir (POS)", icon: "pos", feature: "cashier" },
     ],
   },
   {
-    title: "Operasional",
+    title: "Kontrol Toko",
     items: [
-      { to: "/saldo", label: "Saldo", icon: "coins", feature: "wallet" },
       {
         to: "/stok-barang",
-        label: "Stok Barang",
+        label: "Stok",
         icon: "box",
         feature: "products",
         children: [
-          { to: "/stok-barang#kelola-kategori", label: "Kelola Kategori", feature: "products" },
           { to: "/stok-barang#tambah-kelola", label: "Tambah & Kelola", feature: "products" },
-          { to: "/stok-barang#tambah-produk", label: "Tambah Produk", feature: "products" },
+          { to: "/stock-opname", label: "Stock Opname", feature: "stockOpname" },
+          { to: "/retur-supplier", label: "Retur & Garansi", feature: "returns" },
+          { to: "/history-produk", label: "History Produk", feature: "products" },
         ],
       },
-      { to: "/stock-opname", label: "Stock Opname", icon: "clipboard", feature: "stockOpname" },
-      { to: "/retur-supplier", label: "Retur & Garansi", icon: "return", feature: "returns" },
-      { to: "/operasional", label: "Catat Operasional", icon: "receipt", feature: "cash" },
+      { to: "/keuangan", label: "Layanan Digital", icon: "wallet", feature: "digital" },
+      {
+        to: "/saldo",
+        label: "Keuangan",
+        icon: "coins",
+        feature: "wallet",
+        children: [
+          { to: "/operasional", label: "Catat Operasional", feature: "cash" },
+          { to: "/layanan-produk", label: "Kelola Layanan", feature: "serviceProducts" },
+        ],
+      },
+      { to: "/karyawan", label: "Karyawan", icon: "users", feature: "employees" },
     ],
   },
   {
-    title: "Riwayat & Laporan",
+    title: "Cek & Bantuan",
     items: [
-      { to: "/riwayat-transaksi", label: "Riwayat Transaksi", icon: "history", feature: "history" },
-      { to: "/history-produk", label: "History Produk", icon: "history", feature: "products" },
-      { to: "/audit-log", label: "Riwayat Aktivitas", icon: "clipboard", feature: "audit" },
-      { to: "/laporan-keuangan", label: "Laporan Keuangan", icon: "chart", feature: "reports" },
-      { to: "/laporan-penjualan", label: "Laporan Penjualan", icon: "trend", feature: "reports" },
-    ],
-  },
-  {
-    title: "Tools",
-    items: [
-      { to: "/kalkulator", label: "Kalkulator", icon: "calculator" },
+      {
+        to: "/laporan-keuangan",
+        label: "Laporan",
+        icon: "chart",
+        feature: "reports",
+        children: [
+          { to: "/laporan-penjualan", label: "Laporan Penjualan", feature: "reports" },
+          { to: "/riwayat-transaksi", label: "Riwayat Transaksi", feature: "history" },
+          { to: "/audit-log", label: "Riwayat Aktivitas", feature: "audit" },
+        ],
+      },
       { to: "/bantuan", label: "Bantuan", icon: "help" },
     ],
   },
 ];
 
-const cashierHiddenRoutes = new Set([
-  "/dashboard",
-  "/karyawan",
-  "/history-produk",
-  "/layanan-produk",
-  "/audit-log",
-  "/laporan-keuangan",
-  "/laporan-penjualan",
-  "/stock-opname",
-  "/retur-supplier",
-]);
-
-const cashierStockChildren = new Set(["/stok-barang#tambah-kelola"]);
-
-function buildCashierNavigationSections() {
-  return ownerNavigationSections
-    .map((section) => {
-      const items = section.items
-        .filter((item) => !cashierHiddenRoutes.has(item.to))
-        .map((item) => {
-          if (item.to !== "/stok-barang" || !Array.isArray(item.children)) return item;
-
-          return {
-            ...item,
-            children: item.children.filter((child) => cashierStockChildren.has(child.to)),
-          };
-        });
-
-      return { ...section, items };
-    })
-    .filter((section) => section.items.length > 0);
-}
-
-export const cashierNavigationSections = buildCashierNavigationSections();
+export const cashierNavigationSections = [
+  {
+    title: "Kerja Kasir",
+    items: [
+      { to: "/kasir", label: "POS", icon: "pos", feature: "cashier" },
+      { to: "/shift", label: "Shift", icon: "history", feature: "shift" },
+      { to: "/keuangan", label: "Layanan Digital", icon: "wallet", feature: "digital" },
+    ],
+  },
+  {
+    title: "Cek Data",
+    items: [
+      {
+        to: "/stok-barang",
+        label: "Stok",
+        icon: "box",
+        feature: "products",
+        children: [
+          { to: "/stok-barang#tambah-kelola", label: "Tambah & Kelola", feature: "products" },
+        ],
+      },
+      { to: "/riwayat-transaksi", label: "Riwayat", icon: "history", feature: "history" },
+      { to: "/bantuan", label: "Bantuan", icon: "help" },
+    ],
+  },
+];
 
 export const navigationSections = {
   pemilik: ownerNavigationSections,

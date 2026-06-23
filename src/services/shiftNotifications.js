@@ -1,12 +1,13 @@
 import { recordOperationalEventSoon } from "./observability";
 import { supabase } from "../lib/supabase";
 
-const DEFAULT_BACKEND_API_BASE_URL = import.meta.env.PROD ? "" : "http://localhost:3002";
-const BACKEND_API_BASE_URL = String(
-  import.meta.env.VITE_BACKEND_URL ||
-    import.meta.env.VITE_API_BASE_URL ||
-    DEFAULT_BACKEND_API_BASE_URL
-).replace(/\/+$/, "");
+const BACKEND_API_BASE_URL = import.meta.env.PROD
+  ? ""
+  : String(
+      import.meta.env.VITE_BACKEND_URL ||
+        import.meta.env.VITE_API_BASE_URL ||
+        "http://localhost:3002"
+    ).replace(/\/+$/, "");
 
 function isNetworkError(error) {
   const message = String(error?.message || error || "").toLowerCase();
