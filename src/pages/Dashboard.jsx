@@ -210,7 +210,7 @@ export default function Dashboard() {
       : null,
     criticalWallets.length
       ? {
-          title: "Saldo kritis ekstrem",
+          title: "Saldo perlu dicek",
           value: criticalWallets
             .slice(0, 2)
             .map((wallet) => wallet.name || wallet.id)
@@ -370,7 +370,7 @@ export default function Dashboard() {
         <div className="flex flex-col gap-1 border-b border-slate-200 pb-3 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-sm font-bold text-slate-950">Perlu Dicek</p>
-            <p className="text-xs text-slate-500">Prioritas owner hari ini.</p>
+            <p className="text-xs text-slate-500">Yang perlu dicek hari ini.</p>
           </div>
           <span className={attentionItems.length ? "brand-badge-warning" : "brand-badge-success"}>
             {attentionItems.length ? `${attentionItems.length} item` : "Aman"}
@@ -503,9 +503,9 @@ export default function Dashboard() {
       <div className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
         <Panel className="p-4">
           <div className="mb-4">
-            <p className="brand-section-label">Kanal penjualan</p>
+            <p className="brand-section-label">Jenis penjualan</p>
             <h3 className="mt-1 text-lg font-bold tracking-tight text-slate-950">
-              Kontribusi per kanal
+              Ringkasan jenis penjualan
             </h3>
           </div>
 

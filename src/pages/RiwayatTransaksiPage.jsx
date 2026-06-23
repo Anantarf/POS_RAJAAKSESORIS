@@ -47,7 +47,7 @@ const PERIOD_OPTIONS = [
 ];
 
 const SOURCE_OPTIONS = [
-  { value: "semua", label: "Semua kanal" },
+  { value: "semua", label: "Semua jenis" },
   { value: "aksesoris", label: "Kasir Aksesoris" },
   { value: "digital", label: "Layanan Digital" },
   { value: "logistik", label: "Logistik" },
@@ -788,7 +788,7 @@ export default function RiwayatTransaksiPage() {
           accent="danger"
         />
         <MetricCard
-          label="Laba dampak"
+          label="Laba"
           value={formatRupiah(summary.profit)}
           helper="Estimasi setelah modal dan biaya tercatat."
         />
@@ -953,10 +953,10 @@ export default function RiwayatTransaksiPage() {
               <thead>
                 <tr>
                   <th>Waktu</th>
-                  <th>Kanal</th>
+                  <th>Jenis</th>
                   <th>Ringkasan</th>
                   <th className="text-right">Nominal</th>
-                  <th className="text-right">Dampak laba</th>
+                  <th className="text-right">Laba transaksi</th>
                   <th className="brand-table-action-cell text-right">Aksi</th>
                 </tr>
               </thead>
@@ -1106,7 +1106,7 @@ export default function RiwayatTransaksiPage() {
                   value={formatRupiah(selectedRow.secondaryAmount)}
                 />
                 <DetailMetric
-                  label="Dampak laba"
+                  label="Laba transaksi"
                   value={formatSignedCurrency(selectedRow.profitImpact)}
                   accent={
                     selectedRow.profitImpact < 0
@@ -1184,7 +1184,7 @@ export default function RiwayatTransaksiPage() {
                 <thead>
                   <tr>
                     <th>Tanggal batal</th>
-                    <th>Kanal</th>
+                    <th>Jenis</th>
                     <th>Transaksi</th>
                     <th className="text-right">Nominal</th>
                     <th>Diproses oleh</th>
