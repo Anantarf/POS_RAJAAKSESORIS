@@ -229,13 +229,17 @@ function AuthProvider({ children }) {
 
   // Verify token on mount
   useEffect(() => {
+    let alive = true;
+
     const verify = async () => {
       const token = readCachedToken();
       if (!token) {
+        if (!alive) return;
         setState(AUTH_STATUS.SIGNED_OUT);
         return;
       }
 
+      if (!alive) return;
       commitToken(token);
       setState(AUTH_STATUS.VERIFYING_PROFILE);
 
@@ -253,6 +257,7 @@ function AuthProvider({ children }) {
         }
 
         const data = await response.json();
+        if (!alive) return;
         const nextUser = {
           id: data.user.id,
           name: data.user.username,
@@ -264,12 +269,16 @@ function AuthProvider({ children }) {
         commitProfileError("");
         setState(AUTH_STATUS.AUTHENTICATED);
       } catch (error) {
+        if (!alive) return;
         console.warn("Verifikasi sesi gagal:", error);
         goSignedOut();
       }
     };
 
     verify();
+    return () => {
+      alive = false;
+    };
   }, [setState, commitUser, commitToken, commitProfileError, goSignedOut]);
 
   const login = useCallback(

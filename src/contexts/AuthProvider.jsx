@@ -216,8 +216,17 @@ function AuthProvider({ children }) {
   const sessionRef = useRef(initialSnapshotRef.current.session);
   const authStateRef = useRef(initialSnapshotRef.current.authState);
   const userRef = useRef(initialSnapshotRef.current.user);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   const setState = useCallback((nextState) => {
+    if (!mountedRef.current) return;
     const previousState = authStateRef.current;
     authStateRef.current = nextState;
     updateAuthSnapshot({ authState: nextState });
@@ -228,6 +237,7 @@ function AuthProvider({ children }) {
   }, []);
 
   const commitUser = useCallback((nextUser) => {
+    if (!mountedRef.current) return;
     userRef.current = nextUser;
     updateAuthSnapshot({ user: nextUser });
     writeCachedUser(nextUser);
@@ -235,6 +245,7 @@ function AuthProvider({ children }) {
   }, []);
 
   const commitProfileError = useCallback((nextError) => {
+    if (!mountedRef.current) return;
     const safeError = nextError || "";
     updateAuthSnapshot({ profileError: safeError });
     setProfileErrorState(safeError);

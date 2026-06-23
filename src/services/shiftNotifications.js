@@ -20,9 +20,20 @@ function isNetworkError(error) {
 }
 
 export async function postShiftWhatsappNotification(type, payload) {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  let session;
+  try {
+    const result = await supabase.auth.getSession();
+    session = result.data?.session;
+  } catch (error) {
+    recordOperationalEventSoon({
+      eventType: "whatsapp_session_lookup_failed",
+      severity: "warning",
+      source: "whatsapp",
+      sourceId: payload?.shiftId || null,
+      details: { type, message: error?.message || String(error) },
+    });
+    throw new Error("Sesi login tidak bisa diverifikasi untuk mengirim notifikasi WhatsApp.");
+  }
   const accessToken = session?.access_token;
 
   if (!accessToken) {

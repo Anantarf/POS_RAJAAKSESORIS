@@ -723,12 +723,15 @@ export function DataProvider({
   const [coreLoading, setCoreLoading] = useState(false);
   const [coreError, setCoreError] = useState("");
   const loading = coreLoading;
+  const mountedRef = useRef(true);
   const loadVersionRef = useRef(0);
   const hasCompletedInitialLoadRef = useRef(false);
   const maintenanceCompletedRef = useRef(false);
   const maintenancePromiseRef = useRef(null);
 
   const shiftRefreshVersionRef = useRef(0);
+  const stockOpnameRefreshVersionRef = useRef(0);
+  const returnRefreshVersionRef = useRef(0);
   const productRefreshVersionRef = useRef(0);
   const accessoryRefreshVersionRef = useRef(0);
   const digitalRefreshVersionRef = useRef(0);
@@ -737,6 +740,18 @@ export function DataProvider({
   const stockRefreshVersionRef = useRef(0);
   const walletRefreshVersionRef = useRef(0);
   const serviceProductRefreshVersionRef = useRef(0);
+  const cashMutationLocksRef = useRef(new Set());
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      loadVersionRef.current += 1;
+      shiftRefreshVersionRef.current += 1;
+      stockOpnameRefreshVersionRef.current += 1;
+      returnRefreshVersionRef.current += 1;
+    };
+  }, []);
 
   const setSelectedCashierId = useCallback((nextCashierId) => {
     const safeCashierId = nextCashierId || "";
@@ -792,6 +807,8 @@ export function DataProvider({
     if (invalidateRequests) {
       loadVersionRef.current += 1;
       shiftRefreshVersionRef.current += 1;
+      stockOpnameRefreshVersionRef.current += 1;
+      returnRefreshVersionRef.current += 1;
       productRefreshVersionRef.current += 1;
       accessoryRefreshVersionRef.current += 1;
       digitalRefreshVersionRef.current += 1;
@@ -876,6 +893,7 @@ export function DataProvider({
         .is("archived_at", null)
         .order("nama", { ascending: true });
     }
+    if (requestVersion !== shiftRefreshVersionRef.current || !mountedRef.current) return;
 
     let shiftsRes = await supabase
       .from("shifts")
@@ -899,7 +917,7 @@ export function DataProvider({
         .limit(DATA_LOAD_LIMITS.shifts);
     }
 
-    if (requestVersion !== shiftRefreshVersionRef.current) return;
+    if (requestVersion !== shiftRefreshVersionRef.current || !mountedRef.current) return;
 
     setStaffUsers(getOptionalRows(usersRes).map(normalizeStaffUser));
     setShiftRecords(getOptionalRows(shiftsRes).map(normalizeShiftRecord));
@@ -1251,6 +1269,8 @@ export function DataProvider({
   }, [user]);
 
   const refreshStockOpnameData = useCallback(async () => {
+    const requestVersion = ++stockOpnameRefreshVersionRef.current;
+
     if (!user || user.role !== "pemilik") {
       setStockOpnameSessions([]);
       return [];
@@ -1261,11 +1281,13 @@ export function DataProvider({
       .select(STOCK_OPNAME_SESSION_SELECT)
       .order("created_at", { ascending: false })
       .limit(DATA_LOAD_LIMITS.stockOpnameSessions);
+    if (requestVersion !== stockOpnameRefreshVersionRef.current || !mountedRef.current) return [];
 
     const stockOpnameItemRes = await supabase
       .from("stock_opname_items")
       .select(STOCK_OPNAME_ITEM_SELECT)
       .limit(DATA_LOAD_LIMITS.stockOpnameItems);
+    if (requestVersion !== stockOpnameRefreshVersionRef.current || !mountedRef.current) return [];
 
     const stockOpnameItemRows = getOptionalRows(stockOpnameItemRes).map(normalizeStockOpnameItem);
     const stockOpnameRows = getOptionalRows(stockOpnameSessionRes).map((session) =>
@@ -1279,6 +1301,8 @@ export function DataProvider({
   }, [user]);
 
   const refreshReturnData = useCallback(async () => {
+    const requestVersion = ++returnRefreshVersionRef.current;
+
     if (!user || user.role !== "pemilik") {
       setSupplierReturns([]);
       setCustomerReturns([]);
@@ -1290,22 +1314,34 @@ export function DataProvider({
       .select(SUPPLIER_RETURN_SELECT)
       .order("created_at", { ascending: false })
       .limit(DATA_LOAD_LIMITS.supplierReturns);
+    if (requestVersion !== returnRefreshVersionRef.current || !mountedRef.current) {
+      return { supplierReturns: [], customerReturns: [] };
+    }
 
     const supplierReturnItemRes = await supabase
       .from("supplier_return_items")
       .select(SUPPLIER_RETURN_ITEM_SELECT)
       .limit(DATA_LOAD_LIMITS.supplierReturnItems);
+    if (requestVersion !== returnRefreshVersionRef.current || !mountedRef.current) {
+      return { supplierReturns: [], customerReturns: [] };
+    }
 
     const customerReturnRes = await supabase
       .from("customer_returns")
       .select(CUSTOMER_RETURN_SELECT)
       .order("created_at", { ascending: false })
       .limit(DATA_LOAD_LIMITS.customerReturns);
+    if (requestVersion !== returnRefreshVersionRef.current || !mountedRef.current) {
+      return { supplierReturns: [], customerReturns: [] };
+    }
 
     const customerReturnItemRes = await supabase
       .from("customer_return_items")
       .select(CUSTOMER_RETURN_ITEM_SELECT)
       .limit(DATA_LOAD_LIMITS.customerReturnItems);
+    if (requestVersion !== returnRefreshVersionRef.current || !mountedRef.current) {
+      return { supplierReturns: [], customerReturns: [] };
+    }
 
     const supplierReturnItemRows = getOptionalRows(supplierReturnItemRes);
     const supplierReturnRows = getOptionalRows(supplierReturnRes).map((row) =>
@@ -1438,6 +1474,7 @@ export function DataProvider({
 
   const loadData = useCallback(async () => {
     const requestVersion = ++loadVersionRef.current;
+    if (!mountedRef.current) return;
     setCoreLoading(true);
     setCoreError("");
 
@@ -1450,6 +1487,7 @@ export function DataProvider({
 
       const shiftLoaded = await runDataStage("core_shift", refreshShiftData, { severity: "critical" });
       const settingsLoaded = await runDataStage("core_settings", refreshAppSettings, { severity: "warning" });
+      if (requestVersion !== loadVersionRef.current || !mountedRef.current) return;
       if (!shiftLoaded) {
         setCoreError("Data shift belum berhasil dimuat.");
       } else if (!settingsLoaded) {
@@ -1457,6 +1495,7 @@ export function DataProvider({
       }
       await loadRouteData(activeDomains);
     } catch (error) {
+      if (requestVersion !== loadVersionRef.current || !mountedRef.current) return;
       console.error("Data load failed:", error);
       setCoreError(error?.message || "Data inti belum berhasil dimuat.");
       recordOperationalEventSoon({
@@ -1469,7 +1508,7 @@ export function DataProvider({
         },
       });
     } finally {
-      if (requestVersion === loadVersionRef.current) {
+      if (requestVersion === loadVersionRef.current && mountedRef.current) {
         setCoreLoading(false);
         hasCompletedInitialLoadRef.current = true;
       }
@@ -1532,9 +1571,11 @@ export function DataProvider({
       setProductActivityLogs([]);
     }
     if (!hasDataDomain(activeDomains, DATA_DOMAINS.STOCK_OPNAME)) {
+      stockOpnameRefreshVersionRef.current += 1;
       setStockOpnameSessions([]);
     }
     if (!hasDataDomain(activeDomains, DATA_DOMAINS.RETURNS)) {
+      returnRefreshVersionRef.current += 1;
       setSupplierReturns([]);
       setCustomerReturns([]);
     }
@@ -2290,7 +2331,7 @@ export function DataProvider({
       }
 
       if (!response.ok || result.ok === false) {
-        throw new Error(result.error || "Gagal membuat karyawan.");
+        throw new Error(result.error || `Gagal membuat karyawan (${response.status}).`);
       }
 
       await Promise.all([refreshShiftData(), refreshEmployeePayrollData()]);
@@ -2981,12 +3022,21 @@ export function DataProvider({
       if (user?.role !== "pemilik") {
         throw new Error("Hanya pemilik toko yang dapat mengubah catatan kas.");
       }
+      const lockKey = `update:${id}`;
+      if (cashMutationLocksRef.current.has(lockKey)) {
+        throw new Error("Perubahan kas ini sedang diproses.");
+      }
+      cashMutationLocksRef.current.add(lockKey);
 
-      const nextEntry = normalizeCashEntry({ id, ...payload });
+      try {
+        const nextEntry = normalizeCashEntry({ id, ...payload });
 
-      const { error } = await supabase.from("kas").update(nextEntry).eq("id", id);
-      if (error) throw error;
-      await loadData();
+        const { error } = await supabase.from("kas").update(nextEntry).eq("id", id);
+        if (error) throw error;
+        await loadData();
+      } finally {
+        cashMutationLocksRef.current.delete(lockKey);
+      }
     },
     [loadData, user?.role]
   );
@@ -2996,10 +3046,19 @@ export function DataProvider({
       if (user?.role !== "pemilik") {
         throw new Error("Hanya pemilik toko yang dapat menghapus catatan kas.");
       }
+      const lockKey = `delete:${id}`;
+      if (cashMutationLocksRef.current.has(lockKey)) {
+        throw new Error("Penghapusan kas ini sedang diproses.");
+      }
+      cashMutationLocksRef.current.add(lockKey);
 
-      const { error } = await supabase.from("kas").delete().eq("id", id);
-      if (error) throw error;
-      await loadData();
+      try {
+        const { error } = await supabase.from("kas").delete().eq("id", id);
+        if (error) throw error;
+        await loadData();
+      } finally {
+        cashMutationLocksRef.current.delete(lockKey);
+      }
     },
     [loadData, user?.role]
   );
@@ -3136,6 +3195,15 @@ export function DataProvider({
         updated_at: createdAt,
       }));
 
+      const rpcResult = await callOptionalAtomicRpc("create_stock_opname_session_atomic", {
+        p_session: sessionPayload,
+        p_items: itemPayload,
+      });
+      if (!rpcResult.missing) {
+        await loadData();
+        return normalizeStockOpnameSession(rpcResult.data || sessionPayload, itemPayload);
+      }
+
       const sessionRes = await supabase
         .from("stock_opname_sessions")
         .insert(sessionPayload)
@@ -3148,7 +3216,13 @@ export function DataProvider({
 
       const itemRes = await supabase.from("stock_opname_items").insert(itemPayload);
       if (itemRes.error) {
-        await supabase.from("stock_opname_sessions").delete().eq("id", sessionId);
+        const rollbackRes = await supabase.from("stock_opname_sessions").delete().eq("id", sessionId);
+        if (rollbackRes.error) {
+          throw createStockOpnameSchemaError(
+            rollbackRes.error,
+            "Gagal menyiapkan item Stock Opname dan rollback sesi juga gagal. Periksa sesi draft sebelum lanjut."
+          );
+        }
         throw createStockOpnameSchemaError(itemRes.error, "Gagal menyiapkan item Stock Opname.");
       }
 
@@ -3546,55 +3620,88 @@ export function DataProvider({
         stok: entry.product.stok,
         action: entry.action,
       }));
+      const toProductUpsertRow = (product) => {
+        const row = {
+          kode_produk: product.kode_produk,
+          nama: product.nama,
+          kategori: product.kategori,
+          stok: product.stok,
+          stok_minimum: product.stok_minimum,
+          harga_beli: product.harga_beli,
+          harga_jual: product.harga_jual,
+          satuan: product.satuan,
+          status: product.status,
+          deleted_at: product.deleted_at,
+          deleted_by: product.deleted_by,
+          created_at: product.created_at,
+        };
 
-      let importedByRpc = false;
-      for (const { product } of mergedProducts) {
-        const rpcResult = await callOptionalAtomicRpc("save_product_atomic", {
-          p_product: product,
-        });
-        if (rpcResult.missing) {
-          importedByRpc = false;
-          break;
+        if (product.id) {
+          row.id = product.id;
         }
-        importedByRpc = true;
-      }
 
-      if (!importedByRpc) {
-        for (let index = 0; index < mergedProducts.length; index += 200) {
-          const chunk = mergedProducts.slice(index, index + 200).map(({ product }) => {
-            const row = {
-              kode_produk: product.kode_produk,
-              nama: product.nama,
-              kategori: product.kategori,
-              stok: product.stok,
-              stok_minimum: product.stok_minimum,
-              harga_beli: product.harga_beli,
-              harga_jual: product.harga_jual,
-              satuan: product.satuan,
-              status: product.status,
-              deleted_at: product.deleted_at,
-              deleted_by: product.deleted_by,
-              created_at: product.created_at,
-            };
+        return row;
+      };
+      const rollbackImport = async () => {
+        const createdCodes = mergedProducts
+          .filter((entry) => entry.action === "created")
+          .map((entry) => entry.product.kode_produk);
+        const updatedRows = mergedProducts
+          .filter((entry) => entry.action === "updated")
+          .map((entry) => existingByCode.get(entry.product.kode_produk))
+          .filter(Boolean)
+          .map(toProductUpsertRow);
 
-            if (product.id) {
-              row.id = product.id;
-            }
-
-            return row;
-          });
-
-          const { error } = await supabase.from("produk").upsert(chunk);
-          if (
-            error?.code === "23505" &&
-            String(error?.message || "").includes("produk_kode_produk_unique")
-          ) {
-            throw new Error(
-              "Salah satu kode produk di file import sudah dipakai oleh produk aktif, nonaktif, atau yang ada di History Produk."
-            );
-          }
+        if (createdCodes.length) {
+          const { error } = await supabase.from("produk").delete().in("kode_produk", createdCodes);
           if (error) throw error;
         }
+        if (updatedRows.length) {
+          const { error } = await supabase.from("produk").upsert(updatedRows);
+          if (error) throw error;
+        }
+      };
+
+      try {
+        let importedByRpc = false;
+        for (const { product } of mergedProducts) {
+          const rpcResult = await callOptionalAtomicRpc("save_product_atomic", {
+            p_product: product,
+          });
+          if (rpcResult.missing) {
+            importedByRpc = false;
+            break;
+          }
+          importedByRpc = true;
+        }
+
+        if (!importedByRpc) {
+          for (let index = 0; index < mergedProducts.length; index += 200) {
+            const chunk = mergedProducts
+              .slice(index, index + 200)
+              .map(({ product }) => toProductUpsertRow(product));
+
+            const { error } = await supabase.from("produk").upsert(chunk);
+            if (
+              error?.code === "23505" &&
+              String(error?.message || "").includes("produk_kode_produk_unique")
+            ) {
+              throw new Error(
+                "Salah satu kode produk di file import sudah dipakai oleh produk aktif, nonaktif, atau yang ada di History Produk."
+              );
+            }
+            if (error) throw error;
+          }
+        }
+      } catch (error) {
+        try {
+          await rollbackImport();
+        } catch (rollbackError) {
+          throw new Error(
+            `Import gagal dan rollback otomatis juga gagal: ${rollbackError.message || rollbackError}`
+          );
+        }
+        throw error;
       }
       await loadData();
 
@@ -4136,9 +4243,9 @@ export function DataProvider({
       });
 
       if (rpcResult.missing) {
-        await insertProductActivityLog(activityLog);
         const { error } = await supabase.from("produk").delete().eq("id", id);
         if (error) throw error;
+        await insertProductActivityLog(activityLog);
       }
       await loadData();
     },
