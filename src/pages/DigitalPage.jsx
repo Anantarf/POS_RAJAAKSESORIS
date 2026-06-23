@@ -2102,52 +2102,6 @@ export default function DigitalPage() {
     </Panel>
   );
 
-  useKeyboardShortcuts(
-    [
-      {
-        key: "F2",
-        allowInInput: true,
-        action: () => {
-          setStep("product");
-          window.requestAnimationFrame(() => searchInputRef.current?.focus());
-        },
-      },
-      {
-        key: "F4",
-        allowInInput: true,
-        action: () => {
-          if (isDirectInputActiveCategory) {
-            window.requestAnimationFrame(() => firstCheckoutInputRef.current?.focus());
-            return;
-          }
-          handleContinue();
-        },
-      },
-      {
-        key: "F8",
-        allowInInput: true,
-        action: () => {
-          setPaymentGroup("qris");
-          if (cart.length) {
-            setStep("product");
-            window.requestAnimationFrame(() => firstCheckoutInputRef.current?.focus());
-          }
-        },
-      },
-      {
-        key: "Escape",
-        allowInInput: true,
-        action: () => {
-          resetTransaction();
-          resetDirectInputForm();
-          setSearchInput("");
-          setSearch("");
-        },
-      },
-    ],
-    !processing
-  );
-
   const renderCategorySelector = (title = "Pilih Produk Layanan") => (
     <Panel variant="strong" className="p-5">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -2242,12 +2196,7 @@ export default function DigitalPage() {
           </h1>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <div className="brand-shortcut-strip">
-            <span>F2 Cari</span>
-            <span>F4 Checkout</span>
-            <span>F8 QRIS</span>
-            <span>Esc Reset</span>
-          </div>
+
           {canManageServices ? (
             <Link to="/layanan-produk" className="brand-button-secondary gap-2">
               <AppIcon name="settings" className="h-4 w-4" />
