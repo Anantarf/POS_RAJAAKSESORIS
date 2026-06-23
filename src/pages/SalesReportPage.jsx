@@ -429,7 +429,7 @@ export default function SalesReportPage() {
     <div className="space-y-6">
       <PageHeader
         title="Laporan Penjualan"
-        description="Rekap penjualan produk, layanan digital, transfer, e-wallet, dan jasa."
+        description="Lihat omzet, aksesoris terlaris, dan performa penjualan per periode."
         icon="trend"
         actions={
           <>

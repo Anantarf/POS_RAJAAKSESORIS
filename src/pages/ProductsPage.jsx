@@ -625,7 +625,7 @@ export default function ProductsPage() {
       <div className="space-y-6">
         <PageHeader
           title="Stok belum berhasil dimuat"
-          description="Halaman tetap hidup. Coba ulangi pemuatan data stok tanpa memuat ulang seluruh aplikasi."
+          description="Stok belum berhasil dimuat. Tekan Muat Ulang untuk coba lagi."
           icon="box"
         />
         <Panel className="p-6">

@@ -1853,7 +1853,7 @@ export default function DigitalPage() {
               {formatRupiah(cartTotal)}
             </p>
             <p className="mt-1 text-xs font-semibold text-slate-500">
-              {cartItemCount ? `${cartItemCount} item digital` : "Pilih produk dulu"}
+              {cartItemCount ? `${cartItemCount} layanan dipilih` : "Pilih layanan dulu"}
             </p>
           </div>
           <span className={checkoutReady ? "brand-badge-success" : "brand-badge-neutral"}>

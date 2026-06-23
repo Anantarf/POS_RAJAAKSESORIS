@@ -442,7 +442,7 @@ export default function FinanceReportPage() {
     <div className="space-y-6">
       <PageHeader
         title="Laporan keuangan"
-        description="Omzet, modal, laba, dan pengeluaran toko untuk pengecekan pemilik."
+        description="Pantau laba, modal, dan pengeluaran toko per periode."
         icon="chart"
         actions={
           <>
@@ -625,7 +625,7 @@ export default function FinanceReportPage() {
           Ringkasan periode
         </p>
         <p className="mt-3 text-sm leading-7 text-slate-700">
-          Data dari semua transaksi dan kas toko.
+          Data dari semua transaksi dan saldo toko.
           Laporan ini cocok untuk rekap harian pemilik toko sebelum setor tunai atau tutup buku.
         </p>
         <p className="mt-3 text-xs text-slate-500">

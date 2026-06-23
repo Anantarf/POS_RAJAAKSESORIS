@@ -208,7 +208,7 @@ export default function StockOpnamePage() {
       <div className="space-y-6 pb-24">
         <PageHeader
           title="Stock Opname"
-          description="Cocokkan stok fisik dengan sistem."
+          description="Hitung stok fisik dan sinkronkan dengan data sistem."
           icon="clipboard"
           actions={
             <button type="button" onClick={backToList} className="brand-button-secondary">

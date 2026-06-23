@@ -225,7 +225,7 @@ export default function EmployeeManagementPage() {
     <div className="brand-page-layout">
       <PageHeader
         title="Karyawan"
-        description="Pantau kasir, status akun, akses kerja, dan aktivitas terakhir."
+        description="Tambah atau nonaktifkan akun kasir dan atur akses mereka."
         icon="users"
         actions={
           <button type="button" onClick={openAdd} className="brand-button-primary">

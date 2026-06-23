@@ -403,7 +403,7 @@ export default function ServiceProductsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Kelola Layanan"
-        description="Atur daftar layanan yang tersedia untuk transaksi kasir."
+        description="Tambah atau ubah layanan digital yang bisa dipilih kasir saat transaksi."
         icon="wallet"
         actions={
           canManage ? (

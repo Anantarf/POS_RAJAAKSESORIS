@@ -402,7 +402,7 @@ export default function ShiftPage() {
     <div className="space-y-6">
       <PageHeader
         title="Buka dan tutup shift"
-        description="Buka shift saat mulai kerja, tutup setelah kas dihitung."
+        description="Buka shift saat mulai kerja, tutup setelah saldo dihitung."
         icon="receipt"
       />
 

@@ -261,7 +261,7 @@ export default function WalletPage() {
     <div className="space-y-6">
       <PageHeader
         title="Saldo Toko"
-        description="Saldo dan pergerakan kas toko."
+        description="Lihat saldo per dompet dan catat pemasukan atau pengeluaran."
         icon="coins"
         actions={
           <>

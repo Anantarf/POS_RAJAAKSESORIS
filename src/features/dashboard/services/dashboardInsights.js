@@ -140,7 +140,7 @@ export function buildOperationalInsights({
     insights.push({
       tone: "warning",
       title: "Saldo digital berisiko",
-      detail: `${criticalWallets.length} wallet layanan digital kosong atau minus. Top up sebelum transaksi ramai.`,
+      detail: `${criticalWallets.length} saldo layanan digital kosong atau minus. Top up sebelum transaksi ramai.`,
     });
   }
 

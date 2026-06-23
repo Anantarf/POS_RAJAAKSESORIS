@@ -125,7 +125,7 @@ export default function ProductHistoryPage() {
     <div className="space-y-6">
       <PageHeader
         title="Riwayat Produk"
-        description="Produk yang dihapus disimpan sementara selama 30 hari sebelum dibersihkan permanen."
+        description="Aksesoris yang dihapus masih bisa dipulihkan selama 30 hari."
         icon="history"
         actions={
           <button

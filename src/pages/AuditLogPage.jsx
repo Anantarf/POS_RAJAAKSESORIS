@@ -83,7 +83,7 @@ export default function AuditLogPage() {
     <div className="space-y-6">
       <PageHeader
         title="Riwayat Aktivitas"
-        description="Riwayat aksi penting: reset, approval, stok, dan retur."
+        description="Lihat riwayat aksi penting seperti reset PIN, persetujuan, dan perubahan stok."
         icon="clipboard"
         actions={
           <button

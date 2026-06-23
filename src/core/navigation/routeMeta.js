@@ -7,11 +7,11 @@ export const routeMeta = {
   },
   "/kasir": {
     title: "Kasir",
-    description: "Satu modul transaksi untuk item fisik dan digital dengan checkout rapi.",
+    description: "Transaksi aksesoris dan layanan digital dengan checkout cepat.",
   },
   "/inventory": {
     title: "Inventory",
-    description: "Satu modul untuk item fisik, item digital, stok, retur, opname, saldo toko, dan arsip produk.",
+    description: "Kelola aksesoris, layanan digital, stok, retur, dan saldo toko.",
   },
   "/riwayat-transaksi": {
     title: "Riwayat Transaksi",
@@ -27,7 +27,7 @@ export const routeMeta = {
   },
   "/saldo": {
     title: "Saldo Toko",
-    description: "Pantau kas dan saldo digital toko.",
+    description: "Pantau saldo per dompet dan catat pemasukan atau pengeluaran.",
   },
   "/retur-supplier": {
     title: "Retur",

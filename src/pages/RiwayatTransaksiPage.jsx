@@ -740,7 +740,7 @@ export default function RiwayatTransaksiPage() {
     <div className="space-y-6">
       <PageHeader
         title="Riwayat transaksi"
-        description="Semua transaksi dalam satu daftar."
+        description="Cari, cetak, atau batalkan transaksi yang sudah masuk."
         icon="history"
         actions={
           <>
