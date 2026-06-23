@@ -103,7 +103,7 @@ export default function AppShell() {
                   <NavLink
                     key={item.to}
                     to={item.to}
-                    className={`whitespace-nowrap rounded-md px-4 py-2 text-sm font-semibold transition ${
+                    className={`inline-flex min-h-[44px] items-center whitespace-nowrap rounded-md px-4 text-sm font-semibold transition ${
                       isActive
                         ? "bg-[var(--brand-gold)]/14 text-slate-950"
                         : "border border-slate-200/80 bg-slate-50 text-slate-600"
@@ -117,7 +117,7 @@ export default function AppShell() {
 
             {mobileSecondaryItems.length ? (
               <details className="relative shrink-0">
-                <summary className="list-none rounded-md border border-slate-200/80 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm">
+                <summary className="inline-flex min-h-[44px] list-none items-center rounded-md border border-slate-200/80 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm">
                   Menu
                 </summary>
                 <div className="brand-scroll-region brand-scrollbar absolute right-0 z-40 mt-2 max-h-[60vh] w-64 overflow-y-auto rounded-lg border border-slate-200 bg-white p-2 shadow-xl">
@@ -131,7 +131,7 @@ export default function AppShell() {
                       <NavLink
                         key={item.to}
                         to={item.to}
-                        className={`block rounded-md px-3 py-2 text-sm font-semibold ${
+                        className={`flex min-h-[44px] items-center rounded-md px-3 text-sm font-semibold ${
                           isActive
                             ? "bg-[var(--brand-gold)]/14 text-slate-950"
                             : "text-slate-600 hover:bg-slate-50 hover:text-slate-950"

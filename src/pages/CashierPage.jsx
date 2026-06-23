@@ -846,8 +846,8 @@ export default function CashierPage() {
     return (
       <div className="space-y-6">
         <Panel className="p-6">
-          <p className="brand-kicker">Kasir POS</p>
-          <h1 className="mt-2 font-display text-2xl font-bold text-slate-950">
+          <p className="brand-section-label">Kasir POS</p>
+          <h1 className="mt-2 text-xl font-bold text-slate-950">
             Produk kasir belum berhasil dimuat
           </h1>
           <p className="mt-3 text-sm leading-6 text-red-700">{productHydrationError}</p>
@@ -894,11 +894,11 @@ export default function CashierPage() {
   const selectionCartRail = (
     <Panel
       variant="strong"
-      className="brand-cart-rail flex flex-col p-4 md:sticky md:top-[184px] lg:top-24"
+      className="brand-cart-rail flex flex-col p-4 md:sticky md:top-[var(--brand-header-h)] lg:top-24"
     >
       <div className="flex items-center justify-between gap-3 border-b border-slate-200 pb-3">
         <div>
-          <p className="brand-kicker">Keranjang</p>
+          <p className="brand-section-label">Keranjang</p>
           <p className="mt-1 text-sm font-bold text-slate-950">{cartItemCount} item dipilih</p>
         </div>
         <span className="brand-badge-neutral">{formatRupiah(cartTotal)}</span>
@@ -961,7 +961,7 @@ export default function CashierPage() {
       <div className="mt-3 border-t border-slate-200 pt-3">
         <div className="flex items-end justify-between gap-3">
           <span className="text-sm font-semibold text-slate-500">Total</span>
-          <span className="text-xl font-black text-slate-950">{formatRupiah(cartTotal)}</span>
+          <span className="brand-metric-value">{formatRupiah(cartTotal)}</span>
         </div>
         <button
           type="button"
@@ -977,15 +977,6 @@ export default function CashierPage() {
 
   return (
     <div className="space-y-4">
-      <div className="brand-ops-header">
-        <div className="min-w-0">
-          <p className="brand-kicker text-[var(--brand-gold-strong)]">Kasir POS</p>
-          <h1 className="mt-1 truncate font-display text-2xl font-black tracking-tight text-slate-950">
-            Transaksi Aksesoris
-          </h1>
-        </div>
-      </div>
-
       {renderShiftBanner}
 
       {step === "product" ? (
@@ -1064,7 +1055,7 @@ export default function CashierPage() {
                       }`}
                     >
                       {inCart ? (
-                        <span className="absolute right-3 top-3 rounded-md bg-[var(--brand-gold)] px-2.5 py-1 text-[11px] font-black text-slate-950">
+                        <span className="absolute right-3 top-3 rounded-md bg-[var(--brand-gold)] px-2.5 py-1 text-[11px] font-bold text-slate-950">
                           x{inCart.qty}
                         </span>
                       ) : null}
@@ -1085,7 +1076,7 @@ export default function CashierPage() {
                       </div>
 
                       <div className="mt-4 space-y-3">
-                        <p className="text-lg font-black tracking-tight text-slate-950">
+                        <p className="text-base font-bold tracking-tight text-slate-950">
                           {formatRupiah(product.harga_jual)}
                         </p>
                         <div className="brand-product-card-actions">
@@ -1118,7 +1109,7 @@ export default function CashierPage() {
           <section className="brand-command-strip" aria-label="Cashier command strip">
             <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <p className="brand-kicker shrink-0">Bayar:</p>
+                <p className="brand-section-label shrink-0">Bayar:</p>
                 <div className="brand-segmented">
                   {[
                     { value: "cash", label: "CASH" },
@@ -1186,8 +1177,8 @@ export default function CashierPage() {
           <Panel className="p-6">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="brand-kicker">Checkout</p>
-                <h2 className="mt-2 font-display text-2xl font-bold tracking-tight text-slate-950">
+                <p className="brand-section-label">Checkout</p>
+                <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-950">
                   Ringkasan Belanja
                 </h2>
               </div>
@@ -1202,14 +1193,14 @@ export default function CashierPage() {
 
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               <div className="brand-subtle-block">
-                <p className="brand-kicker">Total item</p>
-                <p className="mt-2 text-3xl font-black tracking-tight text-slate-950">
+                <p className="brand-section-label">Total item</p>
+                <p className="brand-metric-value-lg mt-2">
                   {cartItemCount}
                 </p>
               </div>
               <div className="brand-subtle-block">
-                <p className="brand-kicker">Total harga</p>
-                <p className="mt-2 text-3xl font-black tracking-tight text-slate-950">
+                <p className="brand-section-label">Total harga</p>
+                <p className="brand-metric-value-lg mt-2">
                   {formatRupiah(cartTotal)}
                 </p>
               </div>
@@ -1242,7 +1233,7 @@ export default function CashierPage() {
                           {getProductBrand(item)} - {formatRupiah(item.harga_jual)}
                         </p>
                         {unavailableMessage ? (
-                          <p className="mt-2 inline-flex rounded-md bg-rose-100 px-2.5 py-1 text-xs font-black text-rose-700">
+                          <p className="mt-2 inline-flex rounded-md bg-rose-100 px-2.5 py-1 text-xs font-bold text-rose-700">
                             {unavailableMessage} - akan dihapus otomatis
                           </p>
                         ) : null}
@@ -1281,7 +1272,7 @@ export default function CashierPage() {
                         </button>
                       </div>
                       <p
-                        className={`text-base font-black ${
+                        className={`text-base font-bold ${
                           item.unavailableReason ? "text-slate-500 line-through" : "text-slate-950"
                         }`}
                       >
@@ -1310,10 +1301,10 @@ export default function CashierPage() {
           <Panel variant="strong" className="p-5 md:sticky md:top-[184px] md:self-start lg:top-24 sm:p-6">
             <form id="cashier-checkout-form" onSubmit={handleCheckout} className="space-y-5">
               <div className="rounded-lg bg-slate-950 px-5 py-5 text-white shadow-[0_16px_34px_rgba(15,23,42,0.18)]">
-                <p className="text-xs font-bold uppercase tracking-[0.24em] text-slate-300">
+                <p className="text-xs font-semibold text-slate-300">
                   Total tagihan
                 </p>
-                <p className="mt-2 text-4xl font-black tracking-tight">
+                <p className="mt-2 text-3xl font-extrabold tracking-tight">
                   {formatRupiah(cartTotal)}
                 </p>
                 <p className="mt-2 text-sm font-semibold text-slate-300">
@@ -1323,16 +1314,16 @@ export default function CashierPage() {
 
               <div className="grid grid-cols-3 gap-2">
                 <div className="rounded-lg border border-slate-200 bg-white px-3 py-3">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
+                  <p className="text-xs font-semibold text-slate-500">
                     Tagihan
                   </p>
-                  <p className="mt-1 text-sm font-black text-slate-950">{formatRupiah(cartTotal)}</p>
+                  <p className="mt-1 text-sm font-bold text-slate-950">{formatRupiah(cartTotal)}</p>
                 </div>
                 <div className="rounded-lg border border-slate-200 bg-white px-3 py-3">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
+                  <p className="text-xs font-semibold text-slate-500">
                     Dibayar
                   </p>
-                  <p className="mt-1 text-sm font-black text-slate-950">{formatRupiah(paidTotal)}</p>
+                  <p className="mt-1 text-sm font-bold text-slate-950">{formatRupiah(paidTotal)}</p>
                 </div>
                 <div
                   className={`rounded-lg border px-3 py-3 ${
@@ -1343,11 +1334,11 @@ export default function CashierPage() {
                         : "border-emerald-200 bg-emerald-50"
                   }`}
                 >
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
+                  <p className="text-xs font-semibold text-slate-500">
                     {isCashPayment ? "Kembali" : amountShortage ? "Sisa" : "Status"}
                   </p>
                   <p
-                    className={`mt-1 text-sm font-black ${
+                    className={`mt-1 text-sm font-bold ${
                       isSplitPayment && splitOverpay
                         ? "text-red-700"
                         : amountShortage
@@ -1367,7 +1358,7 @@ export default function CashierPage() {
               </div>
 
               <div>
-                <p className="brand-kicker">Mode pembayaran</p>
+                <p className="brand-section-label">Mode pembayaran</p>
                 <div className="brand-segmented mt-3 grid w-full grid-cols-2">
                   <button
                     type="button"
@@ -1393,7 +1384,7 @@ export default function CashierPage() {
               {!isSplitPayment ? (
                 <>
                   <div>
-                    <p className="brand-kicker">Metode bayar</p>
+                    <p className="brand-section-label">Metode bayar</p>
                     <div className="mt-3 grid grid-cols-2 gap-2">
                       {paymentGroups.map((method) => (
                         <button
@@ -1465,7 +1456,7 @@ export default function CashierPage() {
                         min="0"
                         value={cashReceived}
                         onChange={(event) => setCashReceived(event.target.value)}
-                        className="brand-input h-14 text-lg font-black"
+                        className="brand-input h-12 text-base font-bold"
                         placeholder="Masukkan nominal"
                         aria-describedby="cash-payment-validation"
                         aria-invalid={cashReceived !== "" && cashShortage > 0}
@@ -1528,7 +1519,7 @@ export default function CashierPage() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <p className="brand-kicker">Rincian split</p>
+                      <p className="brand-section-label">Rincian split</p>
                       <p className="mt-1 text-sm font-semibold text-slate-600">
                         Total split harus pas dengan tagihan.
                       </p>
@@ -1569,7 +1560,7 @@ export default function CashierPage() {
                           onChange={(event) =>
                             updateSplitPayment(payment.id, { amount: event.target.value })
                           }
-                          className="brand-input font-black"
+                          className="brand-input font-bold"
                           placeholder="Nominal"
                           aria-label={`Nominal split ${index + 1}`}
                         />
@@ -1709,9 +1700,9 @@ export default function CashierPage() {
               <span className="block text-xs font-bold uppercase tracking-[0.18em]">
                 Checkout
               </span>
-              <span className="mt-1 block text-lg font-black">{formatRupiah(cartTotal)}</span>
+              <span className="mt-1 block text-lg font-bold">{formatRupiah(cartTotal)}</span>
             </span>
-            <span className="rounded-md bg-white/50 px-3 py-2 text-sm font-black">
+            <span className="rounded-md bg-white/50 px-3 py-2 text-sm font-bold">
               {cartItemCount} item
             </span>
           </span>

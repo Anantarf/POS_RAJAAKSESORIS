@@ -11,6 +11,10 @@
   --brand-surface-soft: #f8fafc;
   --brand-surface-strong: #ffffff;
   --brand-surface-tint: #fffaf0;
+  --brand-surface-info: #eff6ff;
+  --brand-surface-success: #ecfdf5;
+  --brand-surface-warning: #fffbeb;
+  --brand-surface-danger: #fef2f2;
   --brand-border: #e2e8f0;
   --brand-border-strong: #cbd5e1;
   --brand-gold: #c9a227;
@@ -35,38 +39,16 @@
   --button-radius-sm: 6px;
   --button-radius-md: 8px;
   --button-radius-lg: 10px;
-  --control-height-sm: 32px;
-  --control-height-md: 40px;
+  --control-height-sm: 36px;
+  --control-height-md: 44px;
   --control-height-lg: 48px;
+  --control-height-xl: 56px;
+  --brand-header-h: 188px;
   --modal-width-sm: 420px;
   --modal-width-md: 560px;
   --table-cell-py: 0.75rem;
   --table-cell-px: 1rem;
   --table-header-bg: rgba(248, 250, 252, 0.96);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --brand-bg: #0f172a;
-    --brand-surface: #1e293b;
-    --brand-surface-soft: #334155;
-    --brand-surface-strong: #0f172a;
-    --brand-surface-tint: #2a2414;
-    --brand-border: #334155;
-    --brand-border-strong: #475569;
-    --brand-text: #f1f5f9;
-    --brand-text-muted: #cbd5e1;
-    --brand-text-soft: #94a3b8;
-    --brand-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
-    --brand-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
-    --table-header-bg: rgba(30, 41, 59, 0.96);
-  }
-}
-
-@supports (color-scheme: dark light) {
-  :root {
-    color-scheme: light dark;
-  }
 }
 
 @layer base {
@@ -134,12 +116,6 @@
     box-shadow: 2px 0 16px rgba(15, 23, 42, 0.04);
   }
 
-  @media (prefers-color-scheme: dark) {
-    .brand-sidebar {
-      box-shadow: 2px 0 16px rgba(0, 0, 0, 0.3);
-    }
-  }
-
   .brand-panel {
     @apply rounded-lg border;
     border-radius: var(--brand-radius);
@@ -157,6 +133,31 @@
     background: var(--brand-surface);
     border-color: rgba(203, 213, 225, 0.9);
     box-shadow: var(--brand-shadow-md);
+  }
+
+  .brand-panel-accent {
+    background: linear-gradient(180deg, var(--brand-surface-tint) 0%, #ffffff 72%);
+    border-color: rgba(201, 162, 39, 0.32);
+  }
+
+  .brand-panel-info {
+    background: linear-gradient(180deg, var(--brand-surface-info) 0%, #ffffff 72%);
+    border-color: rgba(37, 99, 235, 0.2);
+  }
+
+  .brand-panel-success {
+    background: linear-gradient(180deg, var(--brand-surface-success) 0%, #ffffff 72%);
+    border-color: rgba(21, 128, 61, 0.2);
+  }
+
+  .brand-panel-warning {
+    background: linear-gradient(180deg, var(--brand-surface-warning) 0%, #ffffff 72%);
+    border-color: rgba(146, 64, 14, 0.24);
+  }
+
+  .brand-panel-danger {
+    background: linear-gradient(180deg, var(--brand-surface-danger) 0%, #ffffff 72%);
+    border-color: rgba(220, 38, 38, 0.2);
   }
 
   .brand-ops-header {
@@ -794,6 +795,26 @@
     color: var(--brand-text-muted);
   }
 
+  .brand-section-label {
+    @apply text-xs font-semibold leading-5;
+    color: var(--brand-text-muted);
+  }
+
+  .brand-metric-value {
+    @apply text-xl font-bold leading-tight tracking-tight;
+    color: var(--brand-text);
+  }
+
+  .brand-metric-value-lg {
+    @apply text-2xl font-bold leading-tight tracking-tight;
+    color: var(--brand-text);
+  }
+
+  .brand-metric-value-xl {
+    @apply text-3xl font-extrabold leading-tight tracking-tight;
+    color: var(--brand-text);
+  }
+
   .brand-segmented {
     @apply inline-flex max-w-full items-center gap-1 overflow-x-auto rounded-lg border p-1;
     border-radius: var(--brand-radius);
@@ -803,7 +824,7 @@
   }
 
   .brand-segmented-button {
-    @apply min-h-[40px] shrink-0 rounded-md px-4 py-2.5 text-center text-sm font-semibold leading-5 text-slate-500 transition;
+    @apply min-h-[44px] shrink-0 rounded-md px-4 py-2.5 text-center text-sm font-semibold leading-5 text-slate-500 transition;
     border-radius: var(--brand-radius-sm);
   }
 
@@ -893,7 +914,7 @@
   }
 
   .brand-pill-button {
-    @apply inline-flex min-h-[42px] shrink-0 items-center justify-center gap-2 rounded-md border px-4 py-2.5 text-sm font-semibold leading-5 transition duration-200 ease-out hover:-translate-y-px;
+    @apply inline-flex min-h-[44px] shrink-0 items-center justify-center gap-2 rounded-md border px-4 py-2.5 text-sm font-semibold leading-5 transition duration-200 ease-out hover:-translate-y-px;
     border-radius: var(--brand-radius-sm);
   }
 
@@ -1365,7 +1386,7 @@
   }
 
   .inventory-choice-button {
-    @apply min-h-[40px] rounded-md border px-3 py-2 text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-50;
+    @apply min-h-[44px] rounded-md border px-3 py-2 text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .inventory-choice-button-active {
@@ -1584,4 +1605,3 @@
     -webkit-print-color-adjust: exact;
   }
 }
-

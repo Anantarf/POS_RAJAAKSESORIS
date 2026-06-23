@@ -31,6 +31,14 @@ const periodOptions = [
 ];
 
 function KpiCard({ label, value, trend, accent = "default" }) {
+  const panelVariant =
+    accent === "success"
+      ? "success"
+      : accent === "danger"
+        ? "danger"
+        : accent === "info"
+          ? "info"
+          : "accent";
   const valueClass =
     accent === "success"
       ? "text-emerald-700"
@@ -41,11 +49,11 @@ function KpiCard({ label, value, trend, accent = "default" }) {
           : "text-slate-950";
 
   return (
-    <Panel className="p-4">
+    <Panel variant={panelVariant} className="p-4">
       <p className="text-xs font-semibold text-slate-500">
         {label}
       </p>
-      <p className={`mt-2 text-2xl font-bold leading-tight tracking-tight ${valueClass}`}>
+      <p className={`brand-metric-value-lg mt-2 ${valueClass}`}>
         {value}
       </p>
       <p className={`mt-2 truncate text-xs font-semibold ${getTrendTextClass(trend?.tone)}`}>
@@ -85,7 +93,7 @@ export default function Dashboard() {
     getDashboardSummary,
   } = useReports();
   const { products } = useProducts();
-  const { activeShifts, shifts = [] } = useShift();
+  const { shifts = [] } = useShift();
   const [period, setPeriod] = useState("today");
   const [customRange, setCustomRange] = useState({
     startDate: formatDateInput(new Date()),
@@ -130,8 +138,6 @@ export default function Dashboard() {
     }),
     [comparisonLabel, previousSummary, summary]
   );
-
-  const bestCategory = summary.topCategories[0] || null;
 
   const trendSeries = useMemo(() => summary.trendSeries.slice(-7), [summary.trendSeries]);
 
@@ -190,21 +196,6 @@ export default function Dashboard() {
     period === "today"
       ? formatDisplayDate(range.startDate)
       : `${formatDisplayDate(range.startDate)} - ${formatDisplayDate(range.endDate)}`;
-  const activeCashierLines = activeShifts.map(
-    (shift) => `${shift.cashier_name || "Kasir"} • ${shift.cashier_station || "Station belum dipilih"}`
-  );
-  const shiftValue = activeShifts.length
-    ? `${activeShifts.length} Kasir Aktif`
-    : "Belum ada kasir aktif";
-  const shiftDetail = activeShifts.length
-    ? activeCashierLines.slice(0, 2).join(" | ")
-    : "Buka shift untuk mulai transaksi";
-  const stockAlertValue = lowStockProducts.length
-    ? `${criticalStockCount} habis, ${Math.max(lowStockProducts.length - criticalStockCount, 0)} menipis`
-    : "Semua stok aman";
-  const averageTransaction = summary.totalTransaksi
-    ? formatRupiah(summary.omzet / summary.totalTransaksi)
-    : formatRupiah(0);
   const ownerAlerts = [
     shiftDifferenceAlerts.length
       ? {
@@ -355,7 +346,7 @@ export default function Dashboard() {
         </Panel>
       ) : null}
 
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="Ringkasan hari ini">
+      <section className="grid gap-4 sm:grid-cols-2 md:grid-cols-4" aria-label="Ringkasan hari ini">
         <KpiCard label="Omzet Hari Ini" value={formatRupiah(todaySummary.omzet)} />
         <KpiCard label="Transaksi" value={formatCount(todaySummary.totalTransaksi)} accent="info" />
         <KpiCard
@@ -366,7 +357,7 @@ export default function Dashboard() {
         <KpiCard label="Saldo Kas" value={formatRupiah(cashWalletBalance)} />
       </section>
 
-      <Panel variant="strong" className="p-4">
+      <Panel variant={attentionItems.length ? "warning" : "success"} className="p-4">
         <div className="flex flex-col gap-1 border-b border-slate-200 pb-3 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-sm font-bold text-slate-950">Perlu Dicek</p>
@@ -378,7 +369,7 @@ export default function Dashboard() {
         </div>
 
         {attentionItems.length ? (
-          <div className="mt-3 grid gap-3 xl:grid-cols-2">
+          <div className="mt-3 grid gap-4 lg:grid-cols-2">
             {attentionItems.map((item) => (
               <div
                 key={item.title}
@@ -388,7 +379,7 @@ export default function Dashboard() {
                   <div className="min-w-0">
                     <p className="text-sm font-bold text-slate-950">{item.title}</p>
                     {item.value ? (
-                      <p className="mt-1 text-lg font-black text-slate-950">{item.value}</p>
+                      <p className="brand-metric-value mt-1">{item.value}</p>
                     ) : null}
                     <p className="mt-1 text-sm leading-6 text-slate-600">{item.detail}</p>
                   </div>
@@ -409,10 +400,10 @@ export default function Dashboard() {
       </Panel>
 
       <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
-        <Panel className="p-4">
+        <Panel variant="accent" className="p-4">
           <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="brand-kicker">Penjualan</p>
+              <p className="brand-section-label">Penjualan</p>
               <h3 className="mt-1 text-lg font-bold tracking-tight text-slate-950">
                 Pergerakan omzet
               </h3>
@@ -427,9 +418,9 @@ export default function Dashboard() {
           <TrendBars data={trendSeries} />
         </Panel>
 
-        <Panel className="p-4">
+        <Panel variant="info" className="p-4">
           <div className="mb-4">
-            <p className="brand-kicker">Kategori</p>
+            <p className="brand-section-label">Kategori</p>
             <h3 className="mt-1 text-lg font-bold tracking-tight text-slate-950">
               Kategori dan produk terlaris
             </h3>
@@ -473,7 +464,7 @@ export default function Dashboard() {
 
               {summary.topProducts.length ? (
                 <div>
-                  <p className="brand-kicker mb-3">Produk teratas</p>
+                  <p className="brand-section-label mb-3">Produk teratas</p>
                   <div className="space-y-3">
                     {summary.topProducts.slice(0, 3).map((item, index) => (
                       <div
@@ -503,7 +494,7 @@ export default function Dashboard() {
       <div className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
         <Panel className="p-4">
           <div className="mb-4">
-            <p className="brand-kicker">Kanal penjualan</p>
+            <p className="brand-section-label">Kanal penjualan</p>
             <h3 className="mt-1 text-lg font-bold tracking-tight text-slate-950">
               Kontribusi per kanal
             </h3>
@@ -537,7 +528,7 @@ export default function Dashboard() {
 
         <Panel variant="strong" className="p-4">
           <div className="mb-4">
-            <p className="brand-kicker">Saldo harian</p>
+            <p className="brand-section-label">Saldo harian</p>
             <h3 className="mt-1 text-lg font-bold tracking-tight text-slate-950">
               Pergerakan saldo harian
             </h3>
