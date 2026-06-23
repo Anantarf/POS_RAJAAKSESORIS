@@ -260,7 +260,6 @@ export default function WalletPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Saldo toko"
         title="Saldo Toko"
         description="Saldo dan pergerakan kas toko."
         icon="coins"

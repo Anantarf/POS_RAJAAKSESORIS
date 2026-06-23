@@ -441,7 +441,6 @@ export default function FinanceReportPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Keuangan"
         title="Laporan keuangan"
         description="Omzet, modal, laba, dan pengeluaran toko untuk pengecekan pemilik."
         icon="chart"

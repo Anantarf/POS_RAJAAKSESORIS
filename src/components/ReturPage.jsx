@@ -21,7 +21,6 @@ export default function ReturPage({ tab, onTabChange, counts = {}, children }) {
     <div className="space-y-7">
       <div>
         <PageHeader
-          eyebrow="Operasional"
           title="Retur Supplier & Garansi"
           description="Catat barang ke pemasok dan klaim garansi konsumen dengan dampak stok yang jelas."
           icon="return"

@@ -624,7 +624,6 @@ export default function ProductsPage() {
     return (
       <div className="space-y-6">
         <PageHeader
-          eyebrow="Stok barang"
           title="Stok belum berhasil dimuat"
           description="Halaman tetap hidup. Coba ulangi pemuatan data stok tanpa memuat ulang seluruh aplikasi."
           icon="box"
@@ -990,7 +989,6 @@ export default function ProductsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Stok"
         title="Stok barang"
         description={
           canManageProducts

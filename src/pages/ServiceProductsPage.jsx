@@ -402,7 +402,6 @@ export default function ServiceProductsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Layanan Digital"
         title="Kelola Layanan"
         description="Atur daftar layanan yang tersedia untuk transaksi kasir."
         icon="wallet"

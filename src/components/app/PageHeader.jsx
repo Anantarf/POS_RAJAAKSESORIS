@@ -1,21 +1,7 @@
-import AppIcon from "./AppIcon";
-
-export default function PageHeader({
-  eyebrow,
-  title,
-  description,
-  actions,
-  icon = "spark",
-}) {
+export default function PageHeader({ title, description, actions }) {
   return (
     <div className="mb-6 flex flex-col gap-5 border-b border-[var(--brand-border)] pb-5 lg:flex-row lg:items-end lg:justify-between">
       <div className="max-w-3xl">
-        {eyebrow ? (
-          <div className="brand-chip mb-3">
-            <AppIcon name={icon} className="h-3.5 w-3.5 text-[var(--brand-gold-strong)]" />
-            {eyebrow}
-          </div>
-        ) : null}
         <h1 className="font-display text-3xl font-black tracking-tight text-slate-950 sm:text-[40px]">
           {title}
         </h1>

@@ -428,7 +428,6 @@ export default function SalesReportPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Laporan"
         title="Laporan Penjualan"
         description="Rekap penjualan produk, layanan digital, transfer, e-wallet, dan jasa."
         icon="trend"

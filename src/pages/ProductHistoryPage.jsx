@@ -124,7 +124,6 @@ export default function ProductHistoryPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Produk terhapus"
         title="Riwayat Produk"
         description="Produk yang dihapus disimpan sementara selama 30 hari sebelum dibersihkan permanen."
         icon="history"

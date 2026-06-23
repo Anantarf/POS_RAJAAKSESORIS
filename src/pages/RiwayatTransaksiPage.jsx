@@ -739,7 +739,6 @@ export default function RiwayatTransaksiPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Semua Aktivitas"
         title="Riwayat transaksi"
         description="Semua transaksi dalam satu daftar."
         icon="history"

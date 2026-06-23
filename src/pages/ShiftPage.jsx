@@ -401,7 +401,6 @@ export default function ShiftPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Shift"
         title="Buka dan tutup shift"
         description="Buka shift saat mulai kerja, tutup setelah kas dihitung."
         icon="receipt"

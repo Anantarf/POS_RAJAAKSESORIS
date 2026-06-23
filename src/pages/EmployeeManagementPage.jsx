@@ -224,7 +224,6 @@ export default function EmployeeManagementPage() {
   return (
     <div className="brand-page-layout">
       <PageHeader
-        eyebrow="Owner"
         title="Karyawan"
         description="Pantau kasir, status akun, akses kerja, dan aktivitas terakhir."
         icon="users"

@@ -82,7 +82,6 @@ export default function AuditLogPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Kontrol Pemilik"
         title="Riwayat Aktivitas"
         description="Riwayat aksi penting: reset, approval, stok, dan retur."
         icon="clipboard"
