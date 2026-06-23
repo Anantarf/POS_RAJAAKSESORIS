@@ -12,7 +12,6 @@ import { useAuth } from "./contexts/useAuth";
 import AppShell from "./layouts/AppShell";
 import ConnectionStatusBanner from "./components/ConnectionStatusBanner";
 import ErrorBoundary from "./components/ErrorBoundary";
-import MigrationBanner from "./components/MigrationBanner";
 import Login from "./pages/Login";
 
 const DataProvider = lazy(() =>
@@ -261,7 +260,6 @@ function App() {
         <NotificationProvider>
           <AuthProvider>
             <ErrorBoundary>
-              <MigrationBanner />
               <ConnectionStatusBanner />
               <Routes>
                 <Route path="/" element={<Login />} />

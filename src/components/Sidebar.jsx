@@ -157,7 +157,7 @@ export default function Sidebar({
                   Raja Aksesoris
                 </span>
                 <span className="mt-1 block truncate text-sm font-extrabold tracking-tight text-slate-950">
-                  MVP Operasional
+                  {user.nama}
                 </span>
               </span>
             ) : null}
