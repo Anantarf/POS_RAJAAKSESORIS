@@ -46,7 +46,7 @@ function SidebarLink({ item, collapsed, onNavigate }) {
           const active = isActive || isParentActive;
 
           return (
-            <div className={`flex items-center ${collapsed ? "justify-center px-2" : "gap-3 px-3"} py-2.5 text-sm font-semibold`}>
+            <div className={`flex items-center ${collapsed ? "justify-center px-2" : "gap-3 px-3"} py-3 text-sm font-semibold`}>
               <span
                 className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition ${
                   active

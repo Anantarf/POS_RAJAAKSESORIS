@@ -27,7 +27,7 @@ const mobilePrimaryRoutes = {
 export default function AppShell() {
   const { user } = useAuth();
   const location = useLocation();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => window.innerWidth < 1536);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   const meta = getRouteMeta(location.pathname);

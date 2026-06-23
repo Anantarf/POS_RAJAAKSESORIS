@@ -6,16 +6,16 @@
 
 :root {
   color-scheme: light;
-  --brand-bg: #f4f7fb;
+  --brand-bg: #f1f5f9;
   --brand-surface: #ffffff;
   --brand-surface-soft: #f8fafc;
   --brand-surface-strong: #ffffff;
   --brand-surface-tint: #fffaf0;
   --brand-border: #e2e8f0;
   --brand-border-strong: #cbd5e1;
-  --brand-gold: #d4af37;
+  --brand-gold: #c9a227;
   --brand-gold-strong: #7a4f07;
-  --brand-gold-soft: rgba(212, 175, 55, 0.1);
+  --brand-gold-soft: rgba(201, 162, 39, 0.12);
   --brand-warning: #92400e;
   --brand-warning-soft: rgba(146, 64, 14, 0.14);
   --brand-success: #15803d;
@@ -28,10 +28,10 @@
   --brand-text-muted: #64748b;
   --brand-text-soft: #94a3b8;
   --brand-shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06);
-  --brand-shadow-md: 0 8px 24px rgba(15, 23, 42, 0.09);
-  --brand-ring: 0 0 0 4px rgba(212, 175, 55, 0.16);
-  --brand-radius: 8px;
-  --brand-radius-sm: 6px;
+  --brand-shadow-md: 0 4px 16px rgba(15, 23, 42, 0.07);
+  --brand-ring: 0 0 0 4px rgba(201, 162, 39, 0.18);
+  --brand-radius: 10px;
+  --brand-radius-sm: 7px;
   --button-radius-sm: 6px;
   --button-radius-md: 8px;
   --button-radius-lg: 10px;
@@ -719,7 +719,7 @@
   .brand-badge-danger,
   .brand-badge-info,
   .brand-badge-warning {
-    @apply inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[11px] font-semibold;
+    @apply inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[13px] font-semibold;
     border-radius: var(--brand-radius-sm);
   }
 
