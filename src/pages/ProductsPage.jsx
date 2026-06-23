@@ -30,6 +30,8 @@ import {
   getReplacementCategory,
 } from "../features/products/utils/productForm";
 import { StockMutationDrawer } from "../features/inventory/components/StockMutationDrawer";
+import { ProductTableCompact } from "../features/inventory/components/ProductTableCompact";
+import { InventoryFormValidation, MutationFormValidation } from "../features/inventory/components/InventoryFormValidation";
 
 const MAX_RENDERED_PRODUCT_ROWS = 240;
 const MAX_PRODUCT_SELECT_OPTIONS = 500;
@@ -1363,13 +1365,18 @@ export default function ProductsPage() {
                   set
                 </option>
               </select>
-              <button type="submit" className="brand-button-primary">
+
+              <div className="md:col-span-2">
+                <InventoryFormValidation form={form} touched={{ nama: true, kategori: true, harga_jual: true, harga_beli: true, stok: true }} />
+              </div>
+
+              <button type="submit" className="brand-button-primary md:col-span-1">
                 Simpan Produk
               </button>
               <button
                 type="button"
                 onClick={resetProductForm}
-                className="brand-button-secondary"
+                className="brand-button-secondary md:col-span-1"
               >
                 Reset
               </button>
@@ -1871,79 +1878,19 @@ export default function ProductsPage() {
             </p>
           </div>
         ) : (
-          <div className="brand-scroll-region brand-scrollbar overflow-x-auto rounded-lg border border-slate-200 bg-white">
-            <table className={`brand-table inventory-product-table min-w-[980px] ${compactTable ? "brand-table-compact" : ""}`}>
-              <thead>
-                <tr>
-                  <th>Produk</th>
-                  <th>Stok</th>
-                  <th>Harga Modal</th>
-                  <th>Harga Jual</th>
-                  <th>Status</th>
-                  <th className="brand-table-action-cell text-right">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                {visibleProducts.map((product) => {
-                  const status = getProductStatus(product);
-
-                  return (
-                    <tr key={product.id}>
-                      <td className="min-w-[300px]">
-                        <div className="flex min-w-0 flex-col gap-1">
-                          <p className="truncate text-base font-black leading-6 text-slate-950">
-                            {product.nama}
-                          </p>
-                          <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                            <span className="rounded-md bg-slate-100 px-2 py-1 font-semibold text-slate-600">
-                              {product.kategori || "Tanpa kategori"}
-                            </span>
-                            <span className="font-mono">{product.kode_produk || "Tanpa barcode"}</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <ProductStockSignal product={product} />
-                      </td>
-                      <td className="text-slate-600">{formatRupiah(product.harga_beli)}</td>
-                      <td className="text-slate-600">{formatRupiah(product.harga_jual)}</td>
-                      <td>
-                        <span className={`rounded-md px-3 py-1 text-xs font-semibold ${status.className}`}>
-                          {status.label}
-                        </span>
-                      </td>
-                      <td className="brand-table-action-cell text-right">
-                        <ProductActionMenu
-                          product={product}
-                          canAddStock={canAddStock}
-                          canManageProducts={canManageProducts}
-                          isOpen={openActionProductId === product.id}
-                          onToggle={() =>
-                            setOpenActionProductId((current) =>
-                              current === product.id ? null : product.id
-                            )
-                          }
-                          onAddStock={() => openQuickStockDrawer(product)}
-                          onEdit={() => {
-                            setOpenActionProductId(null);
-                            editProduct(product);
-                          }}
-                          onDelete={() => {
-                            setOpenActionProductId(null);
-                            setDeleteTarget(product);
-                          }}
-                          onToggleStatus={() => {
-                            setOpenActionProductId(null);
-                            handleToggleStatus(product.id, product.status !== "active");
-                          }}
-                        />
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <ProductTableCompact
+            products={visibleProducts}
+            canAddStock={canAddStock}
+            canManageProducts={canManageProducts}
+            onAddStock={openQuickStockDrawer}
+            onEdit={(product) => {
+              editProduct(product);
+            }}
+            onDelete={(product) => {
+              setDeleteTarget(product);
+            }}
+            onToggleStatus={handleToggleStatus}
+          />
         )}
       </Panel>
 
