@@ -29,6 +29,7 @@ import {
   getProductStatus,
   getReplacementCategory,
 } from "../features/products/utils/productForm";
+import { StockMutationDrawer } from "../features/inventory/components/StockMutationDrawer";
 
 const MAX_RENDERED_PRODUCT_ROWS = 240;
 const MAX_PRODUCT_SELECT_OPTIONS = 500;
@@ -480,6 +481,7 @@ export default function ProductsPage() {
     !Number.isFinite(mutationQuantity) ||
     mutationQuantity <= 0;
   const [activeModal, setActiveModal] = useState(null);
+  const [showMutationDrawer, setShowMutationDrawer] = useState(false);
 
   useEffect(() => {
     if (mutation.productId && !products.some((product) => product.id === mutation.productId)) {
@@ -981,7 +983,7 @@ export default function ProductsPage() {
               </button>
               <button
                 type="button"
-                onClick={() => setActiveModal("tambah-kelola")}
+                onClick={() => setShowMutationDrawer(true)}
                 className="brand-button-secondary"
               >
                 Mutasi Stok
@@ -2304,6 +2306,21 @@ export default function ProductsPage() {
           </form>
         </Drawer>
       ) : null}
+
+      <StockMutationDrawer
+        open={showMutationDrawer}
+        onClose={() => {
+          setShowMutationDrawer(false);
+          setMutation(emptyMutation);
+          setLastQuickMutationAmount(null);
+        }}
+        products={products}
+        mutation={mutation}
+        onMutationChange={(updates) => setMutation((prev) => ({ ...prev, ...updates }))}
+        onSubmit={handleMutationSubmit}
+        canAddStock={canAddStock}
+        isSubmitting={false}
+      />
     </div>
   );
 }
