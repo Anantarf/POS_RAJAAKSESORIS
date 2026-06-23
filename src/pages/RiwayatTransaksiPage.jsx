@@ -894,9 +894,6 @@ export default function RiwayatTransaksiPage() {
             <h3 className="font-display text-2xl font-bold tracking-tight text-slate-950">
               Daftar transaksi
             </h3>
-            <p className="mt-2 text-sm text-slate-600">
-              Klik salah satu baris untuk membuka detail di panel kanan.
-            </p>
           </div>
 
           <div className="space-y-3 p-4 md:hidden">
@@ -1040,7 +1037,7 @@ export default function RiwayatTransaksiPage() {
                                 }}
                                 className="brand-button-danger min-h-[40px] px-3 py-2"
                               >
-                                Void
+                                Batalkan
                               </button>
                             ) : null}
                           </div>
@@ -1144,7 +1141,7 @@ export default function RiwayatTransaksiPage() {
         <>
           <div className="grid gap-4 md:grid-cols-3">
             <MetricCard
-              label="Transaksi void"
+              label="Transaksi dibatalkan"
               value={String(deletedStats.total)}
               helper="Transaksi batal tetap tersimpan."
             />
@@ -1165,14 +1162,11 @@ export default function RiwayatTransaksiPage() {
           <Panel className="overflow-hidden p-0">
             <div className="flex flex-col gap-4 border-b border-slate-200 px-6 py-5 lg:flex-row lg:items-center lg:justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--brand-gold)]">
-                  Riwayat transaksi batal
-                </p>
-                <h3 className="mt-2 font-display text-2xl font-bold tracking-tight text-slate-950">
-                  Transaksi void
+                <h3 className="font-display text-2xl font-bold tracking-tight text-slate-950">
+                  Transaksi dibatalkan
                 </h3>
                 <p className="mt-2 text-sm text-slate-600">
-                  Transaksi dibatalkan tetap tercatat di riwayat.
+                  Transaksi yang dibatalkan tetap tercatat dan bisa dicek di sini.
                 </p>
               </div>
               <button
@@ -1181,7 +1175,7 @@ export default function RiwayatTransaksiPage() {
                 disabled={processingCleanup}
                 className="brand-button-secondary disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {processingCleanup ? "Mengecek..." : "Cek hard-delete"}
+                {processingCleanup ? "Mengecek..." : "Cek data terhapus"}
               </button>
             </div>
 
@@ -1189,7 +1183,7 @@ export default function RiwayatTransaksiPage() {
               <table className="brand-table">
                 <thead>
                   <tr>
-                    <th>Tanggal void</th>
+                    <th>Tanggal batal</th>
                     <th>Kanal</th>
                     <th>Transaksi</th>
                     <th className="text-right">Nominal</th>
@@ -1252,7 +1246,7 @@ export default function RiwayatTransaksiPage() {
                   ) : (
                     <tr>
                       <td colSpan="7" className="px-6 py-14 text-center text-slate-500">
-                        Belum ada transaksi void. Riwayat aktif masih utuh.
+                        Belum ada transaksi yang dibatalkan.
                       </td>
                     </tr>
                   )}

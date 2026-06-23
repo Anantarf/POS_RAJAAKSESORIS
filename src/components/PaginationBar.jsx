@@ -2,11 +2,11 @@ export default function PaginationBar({ page, pageCount, from, to, count, onPage
   const canGoBack = page > 1;
   const canGoForward = page < pageCount;
 
+  if (!count) return null;
+
   return (
     <div className="flex flex-col gap-3 border-t border-slate-200 px-4 py-3 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
-      <span className="font-medium">
-        {count ? `${from}-${to} dari ${count}` : "Tidak ada data"}
-      </span>
+      <span className="font-medium">{from}-{to} dari {count}</span>
       <div className="flex items-center gap-2">
         <button
           type="button"
