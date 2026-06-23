@@ -6,7 +6,7 @@ import { ROLE_GROUPS, ROUTE_ACCESS } from "./core/auth/rbac";
 import { getDefaultRoute } from "./core/navigation/navigation";
 import { getRuntimeFlags, isFeatureEnabled } from "./core/runtime/runtimeFlags";
 import { AppModeProvider } from "./contexts/AppModeContext";
-import { AuthProvider } from "./contexts/AuthProvider.custom";
+import { AuthProvider } from "./contexts/AuthProvider";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { useAuth } from "./contexts/useAuth";
 import AppShell from "./layouts/AppShell";
