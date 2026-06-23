@@ -58,8 +58,7 @@ const dbConfig = {
   connectionLimit: Number(process.env.DB_CONNECTION_LIMIT || 10),
   queueLimit: 0,
 };
-const hasDbConfig =
-  legacyMysqlRoutesEnabled && Boolean(dbConfig.host && dbConfig.user && dbConfig.database);
+const hasDbConfig = Boolean(dbConfig.host && dbConfig.user && dbConfig.database);
 const dbPool = hasDbConfig ? mysql.createPool(dbConfig) : null;
 
 if (dbPool) {
