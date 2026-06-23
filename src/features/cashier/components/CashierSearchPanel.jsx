@@ -29,7 +29,13 @@ const CashierSearchPanel = memo(
               <label className="brand-section-label block">
                 Cari / Scan
               </label>
-              <span className="brand-badge-success">Scanner mode - Enter tambah item</span>
+              <span className="text-xs font-semibold text-slate-500">
+                <span className="brand-badge-success">Enter: tambah</span>
+                <span className="ml-2 hidden sm:inline text-slate-400">|</span>
+                <span className="ml-2 hidden sm:inline">Esc: clear</span>
+                <span className="ml-2 hidden sm:inline text-slate-400">|</span>
+                <span className="ml-2 hidden sm:inline">Ctrl+C: checkout</span>
+              </span>
             </div>
             <div className="relative">
               <AppIcon

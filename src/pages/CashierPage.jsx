@@ -133,6 +133,8 @@ export default function CashierPage() {
   const [hydratingProducts, setHydratingProducts] = useState(false);
   const [productHydrationError, setProductHydrationError] = useState("");
   const [shiftBannerExpanded, setShiftBannerExpanded] = useState(true);
+  const [lastDeletedItem, setLastDeletedItem] = useState(null);
+  const undoTimerRef = useRef(null);
   const {
     isPinModalOpen,
     closePinModal,
@@ -523,7 +525,13 @@ export default function CashierPage() {
         if (item.id !== productId) return [item];
 
         const safeQty = Math.max(0, Math.min(Number(nextQty || 0), Number(item.stok || 0)));
-        if (safeQty === 0) return [];
+        if (safeQty === 0) {
+          // Save for undo (5 detik)
+          setLastDeletedItem(item);
+          window.clearTimeout(undoTimerRef.current);
+          undoTimerRef.current = window.setTimeout(() => setLastDeletedItem(null), 5000);
+          return [];
+        }
 
         return [
           {
@@ -534,6 +542,17 @@ export default function CashierPage() {
         ];
       })
     );
+  };
+
+  const undoDeleteItem = (item) => {
+    setCart((currentCart) => {
+      if (!currentCart.find((i) => i.id === item.id)) {
+        window.clearTimeout(undoTimerRef.current);
+        setLastDeletedItem(null);
+        return [...currentCart, item];
+      }
+      return currentCart;
+    });
   };
 
   const updateSplitPayment = (paymentId, patch) => {
@@ -813,13 +832,32 @@ export default function CashierPage() {
 
   const handleSearchKeyDown = useCallback(
     (event) => {
+      // Enter: add exact match ke cart
       if (event.key === "Enter" && exactCodeMatch) {
         event.preventDefault();
         addToCart(exactCodeMatch, { refocusSearch: true });
         setSearch("");
+        return;
+      }
+
+      // Escape: clear search & focus kembali
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setSearch("");
+        searchInputRef.current?.focus();
+        return;
+      }
+
+      // Tab ke Checkout (Alt+C)
+      if ((event.altKey || event.ctrlKey) && event.key.toLowerCase() === "c") {
+        event.preventDefault();
+        if (cartItemCount && !hasUnavailableCartItems) {
+          handleContinue();
+        }
+        return;
       }
     },
-    [addToCart, exactCodeMatch]
+    [addToCart, exactCodeMatch, cartItemCount, hasUnavailableCartItems, handleContinue]
   );
 
   const hydrateCashierProducts = useCallback(async () => {
@@ -926,6 +964,22 @@ export default function CashierPage() {
         </div>
         <span className="brand-badge-neutral">{formatRupiah(cartTotal)}</span>
       </div>
+
+      {/* Undo deleted item notification */}
+      {lastDeletedItem && (
+        <div className="mt-2 rounded-lg bg-amber-50 border border-amber-200 px-3 py-2 flex items-center justify-between gap-2">
+          <p className="text-xs font-semibold text-amber-700 flex-1">
+            {lastDeletedItem.nama} dihapus
+          </p>
+          <button
+            type="button"
+            onClick={() => undoDeleteItem(lastDeletedItem)}
+            className="text-xs font-bold text-amber-700 hover:text-amber-800 whitespace-nowrap"
+          >
+            Undo
+          </button>
+        </div>
+      )}
 
       {cart.length ? (
         <div className="brand-scroll-region-y brand-scrollbar mt-3 flex-1 space-y-2 pr-1">
@@ -1473,19 +1527,27 @@ export default function CashierPage() {
       )}
 
       {successFeedback ? (
-        <div className="pointer-events-none fixed bottom-6 left-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2">
-          <div className="brand-success-popover brand-panel flex items-center gap-4 border-emerald-200 bg-white px-5 py-4 shadow-[0_18px_42px_rgba(21,128,61,0.16)]">
-            <LottieState
-              ariaLabel="Transaksi berhasil"
-              icon="check"
-              size={56}
-            />
-            <div className="min-w-0">
-              <p className="font-semibold text-slate-950">Transaksi tersimpan</p>
-              <p className="mt-1 truncate text-sm text-slate-600">
-                {successFeedback.noTransaksi} - {formatRupiah(successFeedback.total)}
-              </p>
+        <div className="fixed bottom-6 left-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2">
+          <div className="brand-success-popover brand-panel flex flex-col gap-3 border-emerald-200 bg-white px-5 py-4 shadow-[0_18px_42px_rgba(21,128,61,0.16)]">
+            <div className="flex items-center gap-4">
+              <LottieState
+                ariaLabel="Transaksi berhasil"
+                icon="check"
+                size={48}
+              />
+              <div className="min-w-0 flex-1">
+                <p className="font-semibold text-slate-950">Transaksi tersimpan ✓</p>
+                <p className="mt-1 text-sm text-slate-600">
+                  {successFeedback.noTransaksi}
+                </p>
+                <p className="text-base font-bold text-slate-950 mt-1">
+                  {formatRupiah(successFeedback.total)}
+                </p>
+              </div>
             </div>
+            <p className="text-xs text-slate-500 text-center">
+              Struk sedang disiapkan...
+            </p>
           </div>
         </div>
       ) : null}
