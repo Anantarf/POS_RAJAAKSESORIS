@@ -7,6 +7,7 @@ import PaginationBar from "../components/PaginationBar";
 import PageHeader from "../components/app/PageHeader";
 import Panel from "../components/app/Panel";
 import AppIcon from "../components/app/AppIcon";
+import { ModalLayout } from "../components/ui/Primitives";
 import PinConfirmationModal from "../components/PinConfirmationModal";
 import { useAuth } from "../contexts/useAuth";
 import { showNotification } from "../contexts/NotificationContext";
@@ -502,21 +503,7 @@ export default function ProductsPage() {
     !selectedMutationProduct ||
     !Number.isFinite(mutationQuantity) ||
     mutationQuantity <= 0;
-  const visibleStockSectionMenu = useMemo(
-    () => stockSectionMenu.filter((item) => canManageProducts || !item.ownerOnly),
-    [canManageProducts]
-  );
-  const activeStockSection = useMemo(() => {
-    const hashSection = decodeURIComponent(location.hash.replace("#", ""));
-    const fallbackSection = "tambah-kelola";
-
-    return visibleStockSectionMenu.some((item) => item.id === hashSection)
-      ? hashSection
-      : fallbackSection;
-  }, [location.hash, visibleStockSectionMenu]);
-  const activeStockMenu = visibleStockSectionMenu.find(
-    (item) => item.id === activeStockSection
-  );
+  const [activeModal, setActiveModal] = useState(null);
 
   useEffect(() => {
     if (mutation.productId && !products.some((product) => product.id === mutation.productId)) {
@@ -576,7 +563,7 @@ export default function ProductsPage() {
     window.requestAnimationFrame(() => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
-  }, [activeStockSection, loading]);
+  }, [loading]);
 
   const hydrateProducts = useCallback(async () => {
     productHydrationRef.current = true;
@@ -1010,12 +997,26 @@ export default function ProductsPage() {
                 type="button"
                 onClick={() => {
                   setForm(createEmptyForm({ kategori: form.kategori || "", stok_minimum: "3" }));
-                  navigate("/stok-barang#tambah-produk");
+                  setActiveModal("tambah-produk");
                   window.setTimeout(() => focusElement(productNameRef), 120);
                 }}
                 className="brand-button-primary"
               >
                 Tambah Produk
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveModal("tambah-kelola")}
+                className="brand-button-secondary"
+              >
+                Mutasi Stok
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveModal("kelola-kategori")}
+                className="brand-button-secondary"
+              >
+                Kelola Kategori
               </button>
               <button
                 type="button"
@@ -1161,47 +1162,13 @@ export default function ProductsPage() {
         />
       </div>
 
-      <Panel className="p-3">
-        <div className="grid gap-2 md:grid-cols-3">
-          {visibleStockSectionMenu.map((item) => {
-            const isActive = item.id === activeStockSection;
-
-            return (
-              <Link
-                key={item.id}
-                to={`/stok-barang#${item.id}`}
-                aria-current={isActive ? "page" : undefined}
-                className={`group rounded-lg border px-4 py-3 transition ${
-                  isActive
-                    ? "border-[var(--brand-gold)]/30 bg-[var(--brand-gold)]/12 text-slate-950 shadow-[0_10px_24px_rgba(212,175,55,0.12)]"
-                    : "border-slate-200 bg-white text-slate-600 hover:border-[var(--brand-gold)]/20 hover:bg-[var(--brand-gold)]/8 hover:text-slate-950"
-                }`}
-              >
-                <span
-                  className={`text-[10px] font-semibold uppercase tracking-[0.22em] ${
-                    isActive ? "text-[var(--brand-gold)]" : "text-slate-400"
-                  }`}
-                >
-                  {item.eyebrow}
-                </span>
-                <span className="mt-1 block text-sm font-bold">{item.label}</span>
-                <span className="mt-1 block text-xs leading-5 text-slate-500">
-                  {item.description}
-                </span>
-              </Link>
-            );
-          })}
-        </div>
-        {activeStockMenu ? (
-          <p className="mt-3 px-1 text-sm text-slate-500">
-            Sedang dibuka:{" "}
-            <span className="font-semibold text-slate-950">{activeStockMenu.label}</span>
-          </p>
-        ) : null}
-      </Panel>
-
-      {canManageProducts && activeStockSection === "kelola-kategori" ? (
-        <Panel id="kelola-kategori" className="p-6">
+      <ModalLayout
+        open={canManageProducts && activeModal === "kelola-kategori"}
+        onClose={() => setActiveModal(null)}
+        title="Kelola kategori aktif"
+        description="Kategori kosong akan hilang dari daftar. Rename memindahkan produk ke nama baru, hapus kategori memindahkan produk ke kategori pengganti."
+      >
+        <div className="p-1">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
             <div>
               <p className="brand-kicker text-[var(--brand-gold)]">Kategori produk</p>
@@ -1270,13 +1237,16 @@ export default function ProductsPage() {
               </p>
             </div>
           )}
-        </Panel>
-      ) : null}
+        </div>
+      </ModalLayout>
 
-      {activeStockSection === "tambah-produk" || activeStockSection === "tambah-kelola" ? (
-      <div className="grid gap-6">
-        {canManageProducts && activeStockSection === "tambah-produk" ? (
-        <Panel id="tambah-produk" className="p-6">
+      <ModalLayout
+        open={canManageProducts && activeModal === "tambah-produk"}
+        onClose={() => setActiveModal(null)}
+        title="Tambah produk"
+        description="Isi nama, kategori, harga, dan stok."
+      >
+        <div className="p-1">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
               <h3 className="font-display text-2xl font-bold tracking-tight text-slate-950">
@@ -1428,11 +1398,17 @@ export default function ProductsPage() {
               </button>
             </div>
           </form>
-        </Panel>
-        ) : null}
+        </div>
+      </ModalLayout>
 
-        {activeStockSection === "tambah-kelola" ? (
-        <Panel variant="strong" className="p-4 lg:p-5">
+      <ModalLayout
+        open={activeModal === "tambah-kelola"}
+        onClose={() => setActiveModal(null)}
+        title="Mutasi stok"
+        description="Pilih barang, tentukan mutasi, lalu simpan perubahan stok fisik."
+        className="w-full max-w-4xl"
+      >
+        <div className="p-1">
           <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px] xl:items-start">
             <div className="inventory-mutation-workflow">
               <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
@@ -1773,13 +1749,10 @@ export default function ProductsPage() {
               />
             ) : null}
           </div>
-        </Panel>
-        ) : null}
-      </div>
-      ) : null}
+        </div>
+      </ModalLayout>
 
-      {activeStockSection === "tambah-kelola" ? (
-      <Panel id="tambah-kelola" className="p-4 lg:p-5">
+      <Panel className="p-4 lg:p-5">
         <div className="brand-table-toolbar inventory-filter-toolbar mb-4">
           <div className="grid gap-3 lg:grid-cols-[minmax(260px,1.4fr)_180px_220px]">
             <label className="relative block">
@@ -1996,7 +1969,6 @@ export default function ProductsPage() {
           </div>
         )}
       </Panel>
-      ) : null}
 
       {categoryAction ? (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-slate-950/45 px-4 py-6">

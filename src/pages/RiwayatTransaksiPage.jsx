@@ -663,7 +663,7 @@ export default function RiwayatTransaksiPage() {
             await deleteTransactionHistory({
               source: row.source,
               id: row.raw.id,
-              reason: `Void dari halaman riwayat: ${transactionLabel}`,
+              reason: `Batalkan dari halaman riwayat: ${transactionLabel}`,
             });
             if (selectedId === row.id) {
               setSelectedId(null);
@@ -939,7 +939,7 @@ export default function RiwayatTransaksiPage() {
                         onClick={() => setPendingAction({ type: "delete", row })}
                         className="brand-button-danger flex-1"
                       >
-                        Void
+                        Batalkan
                       </button>
                     ) : null}
                   </div>

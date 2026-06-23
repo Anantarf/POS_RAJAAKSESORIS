@@ -11,7 +11,7 @@ export const DEFAULT_SHIFT_TYPE = "Pagi";
 
 export const SHIFT_STATUS_LABELS = {
   active: "Aktif",
-  pending: "Menunggu Approval",
+  pending: "Menunggu Persetujuan",
   approved: "Disetujui",
   approved_with_correction: "Disetujui dengan Koreksi",
   flagged: "Perlu Dicek",

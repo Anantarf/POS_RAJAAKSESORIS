@@ -373,7 +373,7 @@ export default function ShiftPage() {
       setApprovalRequest(null);
       setCorrectionTargetId(null);
     } catch (error) {
-      showNotification("error", error.message || "Approval shift belum berhasil.");
+      showNotification("error", error.message || "Persetujuan shift gagal.");
     } finally {
       setSubmitting(false);
     }
@@ -713,14 +713,14 @@ export default function ShiftPage() {
         <Panel className="p-6">
           <div className="mb-5">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
-              Approval Owner
+              Persetujuan Pemilik
             </p>
             <h2 className="mt-3 font-display text-2xl font-bold tracking-tight text-slate-950">
               Shift yang menunggu dicek
             </h2>
             {drilldownRisk === "mismatch" ? (
               <p className="mt-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
-                Ada selisih besar. Selesaikan sebelum approval.
+                Ada selisih besar. Selesaikan sebelum disetujui.
               </p>
             ) : null}
           </div>
@@ -866,7 +866,7 @@ export default function ShiftPage() {
             </div>
           ) : (
             <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-4 py-12 text-center text-sm text-slate-500">
-              Tidak ada shift yang menunggu approval.
+              Tidak ada shift yang menunggu persetujuan.
             </div>
           )}
         </Panel>
@@ -921,11 +921,8 @@ export default function ShiftPage() {
       {approvalRequest ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="brand-panel w-full max-w-lg p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brand-gold)]">
-              Approval Owner
-            </p>
-            <h3 className="mt-2 font-display text-2xl font-bold tracking-tight text-slate-950">
-              Konfirmasi Approval Owner
+            <h3 className="font-display text-2xl font-bold tracking-tight text-slate-950">
+              Konfirmasi Persetujuan
             </h3>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               <SummaryItem label="Kasir" value={approvalRequest.cashierName || "-"} />
@@ -971,7 +968,7 @@ export default function ShiftPage() {
                 disabled={submitting}
                 className="brand-button-primary disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {submitting ? "Memproses..." : "Konfirmasi Approval"}
+                {submitting ? "Memproses..." : "Konfirmasi Persetujuan"}
               </button>
             </div>
           </div>

@@ -77,7 +77,7 @@ function MinimalAuthenticatedScreen({ mode, onLogout, user }) {
           Auth stabil, data layer dimatikan
         </h1>
         <p className="mt-3 text-sm leading-6 text-slate-600">
-          Mode: {mode}. User: {user?.email || user?.id || "-"} ({user?.role || "-"}).
+          Mode: {mode}. User: {user?.name || user?.profile?.username || user?.id || "-"} ({user?.role || "-"}).
         </p>
         <button type="button" className="brand-button-primary mt-6 w-full" onClick={onLogout}>
           Logout

@@ -210,7 +210,7 @@ export default function Dashboard() {
       ? {
           title: "Selisih shift besar",
           value: `${shiftDifferenceAlerts.length} shift`,
-          detail: "Ada selisih kas. Perlu keputusan sebelum laporan dikunci.",
+          detail: "Ada selisih saldo. Perlu keputusan sebelum laporan dikunci.",
           tone: "danger",
           urgency: "BLOCKER",
           action: "Review shift",
@@ -233,7 +233,7 @@ export default function Dashboard() {
       : null,
     pendingShiftCount && !shiftDifferenceAlerts.length
       ? {
-          title: "Approval shift pending",
+          title: "Shift menunggu persetujuan",
           value: `${pendingShiftCount} shift`,
           detail: "Review closing shift sebelum laporan harian dikunci.",
           tone: "warning",
@@ -537,17 +537,17 @@ export default function Dashboard() {
 
         <Panel variant="strong" className="p-4">
           <div className="mb-4">
-            <p className="brand-kicker">Kas harian</p>
+            <p className="brand-kicker">Saldo harian</p>
             <h3 className="mt-1 text-lg font-bold tracking-tight text-slate-950">
-              Arus kas harian
+              Pergerakan saldo harian
             </h3>
           </div>
 
           {cashSnapshots.length === 0 ? (
             <div className="brand-empty-state">
-              <p className="text-base font-semibold text-slate-950">Belum ada arus kas harian</p>
+              <p className="text-base font-semibold text-slate-950">Belum ada catatan saldo hari ini</p>
               <p className="mt-2 text-sm leading-7 text-slate-500">
-                Belum ada catatan kas hari ini.
+                Data akan muncul setelah ada transaksi masuk atau keluar.
               </p>
             </div>
           ) : (
