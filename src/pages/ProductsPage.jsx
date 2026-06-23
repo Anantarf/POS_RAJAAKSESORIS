@@ -32,6 +32,7 @@ import {
 import { StockMutationDrawer } from "../features/inventory/components/StockMutationDrawer";
 import { ProductTableCompact } from "../features/inventory/components/ProductTableCompact";
 import { InventoryFormValidation, MutationFormValidation } from "../features/inventory/components/InventoryFormValidation";
+import { RestockAlertsSidebar } from "../features/inventory/components/RestockAlertsSidebar";
 
 const MAX_RENDERED_PRODUCT_ROWS = 240;
 const MAX_PRODUCT_SELECT_OPTIONS = 500;
@@ -1107,7 +1108,7 @@ export default function ProductsPage() {
         </Panel>
       ) : null}
 
-      <div className="grid gap-4 xl:grid-cols-4">
+      <div className="grid gap-4 xl:grid-cols-[1fr_1fr_1fr_1fr]">
         <MetricCard
           label="Total produk"
           value={String(stats.totalProduk)}
@@ -1138,6 +1139,17 @@ export default function ProductsPage() {
           accent="info"
           trend={{ label: "Kondisi stok", tone: stockRiskCount ? "neutral" : "up" }}
           icon="gauge"
+        />
+      </div>
+
+      <div className="grid gap-4 xl:grid-cols-[1fr_300px]">
+        <div />
+        <RestockAlertsSidebar
+          products={restockAlertProducts}
+          onOpenMutation={(product) => {
+            openQuickStockDrawer(product);
+          }}
+          canAddStock={canAddStock}
         />
       </div>
 
