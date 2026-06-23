@@ -203,7 +203,7 @@ begin
         when dg.voided_at is not null then 'Transaksi digital void'
         else 'Transaksi digital'
       end                                                    as event_title,
-      coalesce(dg.no_transaksi, dg.provider, dg.jenis, dg.id::text)
+      coalesce(dg.no_transaksi, dg.provider, dg.jenis::text, dg.id::text)
         || ' - Rp ' || coalesce(dg.harga_jual, 0)::text    as event_detail,
       case
         when dg.voided_at is not null then 'danger'
