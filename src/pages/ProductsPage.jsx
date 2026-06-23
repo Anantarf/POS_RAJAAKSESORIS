@@ -7,7 +7,7 @@ import PaginationBar from "../components/PaginationBar";
 import PageHeader from "../components/app/PageHeader";
 import Panel from "../components/app/Panel";
 import AppIcon from "../components/app/AppIcon";
-import { ModalLayout } from "../components/ui/Primitives";
+import { ModalLayout, Drawer } from "../components/ui/Primitives";
 import PinConfirmationModal from "../components/PinConfirmationModal";
 import { useAuth } from "../contexts/useAuth";
 import { showNotification } from "../contexts/NotificationContext";
@@ -265,6 +265,7 @@ export default function ProductsPage() {
   const [importing, setImporting] = useState(false);
   const [importResult, setImportResult] = useState(null);
   const [notice, setNotice] = useState("");
+  const [quickStockProduct, setQuickStockProduct] = useState(null);
   const inputRef = useRef(null);
   const productNameRef = useRef(null);
   const mutationQuantityRef = useRef(null);
@@ -621,6 +622,7 @@ export default function ProductsPage() {
     if (!canAddStock) return;
     setOpenActionProductId(null);
     setLastQuickMutationAmount(null);
+    setQuickStockProduct(product);
     setMutation({
       productId: product.id,
       tipe: "masuk",
@@ -628,21 +630,6 @@ export default function ProductsPage() {
       referensi: "",
       catatan: "",
     });
-  };
-
-  const prepareStockMutation = (product) => {
-    if (!canAddStock) return;
-    setOpenActionProductId(null);
-    setLastQuickMutationAmount(null);
-    setNotice(`Form mutasi siap untuk ${product.nama}.`);
-    setMutation({
-      productId: product.id,
-      tipe: "masuk",
-      jumlah: "",
-      referensi: "",
-      catatan: `Tambah stok ${product.nama}`,
-    });
-    focusElement(mutationQuantityRef);
   };
 
   const applyQuickMutationAmount = (amount) => {
@@ -2220,7 +2207,7 @@ export default function ProductsPage() {
       {quickStockProduct ? (
         <Drawer
           open={Boolean(quickStockProduct)}
-          title={`Tambah Stok — ${quickStockProduct.nama}`}
+          title={`Tambah Stok - ${quickStockProduct.nama}`}
           onClose={() => {
             setQuickStockProduct(null);
             setMutation(emptyMutation);
