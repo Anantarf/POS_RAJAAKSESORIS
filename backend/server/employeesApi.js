@@ -29,58 +29,19 @@ function buildAuthEmail(username) {
   return `${username}@${domain}`;
 }
 
-function isMissingStationColumnError(error = {}) {
-  const text = [error.message, error.details, error.hint]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
-  return (
-    ["42703", "PGRST204"].includes(String(error.code || "")) ||
-    text.includes("cashier_station") ||
-    text.includes("station_name")
-  );
-}
-
 function validatePayload(body) {
   const nama = String(body?.nama || body?.name || "").trim();
   const username = normalizeUsername(body?.username);
   const password = String(body?.password || "");
-  const pin = String(body?.pin || "").trim();
   const role = body?.role === "pemilik" ? "pemilik" : "kasir";
-  const phone = String(body?.phone || "").trim();
-  const baseSalary = Number(body?.baseSalary ?? body?.base_salary ?? 0);
-  const defaultBonus = Number(body?.defaultBonus ?? body?.default_bonus ?? 0);
-  const defaultDeduction = Number(body?.defaultDeduction ?? body?.default_deduction ?? 0);
-  const cashierStation = String(body?.cashierStation ?? body?.cashier_station ?? "").trim();
-  const validStations = new Set(["", "Kasir 1", "Kasir 2", "Kasir 3", "Kasir 4"]);
 
-  if (!nama) throw new Error("Nama karyawan wajib diisi.");
+  if (!nama) throw new Error("Nama pengguna wajib diisi.");
   if (!/^[a-z0-9._-]{3,40}$/.test(username)) {
     throw new Error("Username harus 3-40 karakter dan hanya boleh huruf, angka, titik, underscore, atau strip.");
   }
   if (password.length < 8) throw new Error("Password minimal 8 karakter.");
-  if (!/^[0-9]{4,8}$/.test(pin)) throw new Error("PIN harus berisi 4 sampai 8 digit angka.");
-  if (phone && !/^[0-9+()\-\s]{8,20}$/.test(phone)) throw new Error("Nomor HP tidak valid.");
-  if ([baseSalary, defaultBonus, defaultDeduction].some((value) => !Number.isFinite(value) || value < 0)) {
-    throw new Error("Nominal payroll tidak boleh minus.");
-  }
-  if (!validStations.has(cashierStation)) {
-    throw new Error("Pos kasir tidak valid.");
-  }
 
-  return {
-    nama,
-    username,
-    authEmail: buildAuthEmail(username),
-    password,
-    pin,
-    role,
-    cashierStation,
-    phone,
-    baseSalary: Math.trunc(baseSalary),
-    defaultBonus: Math.trunc(defaultBonus),
-    defaultDeduction: Math.trunc(defaultDeduction),
-  };
+  return { nama, username, authEmail: buildAuthEmail(username), password, role };
 }
 
 async function getOwnerProfile(token, config) {
@@ -89,10 +50,7 @@ async function getOwnerProfile(token, config) {
     auth: { persistSession: false },
   });
 
-  const {
-    data: { user },
-    error: userError,
-  } = await userClient.auth.getUser(token);
+  const { data: { user }, error: userError } = await userClient.auth.getUser(token);
   if (userError || !user) throw new Error("Sesi owner tidak valid.");
 
   const { data: profile, error: profileError } = await userClient
@@ -102,10 +60,10 @@ async function getOwnerProfile(token, config) {
     .single();
 
   if (profileError || !profile) throw new Error("Profil owner tidak ditemukan.");
-  if (profile.role !== "pemilik") throw new Error("Hanya pemilik yang dapat membuat karyawan.");
+  if (profile.role !== "pemilik") throw new Error("Hanya pemilik yang dapat membuat pengguna.");
   if (profile.status && profile.status !== "active") throw new Error("Akun owner tidak aktif.");
 
-  return { ...profile, userClient };
+  return profile;
 }
 
 export async function employeesHandler(req, res) {
@@ -125,9 +83,7 @@ export async function employeesHandler(req, res) {
 
   try {
     const token = getBearerToken(req);
-    if (!token) {
-      return sendJson(res, 401, { ok: false, error: "Bearer token wajib diisi." });
-    }
+    if (!token) return sendJson(res, 401, { ok: false, error: "Bearer token wajib diisi." });
 
     const owner = await getOwnerProfile(token, config);
     const payload = validatePayload(req.body || {});
@@ -143,9 +99,7 @@ export async function employeesHandler(req, res) {
         .eq("status", "active")
         .is("archived_at", null);
       if (error) throw error;
-      if (count > 0) {
-        throw new Error("Tidak bisa membuat lebih dari satu owner aktif dari halaman karyawan.");
-      }
+      if (count > 0) throw new Error("Tidak bisa membuat lebih dari satu owner aktif.");
     }
 
     const { data: existingUsername, error: usernameError } = await adminClient
@@ -161,62 +115,23 @@ export async function employeesHandler(req, res) {
       email: payload.authEmail,
       password: payload.password,
       email_confirm: true,
-      user_metadata: {
-        name: payload.nama,
-        role: payload.role,
-      },
+      user_metadata: { name: payload.nama, role: payload.role },
     });
     if (createError) throw createError;
 
     const createdUser = authResult.user;
-    const profilePayload = {
-      id: createdUser.id,
-      nama: payload.nama,
-      email: null,
-      username: payload.username,
-      phone: payload.phone || null,
-      role: payload.role,
-      cashier_station: payload.cashierStation || null,
-      station_name: payload.cashierStation || null,
-      status: "active",
-      pin_hash: null,
-      base_salary: payload.baseSalary,
-      default_bonus: payload.defaultBonus,
-      default_deduction: payload.defaultDeduction,
-    };
-
-    let { data: profile, error: profileError } = await adminClient
+    const { data: profile, error: profileError } = await adminClient
       .from("users")
-      .upsert(profilePayload, { onConflict: "id" })
-      .select("id,nama,email,username,phone,role,cashier_station,station_name,status,base_salary,default_bonus,default_deduction")
+      .upsert(
+        { id: createdUser.id, nama: payload.nama, username: payload.username, role: payload.role, status: "active" },
+        { onConflict: "id" }
+      )
+      .select("id, nama, username, role, status")
       .single();
-
-    if (profileError && isMissingStationColumnError(profileError)) {
-      const fallbackPayload = { ...profilePayload };
-      delete fallbackPayload.cashier_station;
-      delete fallbackPayload.station_name;
-      const fallback = await adminClient
-        .from("users")
-        .upsert(fallbackPayload, { onConflict: "id" })
-        .select("id,nama,email,username,phone,role,status,base_salary,default_bonus,default_deduction")
-        .single();
-      profile = fallback.data;
-      profileError = fallback.error;
-    }
 
     if (profileError) {
       await adminClient.auth.admin.deleteUser(createdUser.id).catch(() => {});
       throw profileError;
-    }
-
-    const { error: pinError } = await owner.userClient.rpc("owner_reset_employee_pin", {
-      p_user_id: createdUser.id,
-      p_new_pin: payload.pin,
-    });
-    if (pinError) {
-      await adminClient.from("users").delete().eq("id", createdUser.id);
-      await adminClient.auth.admin.deleteUser(createdUser.id).catch(() => {});
-      throw pinError;
     }
 
     await adminClient.from("audit_logs").insert({
@@ -226,22 +141,13 @@ export async function employeesHandler(req, res) {
       target_table: "users",
       target_id: createdUser.id,
       before_value: {},
-      after_value: {
-        id: profile.id,
-        nama: profile.nama,
-        username: profile.username,
-        role: profile.role,
-        status: profile.status,
-      },
-      reason: "Tambah karyawan",
+      after_value: { id: profile.id, nama: profile.nama, username: profile.username, role: profile.role, status: profile.status },
+      reason: "Tambah pengguna",
       incident_code: "EMPLOYEE-MANAGEMENT",
     });
 
     return sendJson(res, 201, { ok: true, employee: profile });
   } catch (error) {
-    return sendJson(res, 400, {
-      ok: false,
-      error: error.message || "Gagal membuat karyawan.",
-    });
+    return sendJson(res, 400, { ok: false, error: error.message || "Gagal membuat pengguna." });
   }
 }

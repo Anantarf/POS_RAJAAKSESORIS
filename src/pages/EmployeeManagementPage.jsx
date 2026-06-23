@@ -63,10 +63,8 @@ function UserFormModal({ user, onClose, onSave, submitting }) {
     username: user?.username || "",
     role: user?.role || "kasir",
     password: "",
-    pin: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [showPin, setShowPin] = useState(false);
   const [errors, setErrors] = useState({});
 
   const set = (field, value) => {
@@ -80,9 +78,8 @@ function UserFormModal({ user, onClose, onSave, submitting }) {
     if (!form.name.trim()) errs.name = "Nama wajib diisi.";
     if (!form.username.trim()) errs.username = "Username wajib diisi.";
     if (!isEdit && form.password.length < 8) errs.password = "Password minimal 8 karakter.";
-    if (!isEdit && !/^[0-9]{4,8}$/.test(form.pin)) errs.pin = "PIN 4–8 digit angka.";
     if (Object.keys(errs).length) { setErrors(errs); return; }
-    onSave({ id: user?.id, name: form.name.trim(), username: form.username.trim(), role: form.role, password: form.password, pin: form.pin });
+    onSave({ id: user?.id, name: form.name.trim(), username: form.username.trim(), role: form.role, password: form.password });
   };
 
   return (
@@ -136,16 +133,6 @@ function UserFormModal({ user, onClose, onSave, submitting }) {
                 {errors.password && <p className="text-xs font-semibold text-rose-600">{errors.password}</p>}
               </div>
 
-              <div className="space-y-1.5">
-                <label className="block text-sm font-semibold text-slate-700">PIN (4–8 digit)</label>
-                <div className="relative">
-                  <input type={showPin ? "text" : "password"} inputMode="numeric" value={form.pin} onChange={(e) => set("pin", e.target.value)} className={`${fieldClass} pr-12 ${errors.pin ? "border-rose-300" : ""}`} placeholder="Contoh: 1234" autoComplete="new-password" maxLength={8} />
-                  <button type="button" onClick={() => setShowPin((s) => !s)} className="absolute inset-y-1 right-1 flex w-10 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100">
-                    {showPin ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-                {errors.pin && <p className="text-xs font-semibold text-rose-600">{errors.pin}</p>}
-              </div>
             </>
           )}
 
@@ -162,7 +149,7 @@ function UserFormModal({ user, onClose, onSave, submitting }) {
 }
 
 export default function EmployeeManagementPage() {
-  const { coreLoading, coreError, staffUsers = [], createEmployee, updateEmployeeProfile, setEmployeeStatus, resetEmployeePin } = useEmployees();
+  const { coreLoading, coreError, staffUsers = [], createEmployee, updateEmployeeProfile, setEmployeeStatus } = useEmployees();
   const [query, setQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
@@ -205,7 +192,7 @@ export default function EmployeeManagementPage() {
         await updateEmployeeProfile({ employeeId: id, name, username, role });
         showNotification("success", "Pengguna diperbarui.");
       } else {
-        await createEmployee({ name, username, password, role, pin });
+        await createEmployee({ name, username, password, role });
         showNotification("success", "Pengguna ditambahkan.");
       }
       closeForm();
@@ -223,18 +210,6 @@ export default function EmployeeManagementPage() {
       showNotification("success", next === "active" ? "Pengguna diaktifkan." : "Pengguna dinonaktifkan.");
     } catch (err) {
       showNotification("error", err?.message || "Gagal mengubah status.");
-    }
-  };
-
-  const handleResetPin = async (u) => {
-    const pin = window.prompt(`PIN baru untuk ${u.nama} (4–8 digit angka):`);
-    if (!pin) return;
-    if (!/^[0-9]{4,8}$/.test(pin)) { showNotification("warning", "PIN harus 4–8 digit angka."); return; }
-    try {
-      await resetEmployeePin({ employeeId: u.id, newPin: pin });
-      showNotification("success", "PIN berhasil diatur ulang.");
-    } catch (err) {
-      showNotification("error", err?.message || "Gagal reset PIN.");
     }
   };
 
@@ -349,7 +324,6 @@ export default function EmployeeManagementPage() {
                           Detail
                         </button>
                         <button type="button" onClick={() => openEdit(u)} className="brand-button-secondary text-xs">Edit</button>
-                        <button type="button" onClick={() => handleResetPin(u)} className="brand-button-secondary text-xs">Reset PIN</button>
                         <button type="button" onClick={() => handleToggleStatus(u)} className={u.status === "active" ? "brand-button-danger text-xs" : "brand-button-success text-xs"}>
                           {u.status === "active" ? "Nonaktifkan" : "Aktifkan"}
                         </button>

@@ -14,7 +14,9 @@
     "test:performance": "node --test tests/performance-boundaries.test.mjs",
     "test:ux": "node --test tests/ux-operational-guardrails.test.mjs",
     "verify": "npm run lint && npm run test && npm run build && npm run verify:hardening",
-    "verify:hardening": "node scripts/verify-production-hardening.mjs"
+    "verify:deploy": "npm run verify && npm run verify:database",
+    "verify:hardening": "node scripts/verify-production-hardening.mjs",
+    "verify:database": "node scripts/verify-database.mjs"
   },
   "dependencies": {
     "@lottiefiles/dotlottie-web": "^0.71.0",

@@ -95,6 +95,16 @@ const migrations = [
   '20260526_03_security_boundary_enforcement.sql',
   '20260527_01_money_flow_idempotency.sql',
   '20260527_02_audit_storage_retention_foundation.sql',
+  '20260531_01_warranty_claims_customer_return.sql',
+  '20260619_01_multi_cashier_station_shift.sql',
+  '20260622191910_drop_email_from_users.sql',
+  '20260623_01_integration_rate_limits.sql',
+  '20260623_02_username_login.sql',
+  '20260623_03_username_login_auth_join.sql',
+  '20260623_10_schema_cleanup_phase1.sql',
+  '20260623_11_recreate_views_after_cleanup.sql',
+  '20260623_12_enforce_username_not_null_unique.sql',
+  '20260623_13_repair_digital_transaction_category_fields.sql',
 ];
 
 async function runMigrations() {

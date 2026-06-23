@@ -72,10 +72,21 @@ FONNTE_TOKEN=YOUR_TOKEN_HERE
 FONNTE_TARGETS=6287884820507,6285659085578
 ```
 
-3. Jalankan migration SQL di:
+3. Jalankan migration Supabase sesuai urutan file di `supabase/migrations/`.
 
-- `supabase/migrations/20260412_raja_aksesoris_pos.sql`
-- `supabase/migrations/20260412_product_code_and_stock_mutations.sql`
+Database production harus cocok dengan kontrak di `docs/database-target.md`. Peta migration ada di `docs/database-migration-map.md`.
+
+Jika memiliki `SUPABASE_URL` dan `SUPABASE_SERVICE_ROLE_KEY`, cek kontrak database:
+
+```bash
+npm run verify:database
+```
+
+Sebelum deploy Vercel, jalankan gate lengkap:
+
+```bash
+npm run verify:deploy
+```
 
 4. Jalankan app:
 
