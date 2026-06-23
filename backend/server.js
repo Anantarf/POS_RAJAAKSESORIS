@@ -7,6 +7,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import mysql from 'mysql2/promise';
 
+import authRoutes from './routes/auth.js';
 import productsRoutes from './routes/products.js';
 import employeesRoutes from './routes/employees.js';
 import reportsRoutes from './routes/reports.js';
@@ -79,6 +80,9 @@ app.use(express.urlencoded({ extended: true }));
 // Health check
 app.get('/ping', (req, res) => res.json({ status: 'OK', timestamp: new Date().toISOString() }));
 app.get('/api/health', (req, res) => res.json({ status: 'OK', timestamp: new Date().toISOString() }));
+
+// Auth routes (custom JWT-based auth)
+app.use('/api/auth', authRoutes);
 
 // Supabase is the POS source of truth. Legacy MySQL paths are local-only opt-ins.
 if (legacyMysqlRoutesEnabled) {
