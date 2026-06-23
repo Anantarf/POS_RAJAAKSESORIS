@@ -88,7 +88,7 @@ export function useEmployeeActivity(employeeId, enabled, options = {}) {
         return nextRows;
       } catch (err) {
         if (requestVersion === requestVersionRef.current) {
-          const rawMsg = err.message || "";
+          const rawMsg = (err && err.message) ? String(err.message) : "";
           const isTechnicalError = 
             rawMsg.includes("column reference") || 
             rawMsg.includes("ambiguous") || 

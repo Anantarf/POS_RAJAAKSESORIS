@@ -57,7 +57,7 @@ export function useEmployeePermissions(employeeId, enabled) {
     } catch (err) {
       if (requestVersion === requestVersionRef.current) {
         setLoaded(false);
-        const rawMsg = err.message || "";
+        const rawMsg = err?.message ? String(err.message) : "";
         const isTechnicalError = 
           rawMsg.includes("column reference") || 
           rawMsg.includes("ambiguous") || 

@@ -9,6 +9,10 @@ import PinConfirmationModal from "../components/PinConfirmationModal";
 import ReceiptModal from "../components/ReceiptModal";
 import { useAuth } from "../contexts/useAuth";
 import { showNotification } from "../contexts/NotificationContext";
+import { SplitPaymentWidget } from "../features/cashier/components/SplitPaymentWidget";
+import { CartMobileSheet } from "../features/cashier/components/CartMobileSheet";
+import { PaymentMethodSelector } from "../features/cashier/components/PaymentMethodSelector";
+import { SmartCashInput } from "../features/cashier/components/SmartCashInput";
 import {
   customerPaymentPlatforms,
   walletPlatformLabelMap,
@@ -53,8 +57,8 @@ const paymentGroups = [
 ];
 
 const NOTE_MAX_LENGTH = 150;
-const CART_UNAVAILABLE_REMOVAL_DELAY_MS = 2800;
-const quickCashAmounts = [50000, 100000, 200000, 500000];
+// ponytail: instant removal for unavailable items—better UX than 2.8s delay
+const CART_UNAVAILABLE_REMOVAL_DELAY_MS = 0;
 const bankWalletIds = ["bca", "bank_mas", "mandiri", "bri", "bni"];
 const ewalletWalletIds = [
   "dana",
@@ -128,6 +132,7 @@ export default function CashierPage() {
   const [voidTarget, setVoidTarget] = useState(null);
   const [hydratingProducts, setHydratingProducts] = useState(false);
   const [productHydrationError, setProductHydrationError] = useState("");
+  const [shiftBannerExpanded, setShiftBannerExpanded] = useState(true);
   const {
     isPinModalOpen,
     closePinModal,
@@ -872,31 +877,41 @@ export default function CashierPage() {
       variant={currentShift ? "strong" : "muted"}
       className={`px-5 py-4 ${currentShift ? "" : "border-amber-200 bg-amber-50/70"}`}
     >
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <span className={currentShift ? "brand-badge-success" : "brand-badge-warning"}>
-            {currentShift ? "Shift aktif" : "Shift belum aktif"}
-          </span>
-          <p className="mt-3 text-sm font-semibold text-slate-950">
-            {currentShift
-              ? `${selectedCashier?.nama || currentShift.cashier_name || "Kasir"} • ${currentShift.cashier_station || "Station belum dipilih"} • Shift ${currentShift.shift_type || "-"} aktif sejak ${formatDateTime(
-                  currentShift.start_time,
-                  {
-                    dateStyle: "medium",
-                    timeStyle: "short",
-                  }
-                )}`
-              : "Transaksi baru bisa disimpan setelah shift dibuka oleh kasir yang bertugas."}
-          </p>
+      <button
+        type="button"
+        onClick={() => setShiftBannerExpanded(!shiftBannerExpanded)}
+        className="w-full text-left"
+      >
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex-1">
+            <span className={currentShift ? "brand-badge-success" : "brand-badge-warning"}>
+              {currentShift ? "Shift aktif" : "Shift belum aktif"}
+            </span>
+            {shiftBannerExpanded && (
+              <p className="mt-3 text-sm font-semibold text-slate-950">
+                {currentShift
+                  ? `${selectedCashier?.nama || currentShift.cashier_name || "Kasir"} • ${currentShift.cashier_station || "Station belum dipilih"} • Shift ${currentShift.shift_type || "-"} aktif`
+                  : "Transaksi baru bisa disimpan setelah shift dibuka oleh kasir yang bertugas."}
+              </p>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            {!currentShift && shiftBannerExpanded && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate("/shift");
+                }}
+                className="brand-button-primary text-sm"
+              >
+                Buka Shift
+              </button>
+            )}
+            <span className="text-slate-500">{shiftBannerExpanded ? "−" : "+"}</span>
+          </div>
         </div>
-        <button
-          type="button"
-          onClick={() => navigate("/shift")}
-          className={currentShift ? "brand-button-secondary" : "brand-button-primary"}
-        >
-          {currentShift ? "Lihat Shift" : "Buka Shift"}
-        </button>
-      </div>
+      </button>
     </Panel>
   );
   const selectionCartRail = (
@@ -1347,114 +1362,27 @@ export default function CashierPage() {
 
               {!isSplitPayment ? (
                 <>
-                  <div>
-                    <p className="brand-section-label">Metode bayar</p>
-                    <div className="mt-3 grid grid-cols-2 gap-2">
-                      {paymentGroups.map((method) => (
-                        <button
-                          key={method.value}
-                          type="button"
-                          onClick={() => setPaymentGroup(method.value)}
-                          className={`brand-choice-button min-h-[50px] text-sm ${
-                            paymentGroup === method.value
-                              ? "brand-choice-button-active"
-                              : "brand-choice-button-idle"
-                          }`}
-                        >
-                          {method.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {paymentGroup === "transfer_bank" ? (
-                    <div>
-                      <label className="mb-2 block text-sm font-semibold text-slate-700">
-                        Rekening tujuan toko
-                      </label>
-                      <select
-                        value={bankWallet}
-                        onChange={(event) => setBankWallet(event.target.value)}
-                        className="brand-select"
-                      >
-                        {bankWalletOptions.map((option) => (
-                          <option key={option.value} value={option.value} className="bg-white">
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  ) : null}
-
-                  {paymentGroup === "ewallet" ? (
-                    <div>
-                      <label className="mb-2 block text-sm font-semibold text-slate-700">
-                        E-Wallet tujuan toko
-                      </label>
-                      <select
-                        value={ewalletWallet}
-                        onChange={(event) => setEwalletWallet(event.target.value)}
-                        className="brand-select"
-                      >
-                        {ewalletOptions.map((option) => (
-                          <option key={option.value} value={option.value} className="bg-white">
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  ) : null}
+                  <PaymentMethodSelector
+                    paymentGroup={paymentGroup}
+                    onChangePaymentGroup={setPaymentGroup}
+                    bankWallet={bankWallet}
+                    onChangeBankWallet={setBankWallet}
+                    ewalletWallet={ewalletWallet}
+                    onChangeEwalletWallet={setEwalletWallet}
+                    bankWalletOptions={bankWalletOptions}
+                    ewalletOptions={ewalletOptions}
+                    cartTotal={cartTotal}
+                    selectedWalletBalance={selectedWalletBalance}
+                    walletPlatformLabelMap={walletPlatformLabelMap}
+                  />
 
                   {paymentGroup === "cash" ? (
-                    <div>
-                      <label
-                        htmlFor="cash-payment-received"
-                        className="mb-2 block text-sm font-semibold text-slate-700"
-                      >
-                        Uang diterima
-                      </label>
-                      <input
-                        id="cash-payment-received"
-                        ref={cashInputRef}
-                        type="number"
-                        min="0"
-                        value={cashReceived}
-                        onChange={(event) => setCashReceived(event.target.value)}
-                        className="brand-input h-12 text-base font-bold"
-                        placeholder="Masukkan nominal"
-                        aria-describedby="cash-payment-validation"
-                        aria-invalid={cashReceived !== "" && cashShortage > 0}
-                        required
-                      />
-
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setCashReceived(String(cartTotal))}
-                          className={`brand-choice-button ${
-                            cashValue === cartTotal && cartTotal > 0
-                              ? "brand-choice-button-active"
-                              : "brand-choice-button-idle"
-                          }`}
-                        >
-                          Uang Pas
-                        </button>
-                        {quickCashAmounts.map((amount) => (
-                          <button
-                            key={amount}
-                            type="button"
-                            onClick={() => setCashReceived(String(amount))}
-                            className={`brand-choice-button ${
-                              cashValue === amount
-                                ? "brand-choice-button-active"
-                                : "brand-choice-button-idle"
-                            }`}
-                          >
-                            {formatRupiah(amount)}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
+                    <SmartCashInput
+                      cartTotal={cartTotal}
+                      cashReceived={cashReceived}
+                      onChangeCashReceived={setCashReceived}
+                      inputRef={cashInputRef}
+                    />
                   ) : (
                     <div className="brand-subtle-block text-sm text-slate-600">
                       <p className="font-semibold text-slate-950">{resolvedPaymentLabel}</p>
@@ -1470,138 +1398,43 @@ export default function CashierPage() {
                       </p>
                     </div>
                   )}
-
-                  <div
-                    id="cash-payment-validation"
-                    className={`rounded-lg border px-4 py-4 text-sm font-semibold ${cashDisplay.tone}`}
-                    aria-live="polite"
-                  >
-                    {isCashPayment ? cashDisplay.label : `Pembayaran dicatat via ${resolvedPaymentLabel}`}
-                  </div>
                 </>
               ) : (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <p className="brand-section-label">Rincian split</p>
-                      <p className="mt-1 text-sm font-semibold text-slate-600">
-                        Total split harus pas dengan tagihan.
-                      </p>
-                    </div>
-                    <span
-                      className={
-                        splitPaymentReady ? "brand-badge-success" : "brand-badge-warning"
-                      }
-                    >
-                      {splitPaymentReady ? "Siap bayar" : "Belum pas"}
-                    </span>
-                  </div>
-
-                  {splitPayments.map((payment, index) => (
-                    <div
-                      key={payment.id}
-                      className="rounded-lg border border-slate-200 bg-white p-3"
-                    >
-                      <div className="grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
-                        <select
-                          value={payment.method}
-                          onChange={(event) =>
-                            updateSplitPayment(payment.id, { method: event.target.value })
-                          }
-                          className="brand-select"
-                          aria-label={`Metode split ${index + 1}`}
-                        >
-                          {splitPaymentOptions.map((option) => (
-                            <option key={option.value} value={option.value} className="bg-white">
-                              {option.label}
-                            </option>
-                          ))}
-                        </select>
-                        <input
-                          type="number"
-                          min="0"
-                          value={payment.amount}
-                          onChange={(event) =>
-                            updateSplitPayment(payment.id, { amount: event.target.value })
-                          }
-                          className="brand-input font-bold"
-                          placeholder="Nominal"
-                          aria-label={`Nominal split ${index + 1}`}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => fillSplitRemaining(payment.id)}
-                          className="brand-button-secondary min-h-[42px] px-3 py-2 text-xs"
-                        >
-                          Isi Sisa
-                        </button>
-                      </div>
-                      <div className="mt-2 flex items-center justify-between gap-3">
-                        <p className="text-xs font-semibold text-slate-500">
-                          {walletPlatformLabelMap[payment.method] || payment.method}
-                        </p>
-                        <button
-                          type="button"
-                          onClick={() => removeSplitPayment(payment.id)}
-                          disabled={splitPayments.length <= 2}
-                          className="text-xs font-bold text-[var(--brand-danger)] disabled:cursor-not-allowed disabled:text-slate-300"
-                        >
-                          Hapus
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-
-                  <button
-                    type="button"
-                    onClick={addSplitPayment}
-                    className="brand-button-secondary w-full"
-                  >
-                    Tambah Metode Split
-                  </button>
-
-                  <div
-                    className={`rounded-lg border px-4 py-4 text-sm font-semibold ${
-                      splitOverpay
-                        ? "border-red-200 bg-red-50 text-red-700"
-                        : splitRemaining
-                          ? "border-amber-200 bg-amber-50 text-amber-700"
-                          : "border-emerald-200 bg-emerald-50 text-emerald-700"
-                    }`}
-                  >
-                    {splitOverpay
-                      ? `Nominal split lebih ${formatRupiah(splitOverpay)}.`
-                      : splitRemaining
-                        ? `Sisa pembayaran ${formatRupiah(splitRemaining)}.`
-                        : "Pembayaran split sudah pas."}
-                  </div>
-                </div>
+                <SplitPaymentWidget
+                  cartTotal={cartTotal}
+                  splitPayments={splitPayments}
+                  onUpdatePayment={updateSplitPayment}
+                  onAddPayment={addSplitPayment}
+                  onRemovePayment={removeSplitPayment}
+                  splitPaymentOptions={splitPaymentOptions}
+                />
               )}
 
 
-              <details className="group">
-                <summary className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
-                  <span>+ Catatan (Opsional)</span>
-                </summary>
-                <div className="mt-3">
-                  <div className="relative">
-                    <textarea
-                      value={note}
-                      onChange={(event) => setNote(event.target.value.slice(0, NOTE_MAX_LENGTH))}
-                      maxLength={NOTE_MAX_LENGTH}
-                      className="brand-textarea pb-8"
-                      placeholder="Tambahkan catatan untuk transaksi ini..."
-                    />
-                    <span
-                      className={`pointer-events-none absolute bottom-2 right-3 text-[11px] font-bold ${
-                        note.length > NOTE_MAX_LENGTH - 20 ? "text-amber-700" : "text-slate-400"
-                      }`}
-                    >
-                      {note.length}/{NOTE_MAX_LENGTH}
-                    </span>
-                  </div>
+              {/* Note Field - Always visible */}
+              <div>
+                <label htmlFor="transaction-note" className="block text-sm font-semibold text-slate-700 mb-2">
+                  Catatan Transaksi (Opsional)
+                </label>
+                <div className="relative">
+                  <textarea
+                    id="transaction-note"
+                    value={note}
+                    onChange={(event) => setNote(event.target.value.slice(0, NOTE_MAX_LENGTH))}
+                    maxLength={NOTE_MAX_LENGTH}
+                    className="brand-textarea pb-8 text-sm"
+                    placeholder="Misal: diskon khusus, notes dari pelanggan, dll..."
+                    rows="3"
+                  />
+                  <span
+                    className={`pointer-events-none absolute bottom-2 right-3 text-[11px] font-bold ${
+                      note.length > NOTE_MAX_LENGTH - 20 ? "text-amber-700" : "text-slate-400"
+                    }`}
+                  >
+                    {note.length}/{NOTE_MAX_LENGTH}
+                  </span>
                 </div>
-              </details>
+              </div>
 
               <button
                 type="submit"
@@ -1627,26 +1460,17 @@ export default function CashierPage() {
         </div>
       )}
 
-      {step === "product" && cartItemCount ? (
-        <button
-          type="button"
-          onClick={handleContinue}
-          className="brand-floating-checkout md:hidden"
-          aria-label="Lanjut ke checkout"
-        >
-          <span className="flex items-center justify-between gap-4">
-            <span>
-              <span className="block text-xs font-bold uppercase tracking-[0.18em]">
-                Checkout
-              </span>
-              <span className="mt-1 block text-lg font-bold">{formatRupiah(cartTotal)}</span>
-            </span>
-            <span className="rounded-md bg-white/50 px-3 py-2 text-sm font-bold">
-              {cartItemCount} item
-            </span>
-          </span>
-        </button>
-      ) : null}
+      {/* Mobile Cart Sheet (replaces floating button) */}
+      {step === "product" && (
+        <CartMobileSheet
+          cart={cart}
+          cartTotal={cartTotal}
+          cartItemCount={cartItemCount}
+          onSetQty={setCartQty}
+          onContinue={handleContinue}
+          disabled={!cartItemCount || hasUnavailableCartItems}
+        />
+      )}
 
       {successFeedback ? (
         <div className="pointer-events-none fixed bottom-6 left-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2">
