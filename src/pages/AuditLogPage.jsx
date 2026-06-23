@@ -111,7 +111,7 @@ export default function AuditLogPage() {
               Kapasitas audit
             </h2>
             <p className="mt-1 text-sm text-slate-600">
-              Ukuran total termasuk index database.
+              Total kapasitas penyimpanan riwayat sistem.
             </p>
           </div>
           <button

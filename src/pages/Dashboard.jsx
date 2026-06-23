@@ -271,6 +271,7 @@ export default function Dashboard() {
   const attentionItems = ownerAlerts.length ? ownerAlerts : insightAttention;
 
   return (
+
     <div className="space-y-5">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-slate-950">Dashboard Toko</h1>
@@ -344,8 +345,8 @@ export default function Dashboard() {
         <Panel className={`p-4 ${coreError ? "border-amber-200 bg-amber-50" : ""}`}>
           <p className="text-sm font-semibold text-slate-700">
             {coreError
-              ? `Data inti belum lengkap: ${coreError}`
-              : "Data inti sedang disinkronkan di belakang layar."}
+              ? `Gagal memuat ringkasan: ${coreError}`
+              : "Sistem sedang menyiapkan data laporan."}
           </p>
         </Panel>
       ) : null}

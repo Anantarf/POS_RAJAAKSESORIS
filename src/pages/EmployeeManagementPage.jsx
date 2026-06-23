@@ -207,7 +207,7 @@ export default function EmployeeManagementPage() {
                   {selectedEmployee?.nama || "Pilih pengguna"}
                 </h2>
                 <p className="mt-1 text-sm text-slate-600">
-                  Akses dan aktivitas dimuat dari backend.
+                  Riwayat akses dan aktivitas pengguna.
                 </p>
               </div>
               {selectedEmployee ? <StatusBadge status={selectedEmployee.status} /> : null}
@@ -287,14 +287,7 @@ export default function EmployeeManagementPage() {
                 </div>
               </div>
 
-              <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-3">
-                <div className="flex gap-2">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-700" />
-                  <p className="text-sm font-semibold text-emerald-800">
-                    Aksi sensitif tetap dicek oleh backend sebelum disimpan.
-                  </p>
-                </div>
-              </div>
+
             </>
           ) : (
             <p className="text-sm text-slate-500">Belum ada pengguna.</p>

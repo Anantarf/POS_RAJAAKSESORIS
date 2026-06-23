@@ -60,7 +60,7 @@ export async function postShiftWhatsappNotification(type, payload) {
         details: { type, backendUrl: BACKEND_API_BASE_URL },
       });
       throw new Error(
-        `Backend WhatsApp belum bisa dihubungi di ${BACKEND_API_BASE_URL}. Pastikan service backend sudah berjalan.`
+        "Layanan notifikasi WhatsApp sedang gangguan. Pesan mungkin tertunda atau tidak terkirim."
       );
     }
     recordOperationalEventSoon({
