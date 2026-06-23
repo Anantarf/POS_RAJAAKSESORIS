@@ -28,8 +28,16 @@ function requireSupabaseConfig() {
   const url = getSupabaseUrl();
   const serviceKey = getServiceRoleKey();
 
-  if (!url || !serviceKey) {
-    throw createRequestError(500, "Supabase service role belum dikonfigurasi di backend.");
+  if (!url) {
+    throw createRequestError(500, "Supabase URL tidak dikonfigurasi. Set SUPABASE_URL di .env");
+  }
+
+  if (!serviceKey) {
+    throw createRequestError(500, "Supabase service role key tidak dikonfigurasi. Set SUPABASE_SERVICE_ROLE_KEY di .env");
+  }
+
+  if (!/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(url)) {
+    throw createRequestError(500, `SUPABASE_URL format tidak valid: ${url}`);
   }
 
   return { url, serviceKey };

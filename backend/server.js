@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import mysql from 'mysql2/promise';
+import process from 'process';
 
 import authRoutes from './routes/auth.js';
 import productsRoutes from './routes/products.js';
@@ -20,6 +21,25 @@ import { requireAuthenticatedUser } from './server/requestSecurity.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 dotenv.config({ path: path.resolve(__dirname, '.env'), override: true });
+
+// Validate critical environment variables
+function validateServerEnv() {
+  const required = ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_ANON_KEY', 'JWT_SECRET'];
+  const missing = required.filter(key => !String(process.env[key] || '').trim());
+
+  if (missing.length > 0) {
+    console.error(`\n❌ Missing required environment variables: ${missing.join(', ')}`);
+    console.error('Setup guide:');
+    console.error('1. Copy .env.example to .env');
+    console.error('2. Fill Supabase credentials from Supabase Dashboard');
+    console.error('3. Generate JWT_SECRET: node scripts/generate-jwt-secret.mjs');
+    console.error('4. Run server again\n');
+    process.exit(1);
+  }
+}
+
+// Validate environment before starting
+validateServerEnv();
 
 const app = express();
 const PORT = process.env.PORT || 3002;
@@ -52,14 +72,21 @@ const corsOptions = {
 const dbConfig = {
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD || process.env.DB_PASS,
+  password: process.env.DB_PASSWORD || process.env.DB_PASS || '',
   database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: Number(process.env.DB_CONNECTION_LIMIT || 10),
   queueLimit: 0,
 };
 const hasDbConfig = Boolean(dbConfig.host && dbConfig.user && dbConfig.database);
-const dbPool = hasDbConfig ? mysql.createPool(dbConfig) : null;
+let dbPool = null;
+if (hasDbConfig) {
+  try {
+    dbPool = mysql.createPool(dbConfig);
+  } catch (error) {
+    console.warn(`⚠️  MySQL pool creation failed: ${error.message}`);
+  }
+}
 
 if (dbPool) {
   app.set('dbPool', dbPool);
@@ -117,7 +144,11 @@ app.use((err, req, res, _next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Integration server running on http://localhost:${PORT}`);
+  console.log(`\n✅ Integration server running on http://localhost:${PORT}`);
+  console.log(`   Supabase: ${String(process.env.SUPABASE_URL).replace(/\/+$/, '')}`);
+  console.log(`   CORS Origin: ${process.env.CORS_ORIGIN || 'localhost pattern'}`);
+  console.log(`   Database: ${dbPool ? 'MySQL pool (10 connections)' : 'Supabase RPC (primary)'}`);
+  console.log('');
 });
 
 process.on('SIGINT', async () => {

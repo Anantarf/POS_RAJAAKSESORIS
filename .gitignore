@@ -3,19 +3,42 @@ dist
 .vercel
 POS-RAJA-AKSESORIS-REVISI/
 POS-RAJA-AKSESORIS/
+
+# Environment files - NEVER commit actual credentials
 .env
 .env.local
 .env.*.local
+.env.production.local
+backend/.env
+backend/.env.local
+
+# Logs
 *.log
 *.err.log
 *.pid
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
 playwright*.png
 test-results/
+
+# IDE
+.vscode/
+**/.vscode/
+.idea/
+*.swp
+*.swo
+
+# Supabase
 supabase/.temp/
+supabase/migrations-combined.sql
+supabase/reset-*.sql
+
+# Temporary
 .agents/
 .codex/
 .claude/
-.vscode/
-**/.vscode/
-supabase/migrations-combined.sql
-supabase/reset-*.sql
+*.tmp
+.DS_Store
