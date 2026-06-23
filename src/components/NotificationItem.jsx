@@ -97,13 +97,13 @@ export default function NotificationItem({ notification, onRemove }) {
   return (
     <div
       role="alert"
-      className={`pointer-events-auto w-full overflow-hidden rounded-lg border border-slate-200/80 border-l-4 bg-[linear-gradient(135deg,#FFFFFF_0%,#FFF9EC_100%)] shadow-md transition-all duration-300 ease-out ${config.accentClass} ${
+      className={`pointer-events-auto w-full overflow-hidden rounded-lg border border-l-4 bg-[var(--brand-surface)] shadow-lg transition-all duration-300 ease-out ${config.accentClass} ${
         isVisible ? "translate-y-0 opacity-100" : "-translate-y-3 opacity-0"
       }`}
     >
       <div className="flex items-start gap-3 p-4">
         <div
-          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border ${config.iconWrapperClass}`}
+          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border ${config.iconWrapperClass} dark:opacity-80`}
         >
           <Icon className={`h-5 w-5 ${config.iconClass}`} strokeWidth={2.2} />
         </div>
@@ -111,14 +111,14 @@ export default function NotificationItem({ notification, onRemove }) {
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="font-semibold text-slate-950">{config.title}</p>
-              <p className="mt-1 text-sm leading-6 text-slate-600">{notification.message}</p>
+              <p className="font-semibold text-[var(--brand-text)]">{config.title}</p>
+              <p className="mt-1 text-sm leading-6 text-[var(--brand-text-muted)]">{notification.message}</p>
             </div>
 
             <button
               type="button"
               onClick={dismiss}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-full text-[var(--brand-text-soft)] transition hover:bg-[var(--brand-surface-soft)] hover:text-[var(--brand-text)]"
               aria-label="Tutup notifikasi"
             >
               <X className="h-4 w-4" />

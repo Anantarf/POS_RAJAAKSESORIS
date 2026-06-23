@@ -5,10 +5,12 @@ const Button = ({
   fullWidth = false,
   className = "",
   type = "button",
+  loading = false,
+  disabled = false,
   ...props
 }) => {
   const baseClasses =
-    "disabled:cursor-not-allowed disabled:opacity-60";
+    "disabled:cursor-not-allowed disabled:opacity-60 font-semibold transition-all duration-200";
 
   const variants = {
     primary: "brand-button-primary",
@@ -35,9 +37,17 @@ const Button = ({
     <button
       type={type}
       className={`${baseClasses} ${resolvedVariant} ${resolvedSize} ${widthClass} ${className}`.trim()}
+      disabled={disabled || loading}
       {...props}
     >
-      {children}
+      {loading ? (
+        <span className="inline-flex items-center gap-2">
+          <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-r-transparent" />
+          Loading...
+        </span>
+      ) : (
+        children
+      )}
     </button>
   );
 };

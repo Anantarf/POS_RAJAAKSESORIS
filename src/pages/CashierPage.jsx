@@ -28,7 +28,6 @@ import {
   getSplitPaymentAmount,
 } from "../features/cashier/utils/paymentCalculations";
 import CashierSearchPanel from "../features/cashier/components/CashierSearchPanel";
-import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import { useProducts } from "../hooks/useProducts";
 import {
   isPinActionCancelledError,
@@ -794,43 +793,6 @@ export default function CashierPage() {
     }
   };
 
-  const handleQuickExactPayment = () => {
-    if (!cartItemCount) {
-      showNotification("warning", "Keranjang masih kosong.");
-      searchInputRef.current?.focus();
-      return;
-    }
-
-    if (hasUnavailableCartItems) {
-      showNotification("warning", "Selesaikan item stok habis atau tunggu item dihapus otomatis.");
-      return;
-    }
-
-    setPaymentMode("single");
-    setPaymentGroup("cash");
-    setCashReceived(String(cartTotal));
-    setStep("checkout");
-    window.requestAnimationFrame(() => {
-      cashInputRef.current?.focus();
-    });
-  };
-
-  const handleShortcutReset = () => {
-    if (!cart.length && step === "product") {
-      setSearch("");
-      searchInputRef.current?.focus();
-      return;
-    }
-
-    resetSale();
-    setStep("product");
-    setSearch("");
-    showNotification("info", "Keranjang dan pembayaran direset.");
-    window.requestAnimationFrame(() => {
-      searchInputRef.current?.focus();
-    });
-  };
-
   const handleSearchClear = useCallback(() => {
     setSearch("");
     searchInputRef.current?.focus();
@@ -845,38 +807,6 @@ export default function CashierPage() {
       }
     },
     [addToCart, exactCodeMatch]
-  );
-
-  useKeyboardShortcuts(
-    [
-      {
-        key: "F2",
-        allowInInput: true,
-        action: () => {
-          setStep("product");
-          window.requestAnimationFrame(() => searchInputRef.current?.focus());
-        },
-      },
-      {
-        key: "F4",
-        allowInInput: true,
-        action: () => {
-          if (step === "checkout") return;
-          handleContinue();
-        },
-      },
-      {
-        key: "F8",
-        allowInInput: true,
-        action: handleQuickExactPayment,
-      },
-      {
-        key: "Escape",
-        allowInInput: true,
-        action: handleShortcutReset,
-      },
-    ],
-    !processing
   );
 
   const hydrateCashierProducts = useCallback(async () => {
@@ -1053,14 +983,6 @@ export default function CashierPage() {
           <h1 className="mt-1 truncate font-display text-2xl font-black tracking-tight text-slate-950">
             Transaksi Aksesoris
           </h1>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="brand-shortcut-strip hidden md:flex">
-            <span>F2 Cari</span>
-            <span>F4 Checkout</span>
-            <span>F8 Uang Pas</span>
-            <span>Esc Reset</span>
-          </div>
         </div>
       </div>
 
