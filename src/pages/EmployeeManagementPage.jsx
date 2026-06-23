@@ -2,15 +2,11 @@ import { useDeferredValue, useMemo, useState } from "react";
 import {
   Activity,
   CheckCircle2,
-  Eye,
-  EyeOff,
   Loader2,
-  Plus,
   Search,
   ShieldCheck,
   UserRound,
   Users,
-  X,
 } from "lucide-react";
 import PageHeader from "../components/app/PageHeader";
 import Panel from "../components/app/Panel";
@@ -56,106 +52,13 @@ function SummaryTile({ label, value, helper, icon: Icon }) {
 const fieldClass =
   "w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:outline-none";
 
-function UserFormModal({ user, onClose, onSave, submitting }) {
-  const isEdit = Boolean(user);
-  const [form, setForm] = useState({
-    name: user?.nama || "",
-    username: user?.username || "",
-    role: user?.role || "kasir",
-    password: "",
-  });
-  const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState({});
 
-  const set = (field, value) => {
-    setForm((f) => ({ ...f, [field]: value }));
-    setErrors((e) => { const n = { ...e }; delete n[field]; return n; });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const errs = {};
-    if (!form.name.trim()) errs.name = "Nama wajib diisi.";
-    if (!form.username.trim()) errs.username = "Username wajib diisi.";
-    if (!isEdit && form.password.length < 8) errs.password = "Password minimal 8 karakter.";
-    if (Object.keys(errs).length) { setErrors(errs); return; }
-    onSave({ id: user?.id, name: form.name.trim(), username: form.username.trim(), role: form.role, password: form.password });
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/55 backdrop-blur-sm sm:items-center sm:p-4">
-      <div role="dialog" aria-modal="true" className="flex max-h-[100dvh] w-full flex-col overflow-hidden rounded-t-3xl border border-slate-200/60 bg-white shadow-2xl sm:max-h-[calc(100dvh-2rem)] sm:max-w-lg sm:rounded-3xl">
-        <div className="flex items-center justify-between gap-4 border-b border-slate-100 bg-[var(--brand-surface-soft)] px-5 py-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-950 text-[var(--brand-gold)]">
-              <UserRound className="h-5 w-5" strokeWidth={1.9} />
-            </div>
-            <h3 className="text-lg font-black tracking-tight text-slate-950">
-              {isEdit ? "Edit Pengguna" : "Tambah Pengguna"}
-            </h3>
-          </div>
-          <button type="button" onClick={onClose} className="rounded-xl border border-slate-200 bg-white p-2 text-slate-500 hover:text-slate-950">
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 overflow-y-auto p-5">
-          <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-slate-700">Nama lengkap</label>
-            <input value={form.name} onChange={(e) => set("name", e.target.value)} className={`${fieldClass} ${errors.name ? "border-rose-300" : ""}`} placeholder="Nama kasir" />
-            {errors.name && <p className="text-xs font-semibold text-rose-600">{errors.name}</p>}
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-slate-700">Username</label>
-            <input value={form.username} onChange={(e) => set("username", e.target.value)} className={`${fieldClass} ${errors.username ? "border-rose-300" : ""}`} placeholder="kasir.raja" autoComplete="username" />
-            {errors.username && <p className="text-xs font-semibold text-rose-600">{errors.username}</p>}
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-slate-700">Role</label>
-            <select value={form.role} onChange={(e) => set("role", e.target.value)} className={fieldClass}>
-              <option value="kasir">Kasir</option>
-              <option value="pemilik">Pemilik</option>
-            </select>
-          </div>
-
-          {!isEdit && (
-            <>
-              <div className="space-y-1.5">
-                <label className="block text-sm font-semibold text-slate-700">Password</label>
-                <div className="relative">
-                  <input type={showPassword ? "text" : "password"} value={form.password} onChange={(e) => set("password", e.target.value)} className={`${fieldClass} pr-12 ${errors.password ? "border-rose-300" : ""}`} placeholder="Minimal 8 karakter" autoComplete="new-password" />
-                  <button type="button" onClick={() => setShowPassword((s) => !s)} className="absolute inset-y-1 right-1 flex w-10 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100">
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-                {errors.password && <p className="text-xs font-semibold text-rose-600">{errors.password}</p>}
-              </div>
-
-            </>
-          )}
-
-          <div className="flex gap-3 pt-2">
-            <button type="button" onClick={onClose} className="brand-button-secondary flex-1" disabled={submitting}>Batal</button>
-            <button type="submit" className="brand-button-primary flex-1" disabled={submitting}>
-              {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : isEdit ? "Simpan" : "Tambah"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-}
 
 export default function EmployeeManagementPage() {
-  const { coreLoading, coreError, staffUsers = [], createEmployee, updateEmployeeProfile, setEmployeeStatus } = useEmployees();
+  const { coreLoading, coreError, staffUsers = [] } = useEmployees();
   const [query, setQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
-  const [editingUser, setEditingUser] = useState(null);
-  const [showForm, setShowForm] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
   const deferredQuery = useDeferredValue(query);
 
   const filtered = useMemo(() => {
@@ -181,38 +84,6 @@ export default function EmployeeManagementPage() {
     setRoleFilter("all");
   };
 
-  const openAdd = () => { setEditingUser(null); setShowForm(true); };
-  const openEdit = (u) => { setEditingUser(u); setShowForm(true); };
-  const closeForm = () => { setShowForm(false); setEditingUser(null); };
-
-  const handleSave = async ({ id, name, username, role, password }) => {
-    setSubmitting(true);
-    try {
-      if (id) {
-        await updateEmployeeProfile({ employeeId: id, name, username, role });
-        showNotification("success", "Pengguna diperbarui.");
-      } else {
-        await createEmployee({ name, username, password, role });
-        showNotification("success", "Pengguna ditambahkan.");
-      }
-      closeForm();
-    } catch (err) {
-      showNotification("error", err?.message || "Gagal menyimpan pengguna.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleToggleStatus = async (u) => {
-    const next = u.status === "active" ? "inactive" : "active";
-    try {
-      await setEmployeeStatus({ employeeId: u.id, status: next });
-      showNotification("success", next === "active" ? "Pengguna diaktifkan." : "Pengguna dinonaktifkan.");
-    } catch (err) {
-      showNotification("error", err?.message || "Gagal mengubah status.");
-    }
-  };
-
   if (coreLoading) return <FeatureLoadPanel label="Memuat data pengguna…" />;
   if (coreError) return <FeatureLoadPanel label={coreError} error />;
 
@@ -224,15 +95,9 @@ export default function EmployeeManagementPage() {
   return (
     <div className="brand-page-layout">
       <PageHeader
-        title="Karyawan"
-        description="Tambah atau nonaktifkan akun kasir dan atur akses mereka."
+        title="Karyawan & Aktivitas"
+        description="Pantau daftar akun kasir, status akses, dan riwayat aktivitas mereka."
         icon="users"
-        actions={
-          <button type="button" onClick={openAdd} className="brand-button-primary">
-            <Plus className="h-4 w-4" />
-            Tambah Pengguna
-          </button>
-        }
       />
 
       <div className="brand-page-content">
@@ -322,7 +187,6 @@ export default function EmployeeManagementPage() {
                         >
                           Detail
                         </button>
-                        <button type="button" onClick={() => openEdit(u)} className="brand-button-secondary text-xs">Edit</button>
                       </div>
                     </td>
                   </tr>
@@ -355,13 +219,6 @@ export default function EmployeeManagementPage() {
               <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
                 <button
                   type="button"
-                  onClick={() => openEdit(selectedEmployee)}
-                  className="brand-button-primary text-xs"
-                >
-                  Edit Pengguna
-                </button>
-                <button
-                  type="button"
                   onClick={() => void access.refresh()}
                   className="brand-button-secondary text-xs"
                   disabled={access.loading}
@@ -375,13 +232,6 @@ export default function EmployeeManagementPage() {
                   disabled={activity.loading}
                 >
                   {activity.loading ? "Memuat aktivitas..." : "Refresh aktivitas"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleToggleStatus(selectedEmployee)}
-                  className={selectedEmployee.status === "active" ? "brand-button-danger text-xs ml-auto" : "brand-button-success text-xs ml-auto"}
-                >
-                  {selectedEmployee.status === "active" ? "Nonaktifkan" : "Aktifkan"}
                 </button>
               </div>
 
@@ -453,9 +303,6 @@ export default function EmployeeManagementPage() {
         </div>
       </div>
 
-      {showForm && (
-        <UserFormModal user={editingUser} onClose={closeForm} onSave={handleSave} submitting={submitting} />
-      )}
     </div>
   );
 }
