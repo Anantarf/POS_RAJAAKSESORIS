@@ -1515,7 +1515,7 @@ export default function ProductsPage() {
 
                 <div className="inventory-mutation-section">
                   <div>
-                    <p className="inventory-mutation-title">Jenis mutasi</p>
+                    <p className="inventory-mutation-title">Jenis perubahan stok</p>
                     <p className="inventory-mutation-helper">
                       Alur pergerakan stok fisik.
                     </p>

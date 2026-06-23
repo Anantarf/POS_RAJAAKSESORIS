@@ -1,99 +1,73 @@
 import {
   cashierRoute,
-  dashboardRoute,
   getRouteMeta,
   normalizePathname,
   routeMeta,
-  shiftRoute,
 } from "./routeMeta.js";
 import {
   filterNavigationByFeatureFlags,
   filterNavigationByPermissions,
 } from "./navigationFilters.js";
 
-export { cashierRoute, dashboardRoute, getRouteMeta, normalizePathname, routeMeta, shiftRoute };
+export { cashierRoute, getRouteMeta, normalizePathname, routeMeta };
 export { filterNavigationByFeatureFlags, filterNavigationByPermissions };
 
 export const ownerNavigationSections = [
   {
     title: "Operasional",
     items: [
-      { to: "/dashboard", label: "Ringkasan", icon: "dashboard" },
-      { to: "/kasir", label: "POS", icon: "pos", feature: "cashier" },
-      { to: "/shift", label: "Shift", icon: "history", feature: "shift" },
-    ],
-  },
-  {
-    title: "Kontrol Toko",
-    items: [
+      { to: "/dashboard", label: "Dashboard", icon: "chart", feature: "reports" },
+      { to: "/kasir", label: "Kasir", icon: "pos", feature: "cashier" },
       {
-        to: "/stok-barang",
-        label: "Stok",
+        to: "/inventory",
+        label: "Inventory",
         icon: "box",
         feature: "products",
         children: [
-          { to: "/stok-barang#tambah-kelola", label: "Tambah & Kelola", feature: "products" },
-          { to: "/stock-opname", label: "Stock Opname", feature: "stockOpname" },
-          { to: "/retur-supplier", label: "Retur & Garansi", feature: "returns" },
-          { to: "/history-produk", label: "History Produk", feature: "products" },
+          { to: "/inventory?tab=fisik", label: "Item fisik", feature: "products" },
+          { to: "/inventory?tab=digital", label: "Item digital", feature: "serviceProducts" },
+          { to: "/inventory?tab=opname", label: "Cek stok fisik", feature: "stockOpname" },
+          { to: "/inventory?tab=retur", label: "Retur", feature: "returns" },
+          { to: "/inventory?tab=saldo", label: "Saldo toko", feature: "wallet" },
         ],
       },
-      { to: "/keuangan", label: "Layanan Digital", icon: "wallet", feature: "digital" },
       {
-        to: "/saldo",
-        label: "Keuangan",
-        icon: "coins",
-        feature: "wallet",
+        to: "/riwayat-transaksi",
+        label: "Riwayat Transaksi",
+        icon: "history",
+        feature: "history",
         children: [
-          { to: "/operasional", label: "Catat Operasional", feature: "cash" },
-          { to: "/layanan-produk", label: "Kelola Layanan", feature: "serviceProducts" },
+          { to: "/riwayat-transaksi", label: "Riwayat", feature: "history" },
+          { to: "/riwayat-transaksi?tab=laporan", label: "Laporan penjualan", feature: "reports" },
         ],
       },
-      { to: "/karyawan", label: "Karyawan", icon: "users", feature: "employees" },
     ],
   },
   {
-    title: "Cek & Bantuan",
+    title: "Admin",
     items: [
       {
-        to: "/laporan-keuangan",
-        label: "Laporan",
-        icon: "chart",
-        feature: "reports",
+        to: "/admin/users",
+        label: "User & Audit",
+        icon: "users",
+        feature: "employees",
         children: [
-          { to: "/laporan-penjualan", label: "Laporan Penjualan", feature: "reports" },
-          { to: "/riwayat-transaksi", label: "Riwayat Transaksi", feature: "history" },
-          { to: "/audit-log", label: "Riwayat Aktivitas", feature: "audit" },
+          { to: "/admin/users", label: "Manajemen user", feature: "employees" },
+          { to: "/karyawan", label: "Karyawan", feature: "employees" },
+          { to: "/admin/audit", label: "Audit log", feature: "audit" },
         ],
       },
-      { to: "/bantuan", label: "Bantuan", icon: "help" },
     ],
   },
 ];
 
 export const cashierNavigationSections = [
   {
-    title: "Kerja Kasir",
+    title: "MVP",
     items: [
-      { to: "/kasir", label: "POS", icon: "pos", feature: "cashier" },
-      { to: "/shift", label: "Shift", icon: "history", feature: "shift" },
-      { to: "/keuangan", label: "Layanan Digital", icon: "wallet", feature: "digital" },
-    ],
-  },
-  {
-    title: "Cek Data",
-    items: [
-      {
-        to: "/stok-barang",
-        label: "Stok",
-        icon: "box",
-        feature: "products",
-        children: [
-          { to: "/stok-barang#tambah-kelola", label: "Tambah & Kelola", feature: "products" },
-        ],
-      },
-      { to: "/riwayat-transaksi", label: "Riwayat", icon: "history", feature: "history" },
-      { to: "/bantuan", label: "Bantuan", icon: "help" },
+      { to: "/kasir", label: "Kasir", icon: "pos", feature: "cashier" },
+      { to: "/inventory", label: "Inventory", icon: "box", feature: "products" },
+      { to: "/riwayat-transaksi", label: "Riwayat Transaksi", icon: "history", feature: "history" },
     ],
   },
 ];
@@ -110,5 +84,6 @@ export function buildNavigationSections(role, flags, permissions) {
 }
 
 export function getDefaultRoute(role) {
-  return role === "pemilik" ? dashboardRoute : cashierRoute;
+  if (role === "pemilik") return "/kasir";
+  return cashierRoute;
 }

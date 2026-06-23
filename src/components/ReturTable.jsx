@@ -147,7 +147,7 @@ export default function ReturTable({
                 className="input min-w-0"
               >
                 <option value="semua">Semua status</option>
-                <option value="pending">Pending</option>
+                <option value="pending">Menunggu</option>
                 {statusOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}

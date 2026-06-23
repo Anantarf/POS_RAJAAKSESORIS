@@ -18,6 +18,14 @@ function getHash(to) {
   return hash ? `#${hash}` : "";
 }
 
+function getSearch(to) {
+  const rawTo = String(to || "");
+  const queryStart = rawTo.indexOf("?");
+  if (queryStart < 0) return "";
+  const hashStart = rawTo.indexOf("#", queryStart);
+  return hashStart >= 0 ? rawTo.slice(queryStart, hashStart) : rawTo.slice(queryStart);
+}
+
 function SidebarLink({ item, collapsed, onNavigate }) {
   const location = useLocation();
   const itemPathname = getPathname(item.to);
@@ -78,6 +86,7 @@ function SidebarLink({ item, collapsed, onNavigate }) {
           {item.children.map((child) => {
             const isChildActive =
               currentPathname === getPathname(child.to) &&
+              location.search === getSearch(child.to) &&
               location.hash === getHash(child.to);
 
             return (
@@ -112,9 +121,9 @@ export default function Sidebar({
   const runtimeFlags = getRuntimeFlags();
   const sections = buildNavigationSections(user.role, runtimeFlags, user.permissions);
   const quickActions = [
-    { to: "/kasir", label: "POS", icon: "pos", feature: "cashier" },
-    { to: "/keuangan", label: "Digital", icon: "wallet", feature: "digital" },
-    { to: "/stok-barang#tambah-kelola", label: "Stok", icon: "box", feature: "products" },
+    { to: "/kasir", label: "Kasir", icon: "pos", feature: "cashier" },
+    { to: "/inventory", label: "Inventory", icon: "box", feature: "products" },
+    { to: "/riwayat-transaksi", label: "Riwayat", icon: "history", feature: "history" },
   ].filter((action) => isFeatureEnabled(runtimeFlags, action.feature));
   const isMobile = mode === "mobile";
 
@@ -148,7 +157,7 @@ export default function Sidebar({
                   Raja Aksesoris
                 </span>
                 <span className="mt-1 block truncate text-sm font-extrabold tracking-tight text-slate-950">
-                  Command Center
+                  MVP Operasional
                 </span>
               </span>
             ) : null}

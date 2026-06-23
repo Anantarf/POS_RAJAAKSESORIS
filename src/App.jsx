@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import LoadingState from "./components/LoadingState";
+import { ROLE_GROUPS, ROUTE_ACCESS } from "./core/auth/rbac";
 import { getDefaultRoute } from "./core/navigation/navigation";
 import { getRuntimeFlags, isFeatureEnabled } from "./core/runtime/runtimeFlags";
 import { AppModeProvider } from "./contexts/AppModeContext";
@@ -39,24 +40,12 @@ function lazyPage(importer, label) {
   });
 }
 
-const CalculatorPage = lazyPage(() => import("./pages/CalculatorPage"), "Kalkulator");
 const AuditLogPage = lazyPage(() => import("./pages/AuditLogPage"), "Audit Log");
-const CashPage = lazyPage(() => import("./pages/CashPage"), "Operasional");
-const CashierPage = lazyPage(() => import("./pages/CashierPage"), "Kasir");
+const CashierModulePage = lazyPage(() => import("./pages/CashierModulePage"), "Kasir");
 const Dashboard = lazyPage(() => import("./pages/Dashboard"), "Dashboard");
-const DigitalPage = lazyPage(() => import("./pages/DigitalPage"), "Keuangan Digital");
-const FinanceReportPage = lazyPage(() => import("./pages/FinanceReportPage"), "Laporan Keuangan");
-const HelpPage = lazyPage(() => import("./pages/HelpPage"), "Bantuan");
 const HistoryPage = lazyPage(() => import("./pages/HistoryPage"), "Riwayat Transaksi");
-const EmployeeManagementPage = lazyPage(() => import("./pages/EmployeeManagementPage"), "Karyawan");
-const ProductHistoryPage = lazyPage(() => import("./pages/ProductHistoryPage"), "History Produk");
-const ProductsPage = lazyPage(() => import("./pages/ProductsPage"), "Stok Barang");
-const SalesReportPage = lazyPage(() => import("./pages/SalesReportPage"), "Laporan Penjualan");
-const ServiceProductsPage = lazyPage(() => import("./pages/ServiceProductsPage"), "Layanan Produk");
-const ShiftPage = lazyPage(() => import("./pages/ShiftPage"), "Shift");
-const StockOpnamePage = lazyPage(() => import("./pages/StockOpnamePage"), "Stock Opname");
-const SupplierReturnsPage = lazyPage(() => import("./pages/SupplierReturnsPage"), "Retur Supplier");
-const WalletPage = lazyPage(() => import("./pages/WalletPage"), "Saldo");
+const EmployeeManagementPage = lazyPage(() => import("./pages/EmployeeManagementPage"), "User & Audit");
+const InventoryModulePage = lazyPage(() => import("./pages/InventoryModulePage"), "Inventory");
 
 const ISOLATION_STORAGE_KEY = "pos_debug_isolation_mode";
 const DEFAULT_ISOLATION_MODE = "full";
@@ -94,27 +83,6 @@ function MinimalAuthenticatedScreen({ mode, onLogout, user }) {
         <button type="button" className="brand-button-primary mt-6 w-full" onClick={onLogout}>
           Logout
         </button>
-      </div>
-    </div>
-  );
-}
-
-function MinimalDashboardPage() {
-  const { user } = useAuth();
-
-  return (
-    <div className="min-h-screen bg-[var(--brand-bg)] px-6 py-8">
-      <div className="mx-auto max-w-5xl">
-        <div className="brand-panel p-8">
-          <p className="brand-kicker text-[var(--brand-gold)]/90">Safe Mode</p>
-          <h1 className="mt-3 font-display text-3xl font-bold text-slate-950">
-            Halo, {user?.name || user?.email || "pengguna"} login berhasil
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">
-            Dashboard shell stabil. Realtime, presence, preload besar, laporan, dan fitur berat
-            dimatikan sementara. Aktifkan fitur satu per satu dengan flag isolasi.
-          </p>
-        </div>
       </div>
     </div>
   );
@@ -301,27 +269,28 @@ function App() {
                 <Route element={<AuthenticatedDataGate />}>
                   <Route
                     element={
-                      <ProtectedRoute allowedRoles={["kasir", "pemilik"]}>
+                      <ProtectedRoute allowedRoles={ROLE_GROUPS.AUTHENTICATED}>
                         <AppShell />
                       </ProtectedRoute>
                     }
                   >
-                    <Route
-                      path="/shift"
-                      element={featureElement(
-                        runtimeFlags,
-                        "shift",
-                        "Shift",
-                        pageElement(ShiftPage, "Shift")
-                      )}
-                    />
+                    <Route path="/shift" element={<Navigate to="/kasir?tab=shift" replace />} />
                     <Route
                       path="/kasir"
                       element={featureElement(
                         runtimeFlags,
                         "cashier",
                         "Kasir POS",
-                        pageElement(CashierPage, "Kasir", "cashier")
+                        pageElement(CashierModulePage, "Kasir", "cashier")
+                      )}
+                    />
+                    <Route
+                      path="/inventory"
+                      element={featureElement(
+                        runtimeFlags,
+                        "products",
+                        "Inventory",
+                        pageElement(InventoryModulePage, "Inventory")
                       )}
                     />
                     <Route
@@ -333,127 +302,26 @@ function App() {
                         pageElement(HistoryPage, "Riwayat Transaksi")
                       )}
                     />
-                    <Route path="/kalkulator" element={pageElement(CalculatorPage, "Kalkulator")} />
-                    <Route path="/bantuan" element={pageElement(HelpPage, "Bantuan")} />
-                    <Route
-                      path="/saldo"
-                      element={featureElement(
-                        runtimeFlags,
-                        "wallet",
-                        "Saldo",
-                        pageElement(WalletPage, "Saldo")
-                      )}
-                    />
-                    <Route
-                      path="/stok-barang"
-                      element={
-                        featureElement(
-                          runtimeFlags,
-                          "products",
-                          "Stok Barang",
-                          runtimeFlags.minimalProducts ? (
-                          <FeatureDisabledPage
-                            title="Stok barang mode ringan"
-                            message="Fitur stok barang dimatikan sementara lewat flag minimalProducts untuk isolasi memory leak."
-                          />
-                        ) : (
-                          pageElement(ProductsPage, "Stok Barang")
-                          )
-                        )
-                      }
-                    />
-                    <Route
-                      path="/operasional"
-                      element={featureElement(
-                        runtimeFlags,
-                        "cash",
-                        "Operasional",
-                        pageElement(CashPage, "Operasional")
-                      )}
-                    />
                   </Route>
 
                   <Route
                     element={
-                      <ProtectedRoute allowedRoles={["kasir", "pemilik"]}>
+                      <ProtectedRoute allowedRoles={ROUTE_ACCESS.ADMIN}>
                         <AppShell />
                       </ProtectedRoute>
                     }
                   >
                     <Route
-                      path="/keuangan"
-                      element={featureElement(
-                        runtimeFlags,
-                        "digital",
-                        "Keuangan Digital",
-                        pageElement(DigitalPage, "Keuangan Digital")
-                      )}
-                    />
-                  </Route>
-
-                  <Route
-                    element={
-                      <ProtectedRoute allowedRoles={["pemilik"]}>
-                        <AppShell />
-                      </ProtectedRoute>
-                    }
-                  >
-                    <Route
-                      path="/dashboard"
-                      element={
-                        runtimeFlags.safeMode || runtimeFlags.minimalDashboard
-                          ? <MinimalDashboardPage />
-                          : pageElement(Dashboard, "Dashboard", "dashboard")
-                      }
-                    />
-                    <Route
-                      path="/karyawan"
+                      path="/admin/users"
                       element={featureElement(
                         runtimeFlags,
                         "employees",
-                        "Karyawan",
-                        pageElement(EmployeeManagementPage, "Karyawan")
+                        "User & Audit",
+                        pageElement(EmployeeManagementPage, "User & Audit")
                       )}
                     />
                     <Route
-                      path="/laporan-keuangan"
-                      element={
-                        !isFeatureEnabled(runtimeFlags, "reports") ? (
-                          <FeatureDisabledPage
-                            title="Laporan sementara dimatikan"
-                            message="Fitur laporan dimatikan lewat flag disableReports untuk isolasi halaman berat."
-                            flagName="enableReports"
-                          />
-                        ) : (
-                          pageElement(FinanceReportPage, "Laporan Keuangan")
-                        )
-                      }
-                    />
-                    <Route
-                      path="/laporan-penjualan"
-                      element={
-                        !isFeatureEnabled(runtimeFlags, "reports") ? (
-                          <FeatureDisabledPage
-                            title="Laporan sementara dimatikan"
-                            message="Fitur laporan dimatikan lewat flag disableReports untuk isolasi halaman berat."
-                            flagName="enableReports"
-                          />
-                        ) : (
-                          pageElement(SalesReportPage, "Laporan Penjualan")
-                        )
-                      }
-                    />
-                    <Route
-                      path="/history-produk"
-                      element={featureElement(
-                        runtimeFlags,
-                        "products",
-                        "History Produk",
-                        pageElement(ProductHistoryPage, "History Produk")
-                      )}
-                    />
-                    <Route
-                      path="/audit-log"
+                      path="/admin/audit"
                       element={featureElement(
                         runtimeFlags,
                         "audit",
@@ -462,44 +330,20 @@ function App() {
                       )}
                     />
                     <Route
-                      path="/layanan-produk"
+                      path="/dashboard"
                       element={featureElement(
                         runtimeFlags,
-                        "serviceProducts",
-                        "Layanan Produk",
-                        pageElement(ServiceProductsPage, "Layanan Produk")
+                        "reports",
+                        "Dashboard",
+                        pageElement(Dashboard, "Dashboard")
                       )}
                     />
-                    <Route
-                      path="/stock-opname"
-                      element={featureElement(
-                        runtimeFlags,
-                        "stockOpname",
-                        "Stock Opname",
-                        pageElement(StockOpnamePage, "Stock Opname")
-                      )}
-                    />
-                    <Route
-                      path="/retur-supplier"
-                      element={featureElement(
-                        runtimeFlags,
-                        "returns",
-                        "Retur Supplier",
-                        pageElement(SupplierReturnsPage, "Retur Supplier")
-                      )}
-                    />
+                    <Route path="/shift" element={<Navigate to="/kasir?tab=shift" replace />} />
+                    <Route path="/stok-barang" element={<Navigate to="/inventory?tab=fisik" replace />} />
+                    <Route path="/saldo" element={<Navigate to="/inventory?tab=saldo" replace />} />
+                    <Route path="/retur-supplier" element={<Navigate to="/inventory?tab=retur" replace />} />
+                    <Route path="/karyawan" element={<Navigate to="/admin/users" replace />} />
                   </Route>
-
-                  <Route path="/layanan" element={<Navigate to="/keuangan" replace />} />
-                  <Route path="/kasir/digital" element={<Navigate to="/keuangan" replace />} />
-                  <Route path="/dompet" element={<Navigate to="/saldo" replace />} />
-                  <Route path="/pos" element={<Navigate to="/kasir" replace />} />
-                  <Route path="/produk" element={<Navigate to="/stok-barang" replace />} />
-                  <Route path="/kas" element={<Navigate to="/operasional" replace />} />
-                  <Route path="/hutang" element={<Navigate to="/dashboard" replace />} />
-                  <Route path="/pelanggan" element={<Navigate to="/dashboard" replace />} />
-                  <Route path="/retur" element={<Navigate to="/retur-supplier" replace />} />
-                  <Route path="/riwayat" element={<Navigate to="/riwayat-transaksi" replace />} />
                 </Route>
 
                 <Route path="*" element={<Navigate to={getDefaultRoute("kasir")} replace />} />
@@ -513,4 +357,3 @@ function App() {
 }
 
 export default App;
-

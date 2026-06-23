@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/useAuth";
+import { canAccessRole } from "../core/auth/rbac";
 
 export default function ProtectedRoute({ allowedRoles, children }) {
   const { user, authState } = useAuth();
@@ -9,10 +10,9 @@ export default function ProtectedRoute({ allowedRoles, children }) {
     return <Navigate to="/" replace state={{ from: location }} />;
   }
 
-  if (!allowedRoles.includes(user.role)) {
+  if (!canAccessRole(user.role, allowedRoles)) {
     return <Navigate to={user.role === "pemilik" ? "/dashboard" : "/kasir"} replace />;
   }
 
   return children;
 }
-

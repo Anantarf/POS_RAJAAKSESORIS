@@ -303,7 +303,7 @@ function renderSelectedTransactionDetail(row) {
     return (
       <div className="grid gap-3 sm:grid-cols-2">
         <DetailItem
-          label="Jenis mutasi"
+          label="Jenis perubahan"
           value={walletTransactionTypeLabelMap[row.raw.jenis] || row.raw.jenis || "-"}
         />
         <DetailItem
@@ -1237,7 +1237,7 @@ export default function RiwayatTransaksiPage() {
                                   : "bg-emerald-100 text-emerald-700"
                               }`}
                             >
-                              Void terkunci
+                              Dibatalkan
                             </span>
                           </td>
                           <td>
@@ -1280,9 +1280,9 @@ export default function RiwayatTransaksiPage() {
             </p>
             <h2 className="mt-2 font-display text-2xl font-bold tracking-tight text-slate-950">
               {pendingAction.type === "delete"
-                ? "Void transaksi?"
+                ? "Batalkan transaksi?"
                 : pendingAction.type === "restore"
-                  ? "Restore transaksi?"
+                  ? "Pulihkan transaksi?"
                   : "Hapus permanen?"}
             </h2>
             <div className="mt-4 rounded-lg border border-[var(--brand-border)] bg-[var(--brand-surface-soft)] px-4 py-3">
@@ -1292,13 +1292,13 @@ export default function RiwayatTransaksiPage() {
               </p>
             </div>
             <div className="brand-modal-consequence mt-3">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em]">Konsekuensi</p>
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em]">Yang akan terjadi</p>
               <p className="mt-1">
                 {pendingAction.type === "delete"
                   ? "Stok dan saldo dikembalikan. Riwayat transaksi tetap tersimpan."
                   : pendingAction.type === "restore"
                     ? "Transaksi kembali muncul di riwayat aktif."
-                    : "Transaksi dihapus permanen dan tidak dapat direstore."}
+                    : "Transaksi dihapus permanen dan tidak dapat dipulihkan."}
               </p>
             </div>
             <p className="mt-3 text-sm font-semibold text-[var(--brand-warning)]">
@@ -1322,9 +1322,9 @@ export default function RiwayatTransaksiPage() {
                 }
               >
                 {pendingAction.type === "delete"
-                  ? "Void"
+                  ? "Batalkan"
                   : pendingAction.type === "restore"
-                    ? "Restore"
+                    ? "Pulihkan"
                     : "Hapus permanen"}
               </button>
             </div>

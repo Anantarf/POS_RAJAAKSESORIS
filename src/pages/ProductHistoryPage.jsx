@@ -242,12 +242,12 @@ export default function ProductHistoryPage() {
               Konfirmasi produk
             </p>
             <h2 className="mt-2 font-display text-2xl font-bold tracking-tight text-slate-950">
-              {pendingAction.type === "restore" ? "Restore produk?" : "Delete permanently?"}
+              {pendingAction.type === "restore" ? "Pulihkan produk?" : "Hapus permanen?"}
             </h2>
             <p className="mt-3 text-sm leading-6 text-slate-600">
               {pendingAction.type === "restore"
                 ? `${pendingAction.product.nama} akan kembali aktif dan muncul lagi di daftar produk.`
-                : `${pendingAction.product.nama} akan dihapus dari recycle bin dan tidak bisa direstore.`}
+                : `${pendingAction.product.nama} akan dihapus permanen dari arsip dan tidak bisa dipulihkan.`}
             </p>
             <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
               <button
@@ -266,7 +266,7 @@ export default function ProductHistoryPage() {
                     : "brand-button-danger"
                 }
               >
-                {pendingAction.type === "restore" ? "Restore" : "Delete Permanently"}
+                {pendingAction.type === "restore" ? "Pulihkan" : "Hapus Permanen"}
               </button>
             </div>
           </div>

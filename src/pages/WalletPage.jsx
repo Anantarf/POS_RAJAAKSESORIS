@@ -261,8 +261,8 @@ export default function WalletPage() {
     <div className="space-y-6">
       <PageHeader
         eyebrow="Saldo toko"
-        title="Saldo Aplikasi"
-        description="Saldo dan mutasi kas toko."
+        title="Saldo Toko"
+        description="Saldo dan pergerakan kas toko."
         icon="coins"
         actions={
           <>
@@ -382,10 +382,10 @@ export default function WalletPage() {
       <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
         <Panel className="p-5">
           <h3 className="font-display text-2xl font-bold tracking-tight text-slate-950">
-            Mutasi saldo
+            Perubahan saldo
           </h3>
           <p className="mt-1.5 text-sm leading-6 text-slate-600">
-            Koreksi saldo manual dan riwayat mutasi.
+            Koreksi saldo manual dan riwayat perubahan.
           </p>
           <form
             onSubmit={handleSubmit}
@@ -393,7 +393,7 @@ export default function WalletPage() {
           >
             <MutationFormSection
               step="1"
-              title="Jenis mutasi + platform"
+              title="Jenis transaksi + platform"
               helper="Pilih alur dana dan platform asal."
             >
               <div className="grid gap-2 md:grid-cols-2">
@@ -530,7 +530,7 @@ export default function WalletPage() {
                 {submitting ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    Menyimpan mutasi...
+                    Menyimpan...
                   </>
                 ) : (
                   <>

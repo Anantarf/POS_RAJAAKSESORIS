@@ -1,1 +1,1 @@
-export { default } from "./RiwayatTransaksiPage";
+export { default } from "./HistoryModulePage";

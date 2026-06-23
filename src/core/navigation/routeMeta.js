@@ -1,79 +1,49 @@
-export const dashboardRoute = "/dashboard";
 export const cashierRoute = "/kasir";
-export const shiftRoute = "/shift";
 
 export const routeMeta = {
-  "/shift": {
-    title: "Manajemen Shift",
-    description: "Buka dan tutup shift dengan kontrol waktu, kasir aktif, dan approval pemilik toko.",
-  },
   "/dashboard": {
     title: "Dashboard",
-    description: "Ringkasan performa toko, profit, dan operasional harian.",
-  },
-  "/karyawan": {
-    title: "Manajemen Karyawan",
-    description: "Kelola akun kasir, akses operasional, performa, payroll sederhana, dan kontrol PIN.",
-  },
-  "/keuangan": {
-    title: "Layanan Digital",
-    description: "Input cepat pulsa, kuota, voucher game, token listrik, dan layanan digital lain.",
-  },
-  "/layanan-produk": {
-    title: "Kelola Layanan",
-    description: "Tambah, ubah, import, dan export daftar layanan digital.",
+    description: "Ringkasan harian pemilik untuk omzet, shift, stok, saldo, dan alert operasional.",
   },
   "/kasir": {
-    title: "Kasir POS",
-    description: "Alur transaksi cepat untuk aksesoris HP dengan checkout rapi dan cetak struk langsung.",
+    title: "Kasir",
+    description: "Satu modul transaksi untuk item fisik dan digital dengan checkout rapi.",
   },
-  "/saldo": {
-    title: "Saldo",
-    description: "Kontrol saldo internal toko per platform dan mutasi dana.",
-  },
-  "/stok-barang": {
-    title: "Stok Barang",
-    description: "Master produk, stok fisik, margin, dan mutasi barang.",
-  },
-  "/stock-opname": {
-    title: "Stock Opname",
-    description: "Cocokkan stok fisik dengan catatan barang sebelum penyesuaian.",
-  },
-  "/retur-supplier": {
-    title: "Retur & Garansi",
-    description: "Kelola retur supplier dan klaim garansi konsumen dengan dampak stok yang jelas.",
-  },
-  "/history-produk": {
-    title: "History Produk",
-    description: "Produk terhapus, pemulihan data, dan pembersihan berkala.",
-  },
-  "/operasional": {
-    title: "Catat Operasional",
-    description: "Pemasukan dan pengeluaran toko harian dengan kontrol saldo kas.",
+  "/inventory": {
+    title: "Inventory",
+    description: "Satu modul untuk item fisik, item digital, stok, retur, opname, saldo toko, dan arsip produk.",
   },
   "/riwayat-transaksi": {
     title: "Riwayat Transaksi",
     description: "Cari transaksi dengan cepat dan lihat detail pemasukan, pengeluaran, serta laba.",
   },
-  "/audit-log": {
+  "/shift": {
+    title: "Shift",
+    description: "Buka, tutup, dan cek shift kerja kasir.",
+  },
+  "/stok-barang": {
+    title: "Inventory",
+    description: "Kelola stok barang fisik dan batas minimum toko.",
+  },
+  "/saldo": {
+    title: "Saldo Toko",
+    description: "Pantau kas dan saldo digital toko.",
+  },
+  "/retur-supplier": {
+    title: "Retur",
+    description: "Proses retur supplier dan garansi konsumen.",
+  },
+  "/karyawan": {
+    title: "User & Audit",
+    description: "Kelola karyawan, role, akses kerja, dan aktivitas sensitif.",
+  },
+  "/admin/users": {
+    title: "User & Audit",
+    description: "Kelola akun, role, akses kerja, sesi, catatan user, dan kontrol aktivitas sensitif.",
+  },
+  "/admin/audit": {
     title: "Riwayat Aktivitas",
     description: "Jejak aksi sensitif pemilik toko, kasir, dan sistem untuk kontrol operasional.",
-  },
-  "/laporan-keuangan": {
-    title: "Laporan Keuangan",
-    description: "Omzet, modal, profit, pengeluaran, dan rekap kas toko.",
-  },
-  "/laporan-penjualan": {
-    title: "Laporan Penjualan",
-    description: "Kontrol penjualan produk, layanan, jasa, provider, pembayaran, dan kasir.",
-  },
-  "/kalkulator": {
-    title: "Kalkulator",
-    description: "Hitung pecahan uang dan cocokkan dengan catatan kas.",
-  },
-  "/bantuan": {
-    title: "Bantuan",
-    description: "Panduan alur kerja kasir dan pemilik toko untuk operasional toko.",
   },
 };
 

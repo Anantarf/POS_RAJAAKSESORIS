@@ -491,7 +491,7 @@ export default function ShiftPage() {
             />
             <SummaryItem label="Kasir Aktif" value={String(activeShifts.length)} />
             <SummaryItem label="Station Aktif" value={String(activeStationCount)} />
-            <SummaryItem label="Pending Closing" value={String(pendingShifts.length)} />
+            <SummaryItem label="Belum Ditutup" value={String(pendingShifts.length)} />
             <SummaryItem label="Lembur" value={String(overtimeShiftCount)} />
           </div>
 

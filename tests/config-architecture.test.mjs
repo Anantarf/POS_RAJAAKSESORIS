@@ -25,17 +25,19 @@ function flattenRoutes(sections) {
 }
 
 test("navigation defaults and role sections remain stable", () => {
-  assert.equal(getDefaultRoute("pemilik"), "/dashboard");
+  assert.equal(getDefaultRoute("pemilik"), "/kasir");
   assert.equal(getDefaultRoute("kasir"), "/kasir");
 
   const ownerRoutes = flattenRoutes(buildNavigationSections("pemilik"));
   const cashierRoutes = flattenRoutes(buildNavigationSections("kasir"));
 
-  assert.ok(ownerRoutes.includes("/dashboard"));
   assert.ok(ownerRoutes.includes("/kasir"));
+  assert.ok(ownerRoutes.includes("/inventory"));
+  assert.ok(ownerRoutes.includes("/karyawan"));
   assert.ok(cashierRoutes.includes("/kasir"));
-  assert.ok(cashierRoutes.includes("/stok-barang#tambah-kelola"));
+  assert.ok(cashierRoutes.includes("/inventory"));
   assert.equal(cashierRoutes.includes("/dashboard"), false);
+  assert.equal(cashierRoutes.includes("/karyawan"), false);
 });
 
 test("route metadata normalizes query strings, hashes, and trailing slashes", () => {
@@ -49,7 +51,7 @@ test("route metadata normalizes query strings, hashes, and trailing slashes", ()
     "/stok-barang#tambah-produk",
     "/stok-barang?tab=produk",
   ]) {
-    assert.equal(getRouteMeta(pathname).title, "Stok Barang");
+    assert.equal(getRouteMeta(pathname).title, "Inventory");
   }
 });
 

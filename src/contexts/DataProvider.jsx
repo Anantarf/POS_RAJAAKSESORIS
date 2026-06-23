@@ -2353,24 +2353,6 @@ export function DataProvider({
     [refreshEmployeePayrollData, refreshShiftData, user?.role]
   );
 
-  const resetEmployeePin = useCallback(
-    async (employeeId, newPin) => {
-      if (user?.role !== "pemilik") {
-        throw new Error("Hanya pemilik yang dapat reset PIN karyawan.");
-      }
-
-      const { error } = await supabase.rpc("owner_reset_employee_pin", {
-        p_user_id: employeeId,
-        p_new_pin: newPin,
-      });
-
-      if (error) throw new Error(toClientMessage(error.message, "Gagal reset PIN karyawan."));
-      await refreshShiftData();
-      return true;
-    },
-    [refreshShiftData, user?.role]
-  );
-
   const saveEmployeePayroll = useCallback(
     async (employeeId, payload) => {
       if (user?.role !== "pemilik") {
@@ -4926,7 +4908,6 @@ export function DataProvider({
       createEmployee,
       updateEmployeeProfile,
       setEmployeeStatus,
-      resetEmployeePin,
       saveEmployeePayroll,
       saveEmployeePermissions,
       saveEmployeeNote,
@@ -5050,7 +5031,6 @@ export function DataProvider({
       setSecurityControls,
       shifts,
       staffUsers,
-      resetEmployeePin,
       startShift,
       stockLogs,
       stockOpnameSessions,
@@ -5331,7 +5311,6 @@ export function DataProvider({
       createEmployee,
       updateEmployeeProfile,
       setEmployeeStatus,
-      resetEmployeePin,
       saveEmployeePayroll,
       saveEmployeePermissions,
       saveEmployeeNote,
@@ -5351,7 +5330,6 @@ export function DataProvider({
       logisticsTransactions,
       pinRequiredEnabled,
       refreshShiftData,
-      resetEmployeePin,
       revokeEmployeeSession,
       saveEmployeeNote,
       saveEmployeePayroll,

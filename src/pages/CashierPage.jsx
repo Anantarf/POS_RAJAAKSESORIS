@@ -1244,10 +1244,10 @@ export default function CashierPage() {
                   type="button"
                   onClick={() => setVoidTarget(lastCompletedTransaction)}
                   disabled={!lastCompletedTransaction || user?.role !== "pemilik"}
-                  title={user?.role !== "pemilik" ? "Void membutuhkan akses owner dan PIN." : ""}
+                  title={user?.role !== "pemilik" ? "Hanya owner yang bisa membatalkan transaksi." : ""}
                   className="brand-button-danger disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  Batal (Void)
+                  Batalkan Transaksi
                 </button>
               </div>
             </div>
@@ -1830,13 +1830,13 @@ export default function CashierPage() {
 
       <ConfirmModal
         isOpen={Boolean(voidTarget)}
-        title="Void transaksi terakhir?"
-        message="Aksi ini hanya untuk transaksi yang perlu dibatalkan secara operasional."
+        title="Batalkan transaksi terakhir?"
+        message="Hanya gunakan jika transaksi memang perlu dibatalkan."
         target={voidTarget?.no_transaksi || voidTarget?.id}
         consequence="Stok dan saldo dikembalikan. Riwayat transaksi tetap tersimpan."
         requiresPin
         destructive
-        confirmLabel="Lanjut Void"
+        confirmLabel="Ya, Batalkan"
         onClose={() => setVoidTarget(null)}
         onConfirm={() => void confirmVoidLastTransaction()}
       />

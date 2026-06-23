@@ -185,7 +185,7 @@ export default function EmployeeManagementPage() {
   const openEdit = (u) => { setEditingUser(u); setShowForm(true); };
   const closeForm = () => { setShowForm(false); setEditingUser(null); };
 
-  const handleSave = async ({ id, name, username, role, password, pin }) => {
+  const handleSave = async ({ id, name, username, role, password }) => {
     setSubmitting(true);
     try {
       if (id) {
