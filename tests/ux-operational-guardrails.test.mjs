@@ -32,7 +32,7 @@ test("digital recent services only advance after a completed sale", () => {
   );
 
   assert.doesNotMatch(addToCart, /rememberCompletedServices/);
-  assert.match(digitalPage, /Produk dari transaksi berhasil/);
+  assert.match(digitalPage, /Belum ada transaksi sebelumnya/);
 
   const commitPosition = checkout.indexOf("await createDigitalTransaction");
   const recentPosition = checkout.indexOf("rememberCompletedServices(transactionItems)");
@@ -43,7 +43,7 @@ test("digital recent services only advance after a completed sale", () => {
 test("employee permission controls require verified backend state and expose recovery", () => {
   assert.match(permissionHook, /const \[loaded, setLoaded\] = useState\(false\)/);
   assert.match(permissionHook, /setLoaded\(true\)/);
-  assert.match(permissionHook, /\n    loaded,\n/);
+  assert.match(permissionHook, /\n {4}loaded,\n/);
 
   assert.match(employeePage, /const permissionDataReady = access\.loaded/);
   assert.match(employeePage, /\{permissionDataReady \? <div className="grid gap-3">/);
