@@ -78,7 +78,7 @@ function TrendBars({ data }) {
       <div className="brand-empty-state">
         <p className="text-base font-semibold text-slate-950">Belum ada tren penjualan</p>
         <p className="mt-2 max-w-md text-sm leading-7 text-slate-500">
-          Simpan transaksi di periode ini supaya pergerakan omzet dan laba langsung terbaca.
+          Simpan transaksi untuk melihat tren penjualan.
         </p>
       </div>
     );
@@ -226,7 +226,7 @@ export default function Dashboard() {
       ? {
           title: "Selisih shift besar",
           value: `${shiftDifferenceAlerts.length} shift`,
-          detail: "Closing memiliki mismatch kas yang perlu keputusan sebelum laporan dipercaya.",
+          detail: "Ada selisih kas. Perlu keputusan sebelum laporan dikunci.",
           tone: "danger",
           urgency: "BLOCKER",
           action: "Review shift",
@@ -240,7 +240,7 @@ export default function Dashboard() {
             .slice(0, 2)
             .map((wallet) => wallet.name || wallet.id)
             .join(", "),
-          detail: `${criticalWallets.length} wallet perlu top up atau rekonsiliasi.`,
+          detail: `${criticalWallets.length} saldo perlu dicek atau diisi.`,
           tone: "danger",
           urgency: "BLOCKER",
           action: "Buka saldo",
@@ -437,7 +437,7 @@ export default function Dashboard() {
           </div>
         ) : (
           <div className="mt-3 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm font-semibold text-emerald-700">
-            Tidak ada shift pending, stok kritis, saldo minus, atau retur pending pada periode ini.
+            Semua aman. Tidak ada alert aktif.
           </div>
         )}
       </Panel>
@@ -578,7 +578,7 @@ export default function Dashboard() {
             <div className="brand-empty-state">
               <p className="text-base font-semibold text-slate-950">Belum ada penjualan aksesoris</p>
               <p className="mt-2 text-sm leading-7 text-slate-500">
-                Saat transaksi pertama masuk, kategori dan produk teratas langsung tersusun di sini.
+                Belum ada data penjualan di periode ini.
               </p>
             </div>
           ) : (
@@ -686,7 +686,7 @@ export default function Dashboard() {
             <div className="brand-empty-state">
               <p className="text-base font-semibold text-slate-950">Belum ada arus kas harian</p>
               <p className="mt-2 text-sm leading-7 text-slate-500">
-                Catatan pemasukan dan pengeluaran operasional akan tampil di sini.
+                Belum ada catatan kas hari ini.
               </p>
             </div>
           ) : (
@@ -720,4 +720,3 @@ export default function Dashboard() {
     </div>
   );
 }
-

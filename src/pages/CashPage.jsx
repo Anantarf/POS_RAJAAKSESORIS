@@ -267,7 +267,7 @@ export default function CashPage() {
       <PageHeader
         eyebrow="Kas operasional"
         title="Catat operasional"
-        description="Masuk dan keluar kas harian dicatat dari satu tempat supaya kontrol saldo toko tetap rapi."
+        description="Catat semua pemasukan dan pengeluaran kas toko."
         icon="receipt"
       />
 
@@ -431,7 +431,7 @@ export default function CashPage() {
               <div className="mb-4">
                 <p className="text-sm font-black text-slate-950">1. Jenis transaksi</p>
                 <p className="mt-1 text-sm text-slate-500">
-                  Tentukan apakah uang masuk atau keluar dari kas operasional.
+                  Pilih jenis: masuk atau keluar.
                 </p>
               </div>
 
@@ -541,7 +541,7 @@ export default function CashPage() {
               <div className="mb-4">
                 <p className="text-sm font-black text-slate-950">3. Keterangan operasional</p>
                 <p className="mt-1 text-sm text-slate-500">
-                  Tulis konteks singkat agar audit harian mudah dipahami saat closing.
+                  Keterangan singkat untuk closing harian.
                 </p>
               </div>
 
@@ -579,8 +579,7 @@ export default function CashPage() {
           <div className="brand-subtle-block mt-6 p-5 text-sm text-slate-600">
             <p className="font-semibold text-slate-950">Ritme kerja kas</p>
             <p className="mt-2 leading-6">
-              Simpan setiap biaya kecil saat terjadi. Nominal, tanggal, dan keterangan yang rapi
-              membuat saldo akhir lebih mudah dipercaya saat tutup shift.
+              Catat setiap pengeluaran saat terjadi.
             </p>
           </div>
         </Panel>
@@ -615,11 +614,7 @@ export default function CashPage() {
           {historyRows.length === 0 ? (
             <div className="brand-empty-state px-6 py-12">
               <p className="text-base font-semibold text-slate-950">
-                Belum ada catatan operasional hari ini.
-              </p>
-              <p className="mt-2 max-w-md text-sm leading-7 text-slate-500">
-                Mulai dari pengeluaran kecil atau tambahan saldo. Timeline akan membantu closing
-                kas terasa lebih natural.
+                Belum ada catatan hari ini.
               </p>
               <div className="mt-5 flex flex-wrap justify-center gap-2">
                 {emptyStateExamples.map((example) => (

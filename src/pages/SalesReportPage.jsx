@@ -572,12 +572,12 @@ export default function SalesReportPage() {
 
         <Panel className="p-6">
           <h3 className="font-display text-2xl font-bold tracking-tight text-slate-950">
-            Sorotan pemilik toko
+            Ringkasan
           </h3>
           <div className="mt-5 grid gap-3">
             <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-                Kategori paling cuan
+                Kategori terlaris
               </p>
               <p className="mt-3 text-xl font-bold text-slate-950">
                 {bestCategory?.label || "-"}
@@ -726,4 +726,3 @@ export default function SalesReportPage() {
     </div>
   );
 }
-

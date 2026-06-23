@@ -730,7 +730,7 @@ export default function CashierPage() {
         });
         showNotification(
           "warning",
-          "Transaksi tersimpan, tetapi popup print diblokir browser. Cetak ulang dari preview struk."
+          "Print diblokir browser. Cetak ulang dari struk."
         );
       }
     } catch (error) {
@@ -1091,10 +1091,6 @@ export default function CashierPage() {
                 size={118}
               />
               <p className="text-lg font-semibold text-slate-950">Belum ada produk aktif</p>
-              <p className="mt-2 max-w-md text-sm leading-7 text-slate-500">
-                Owner bisa tambah atau import produk dari menu Stok Barang. Setelah aktif, produk
-                langsung muncul di grid kasir.
-              </p>
             </div>
             ) : !filteredProducts.length ? (
             <div className="brand-empty-state brand-empty-state-with-motion">
@@ -1104,8 +1100,7 @@ export default function CashierPage() {
               />
               <p className="text-lg font-semibold text-slate-950">Produk tidak ditemukan</p>
               <p className="mt-2 max-w-md text-sm leading-7 text-slate-500">
-                Periksa kode barcode, nama produk, atau kategori. Filter bisa dikosongkan untuk
-                kembali ke semua produk aktif.
+                Tidak ada produk yang cocok.
               </p>
               <button
                 type="button"
@@ -1123,7 +1118,6 @@ export default function CashierPage() {
               {hiddenProductCount ? (
                 <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">
                   Menampilkan {renderedProducts.length} dari {filteredProducts.length} produk.
-                  Cari nama/barcode atau pilih kategori untuk menemukan produk lainnya.
                 </p>
               ) : null}
               <div className="brand-scroll-region-y brand-scrollbar md:max-h-[min(62dvh,680px)] md:pr-2">
@@ -1839,7 +1833,7 @@ export default function CashierPage() {
         title="Void transaksi terakhir?"
         message="Aksi ini hanya untuk transaksi yang perlu dibatalkan secara operasional."
         target={voidTarget?.no_transaksi || voidTarget?.id}
-        consequence="Stok dan dampak wallet akan direversal, sementara catatan audit transaksi tetap disimpan."
+        consequence="Stok dan saldo dikembalikan. Riwayat transaksi tetap tersimpan."
         requiresPin
         destructive
         confirmLabel="Lanjut Void"
@@ -1866,4 +1860,3 @@ export default function CashierPage() {
     </div>
   );
 }
-

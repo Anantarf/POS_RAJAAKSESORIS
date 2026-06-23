@@ -1516,7 +1516,7 @@ export default function DigitalPage() {
           showNotification("warning", `Transaksi tersimpan, tetapi print gagal. ${printResult.message}`);
         }
       } else {
-        showNotification("warning", "Transaksi tersimpan, tetapi popup print diblokir. Cetak ulang dari preview struk.");
+        showNotification("warning", "Print diblokir browser. Cetak ulang dari struk.");
       }
     } catch (error) {
       if (printWindow) {
@@ -1658,7 +1658,7 @@ export default function DigitalPage() {
           showNotification("warning", `Transaksi tersimpan, tetapi print gagal. ${printResult.message}`);
         }
       } else {
-        showNotification("warning", "Transaksi tersimpan, tetapi popup print diblokir. Cetak ulang dari preview struk.");
+        showNotification("warning", "Print diblokir browser. Cetak ulang dari struk.");
       }
     } catch (error) {
       if (printWindow) {
@@ -1808,12 +1808,12 @@ export default function DigitalPage() {
         ) : (
           <DigitalEmptyState
             title={`Belum ada provider ${activeCategoryMeta?.label || getCategoryLabel(activeCategory)}`}
-            description="Tambahkan produk aktif di Kelola Layanan, atau gunakan search untuk mencari layanan dari kategori lain."
+            description="Tambah layanan di menu Layanan."
             action={
               canManageServices ? (
                 <Link to="/layanan-produk" className="brand-button-secondary gap-2">
                   <AppIcon name="settings" className="h-4 w-4" />
-                  Kelola Layanan
+                  Layanan
                 </Link>
               ) : null
             }
@@ -1830,7 +1830,7 @@ export default function DigitalPage() {
         {renderQuickServiceStrip(
           "Terakhir dijual",
           recentServices,
-          "Produk dari transaksi berhasil akan tampil di sini untuk repeat transaksi."
+          "Belum ada transaksi sebelumnya."
         )}
       </div>
       {renderRepeatPanel()}
@@ -2251,7 +2251,7 @@ export default function DigitalPage() {
           {canManageServices ? (
             <Link to="/layanan-produk" className="brand-button-secondary gap-2">
               <AppIcon name="settings" className="h-4 w-4" />
-              Kelola Layanan
+              Layanan
             </Link>
           ) : null}
         </div>
@@ -2779,4 +2779,3 @@ export default function DigitalPage() {
     </div>
   );
 }
-

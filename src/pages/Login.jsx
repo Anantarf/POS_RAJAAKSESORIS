@@ -123,7 +123,7 @@ export default function Login() {
               Retail Operating System
             </p>
             <p className="login-brand-subtitle mt-5 max-w-[320px] text-[15px] font-medium leading-7 text-slate-600">
-              Kelola kasir, stok, saldo, dan layanan digital dalam satu sistem.
+              Atur kasir, stok, saldo, dan layanan digital.
             </p>
 
             <div className="login-operation-grid" aria-label="Area operasional">

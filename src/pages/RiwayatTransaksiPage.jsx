@@ -684,7 +684,7 @@ export default function RiwayatTransaksiPage() {
       showNotification(
         "success",
         type === "delete"
-          ? `${transactionLabel} berhasil di-void. Reversal stok/wallet dicatat otomatis.`
+          ? `${transactionLabel} dibatalkan. Stok dan saldo dikembalikan.`
           : type === "restore"
             ? `${transactionLabel} berhasil direstore ke riwayat aktif.`
             : `${transactionLabel} dihapus permanen.`
@@ -707,7 +707,7 @@ export default function RiwayatTransaksiPage() {
         "success",
         deletedCount
           ? `${deletedCount} transaksi lama dibersihkan.`
-          : "Hard delete transaksi production dimatikan. Transaksi void tetap menjadi arsip audit."
+            : "Transaksi batal tetap tersimpan di riwayat."
       );
     } catch (error) {
       if (isPinActionCancelledError(error)) return;
@@ -741,7 +741,7 @@ export default function RiwayatTransaksiPage() {
       <PageHeader
         eyebrow="Semua Aktivitas"
         title="Riwayat transaksi"
-        description="Penjualan, layanan, logistik, mutasi saldo, dan kas operasional dalam satu daftar pengecekan."
+        description="Semua transaksi dalam satu daftar."
         icon="history"
         actions={
           <>
@@ -1147,18 +1147,18 @@ export default function RiwayatTransaksiPage() {
             <MetricCard
               label="Transaksi void"
               value={String(deletedStats.total)}
-              helper="Arsip audit transaksi yang dibatalkan."
+              helper="Transaksi batal tetap tersimpan."
             />
             <MetricCard
               label="Perlu review"
               value={String(deletedStats.expiringSoon)}
-              helper="Void terbaru yang perlu dicek owner."
+              helper="Transaksi batal yang perlu dicek."
               accent="gold"
             />
             <MetricCard
               label="Audit terkunci"
               value={String(deletedStats.expired)}
-              helper="Hard delete production tidak tersedia."
+              helper="Riwayat tetap tersimpan."
               accent="danger"
             />
           </div>
@@ -1167,13 +1167,13 @@ export default function RiwayatTransaksiPage() {
             <div className="flex flex-col gap-4 border-b border-slate-200 px-6 py-5 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--brand-gold)]">
-                  Void ledger transaksi
+                  Riwayat transaksi batal
                 </p>
                 <h3 className="mt-2 font-display text-2xl font-bold tracking-tight text-slate-950">
                   Transaksi void
                 </h3>
                 <p className="mt-2 text-sm text-slate-600">
-                  Transaksi yang dibatalkan tetap tersimpan sebagai audit trail dan reversal operasional.
+                  Transaksi dibatalkan tetap tercatat di riwayat.
                 </p>
               </div>
               <button
@@ -1195,7 +1195,7 @@ export default function RiwayatTransaksiPage() {
                     <th>Transaksi</th>
                     <th className="text-right">Nominal</th>
                     <th>Diproses oleh</th>
-                    <th>Status audit</th>
+                    <th>Status</th>
                     <th className="text-right">Aksi</th>
                   </tr>
                 </thead>
@@ -1243,7 +1243,7 @@ export default function RiwayatTransaksiPage() {
                           <td>
                             <div className="flex flex-wrap justify-end gap-2">
                               <span className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
-                                Reversal audit
+                                Stok dan saldo dikembalikan
                               </span>
                             </div>
                           </td>
@@ -1295,7 +1295,7 @@ export default function RiwayatTransaksiPage() {
               <p className="text-[11px] font-bold uppercase tracking-[0.18em]">Konsekuensi</p>
               <p className="mt-1">
                 {pendingAction.type === "delete"
-                  ? "Transaksi dibatalkan dengan reversal stok/wallet, sementara audit tetap immutable."
+                  ? "Stok dan saldo dikembalikan. Riwayat transaksi tetap tersimpan."
                   : pendingAction.type === "restore"
                     ? "Transaksi kembali muncul di riwayat aktif."
                     : "Transaksi dihapus permanen dan tidak dapat direstore."}
@@ -1349,4 +1349,3 @@ export default function RiwayatTransaksiPage() {
     </div>
   );
 }
-

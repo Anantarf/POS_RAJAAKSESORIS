@@ -403,7 +403,7 @@ export default function ShiftPage() {
       <PageHeader
         eyebrow="Shift"
         title="Buka dan tutup shift"
-        description="Buka shift saat mulai kerja, tutup setelah kas dihitung, lalu pemilik toko tinggal cek hasilnya."
+        description="Buka shift saat mulai kerja, tutup setelah kas dihitung."
         icon="receipt"
       />
 
@@ -424,7 +424,7 @@ export default function ShiftPage() {
           </h2>
           <p className="mt-2 text-sm leading-7 text-slate-600">
             {isOwner
-              ? "Owner bisa pilih kasir dan membuka shift kapan saja bila operasional toko perlu dibantu."
+              ? "Pemilik bisa buka shift untuk kasir kapan saja."
               : "Kasir hanya bisa membuka shift setelah jam 07:00 dan menutup shift setelah jam 20:00."}
           </p>
 
@@ -721,7 +721,7 @@ export default function ShiftPage() {
             </h2>
             {drilldownRisk === "mismatch" ? (
               <p className="mt-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
-                Drilldown alert aktif: prioritaskan shift dengan selisih besar sebelum approval.
+                Ada selisih besar. Selesaikan sebelum approval.
               </p>
             ) : null}
           </div>
@@ -888,7 +888,7 @@ export default function ShiftPage() {
                 {formatRupiah(correctionTarget.difference || 0)}
               </p>
               <p className="mt-2 text-sm leading-6 text-amber-800">
-                Shift akan tetap disetujui, tetapi selisih ini dicatat sebagai audit keuangan.
+                Selisih tetap dicatat meski shift disetujui.
               </p>
             </div>
             <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-4">
@@ -1070,4 +1070,3 @@ export default function ShiftPage() {
     </div>
   );
 }
-

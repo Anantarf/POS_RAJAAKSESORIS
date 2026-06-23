@@ -209,7 +209,7 @@ export default function StockOpnamePage() {
         <PageHeader
           eyebrow="Cek stok"
           title="Stock Opname"
-          description="Cocokkan stok fisik dengan catatan barang sebelum penyesuaian."
+          description="Cocokkan stok fisik dengan sistem."
           icon="clipboard"
           actions={
             <button type="button" onClick={backToList} className="brand-button-secondary">
@@ -233,7 +233,7 @@ export default function StockOpnamePage() {
       <PageHeader
         eyebrow="Cek stok"
         title="Stock Opname"
-        description="Cocokkan stok fisik dengan catatan barang sebelum stok disesuaikan."
+        description="Cocokkan stok fisik dengan sistem."
         icon="clipboard"
         actions={
           mode === "list" ? (
@@ -384,14 +384,13 @@ export default function StockOpnamePage() {
             <div className="brand-empty-state">
               <p className="text-base font-semibold text-slate-950">Belum ada sesi opname</p>
               <p className="mt-2 text-sm leading-7 text-slate-500">
-                Buat sesi pertama untuk mulai mencocokkan stok fisik dengan catatan barang.
+                Buat sesi pertama untuk mulai opname.
               </p>
             </div>
           )}
           {filteredSessions.length > visibleSessions.length ? (
             <p className="rounded-lg bg-slate-50 px-4 py-3 text-sm text-slate-600">
-              Menampilkan {visibleSessions.length} dari {filteredSessions.length} sesi. Persempit
-              pencarian agar halaman tetap ringan.
+              Menampilkan {visibleSessions.length} dari {filteredSessions.length} sesi.
             </p>
           ) : null}
         </>
@@ -677,8 +676,7 @@ export default function StockOpnamePage() {
               Terapkan penyesuaian stok?
             </h2>
             <p className="mt-3 text-sm leading-7 text-slate-600">
-              Sistem akan menyimpan draft terakhir, mengubah stok produk sesuai stok real yang
-              sudah diisi, dan membuat catatan mutasi penyesuaian. Aksi ini hanya untuk pemilik toko.
+              Stok produk akan disesuaikan sesuai angka yang diisi. Aksi ini tidak bisa dibatalkan.
             </p>
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
               <div className="rounded-lg border border-red-100 bg-red-50 px-4 py-3">
@@ -724,4 +722,3 @@ export default function StockOpnamePage() {
     </div>
   );
 }
-

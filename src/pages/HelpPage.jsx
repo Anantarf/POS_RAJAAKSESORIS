@@ -37,11 +37,10 @@ const guides = [
       "Masuk ke menu Shift.",
       "Pilih kasir yang bertugas jika login sebagai owner.",
       "Klik Buka Shift.",
-      "Pastikan status berubah menjadi shift aktif.",
+      "Status harus berubah ke shift aktif.",
       "Lanjut ke Kasir POS atau Layanan Digital.",
     ],
     warning: "Transaksi akan ditolak jika belum ada shift aktif.",
-    tip: "Buka shift saat toko mulai beroperasi agar laporan harian masuk ke kasir yang benar.",
   },
   {
     id: "close-shift",
@@ -268,7 +267,7 @@ const guides = [
     category: "print",
     audience: "kasir",
     time: "3 menit",
-    description: "Solusi saat popup print atau printer thermal bermasalah.",
+    description: "Solusi saat print atau printer bermasalah.",
     tags: ["printer", "thermal", "struk", "popup"],
     steps: [
       "Pastikan printer thermal menyala dan terhubung.",

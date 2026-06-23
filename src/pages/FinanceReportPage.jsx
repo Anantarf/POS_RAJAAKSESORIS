@@ -626,7 +626,7 @@ export default function FinanceReportPage() {
           Ringkasan periode
         </p>
         <p className="mt-3 text-sm leading-7 text-slate-700">
-          Data ditarik dari transaksi aksesoris, layanan digital, logistik, dan kas operasional.
+          Data dari semua transaksi dan kas toko.
           Laporan ini cocok untuk rekap harian pemilik toko sebelum setor tunai atau tutup buku.
         </p>
         <p className="mt-3 text-xs text-slate-500">
@@ -636,4 +636,3 @@ export default function FinanceReportPage() {
     </div>
   );
 }
-

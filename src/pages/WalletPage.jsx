@@ -262,7 +262,7 @@ export default function WalletPage() {
       <PageHeader
         eyebrow="Saldo toko"
         title="Saldo Aplikasi"
-        description="Pantau saldo internal toko, koreksi manual, dan alur dana dari transaksi harian."
+        description="Saldo dan mutasi kas toko."
         icon="coins"
         actions={
           <>
@@ -385,7 +385,7 @@ export default function WalletPage() {
             Mutasi saldo
           </h3>
           <p className="mt-1.5 text-sm leading-6 text-slate-600">
-            Catat koreksi saldo di sini. Transaksi harian akan ikut membentuk saldo yang tampil.
+            Koreksi saldo manual dan riwayat mutasi.
           </p>
           <form
             onSubmit={handleSubmit}
@@ -550,7 +550,7 @@ export default function WalletPage() {
                 Riwayat saldo
               </h3>
               <p className="mt-1 text-sm text-slate-500">
-                Data ledger dimuat per halaman supaya menu saldo tetap ringan.
+                Dimuat per halaman.
               </p>
             </div>
             {walletLedger.loading ? (
@@ -636,4 +636,3 @@ export default function WalletPage() {
     </div>
   );
 }
-

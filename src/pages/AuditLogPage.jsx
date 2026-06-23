@@ -84,7 +84,7 @@ export default function AuditLogPage() {
       <PageHeader
         eyebrow="Kontrol Pemilik"
         title="Riwayat Aktivitas"
-        description="Jejak aksi sensitif untuk reset, approval, perubahan stok, retur, dan operasi penting lain."
+        description="Riwayat aksi penting: reset, approval, stok, dan retur."
         icon="clipboard"
         actions={
           <button
@@ -112,7 +112,7 @@ export default function AuditLogPage() {
               Kapasitas audit
             </h2>
             <p className="mt-1 text-sm text-slate-600">
-              Ukuran total mencakup index database agar pertumbuhan riwayat dapat dipantau lebih awal.
+              Ukuran total termasuk index database.
             </p>
           </div>
           <button
@@ -127,7 +127,7 @@ export default function AuditLogPage() {
 
         {storageSummary.error ? (
           <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">
-            Monitoring kapasitas audit belum aktif. Terapkan migration retention foundation, lalu refresh halaman.
+            Data kapasitas belum tersedia.
           </p>
         ) : null}
 
@@ -192,8 +192,7 @@ export default function AuditLogPage() {
             </div>
 
             <p className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-800">
-              Audit kritis tidak dihapus otomatis. Archive atau cleanup hanya boleh diterapkan setelah
-              kebijakan retensi dan backup terverifikasi.
+              Riwayat kritis tidak dihapus otomatis. Backup dulu sebelum cleanup.
             </p>
           </>
         ) : null}
@@ -257,7 +256,7 @@ export default function AuditLogPage() {
                 Jejak aksi sensitif
               </h2>
               <p className="mt-1 text-sm text-slate-600">
-                Riwayat dimuat per halaman supaya tetap ringan saat data mulai banyak.
+                Dimuat per halaman.
               </p>
             </div>
             {auditPage.loading ? <span className="brand-badge-neutral">Memuat</span> : null}

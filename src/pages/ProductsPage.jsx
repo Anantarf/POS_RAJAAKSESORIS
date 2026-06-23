@@ -994,7 +994,7 @@ export default function ProductsPage() {
         title="Stok barang"
         description={
           canManageProducts
-            ? "Tambah produk, pilih kategori, dan perbarui stok dari halaman ini."
+            ? "Kelola stok, kategori, dan harga produk."
             : "Kasir bisa melihat stok dan menambah stok masuk tanpa membuka akses edit atau hapus produk."
         }
         icon="box"
@@ -1282,18 +1282,10 @@ export default function ProductsPage() {
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
               <h3 className="font-display text-2xl font-bold tracking-tight text-slate-950">
-                Tambah produk lebih cepat
+                Tambah produk
               </h3>
               <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600">
-                Isi nama, pilih kategori, harga, dan stok. Kalau barcode belum ada, kosongkan saja.
-                Kode produk akan dibuat saat disimpan.
-              </p>
-            </div>
-            <div className="brand-subtle-block border-[var(--brand-gold)]/16 bg-[var(--brand-gold)]/8 text-sm text-slate-700">
-              <p className="font-semibold text-slate-950">Tips cepat</p>
-              <p className="mt-1 leading-6">
-                Setelah simpan, kategori dan stok minimum tetap dipertahankan supaya tambah barang
-                berikutnya lebih cepat.
+                Isi nama, kategori, harga, dan stok.
               </p>
             </div>
           </div>
@@ -1762,8 +1754,7 @@ export default function ProductsPage() {
                     Belum ada mutasi stok hari ini.
                   </p>
                   <p className="mt-2 max-w-md text-sm leading-7 text-slate-500">
-                    Gunakan mutasi stok untuk restock barang, koreksi stok, dan opname ringan
-                    sebelum laporan harian ditutup.
+                    Catat perubahan stok fisik.
                   </p>
                   <div className="mt-4 flex flex-wrap justify-center gap-2">
                     <span className="brand-badge-neutral">Restock barang</span>
@@ -1916,8 +1907,7 @@ export default function ProductsPage() {
 
         {hiddenProductCount ? (
           <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">
-            Menampilkan {visibleProducts.length} dari {filteredProducts.length} produk. Gunakan
-            pencarian atau filter untuk menemukan produk lainnya.
+            Menampilkan {visibleProducts.length} dari {filteredProducts.length} produk.
           </p>
         ) : null}
 
@@ -2271,4 +2261,3 @@ export default function ProductsPage() {
     </div>
   );
 }
-
