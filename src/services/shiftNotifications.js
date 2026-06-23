@@ -62,7 +62,7 @@ export async function postShiftWhatsappNotification(type, payload) {
     throw error;
   }
 
-  const result = await response.json().catch(() => ({}));
+  const result = await response.json().catch(() => null);
 
   if (!response.ok) {
     recordOperationalEventSoon({
@@ -73,10 +73,12 @@ export async function postShiftWhatsappNotification(type, payload) {
       details: {
         type,
         status: response.status,
-        error: result.error || "Notifikasi WhatsApp gagal dikirim.",
+        error: result?.error || `Notifikasi WhatsApp gagal (${response.status})`,
       },
     });
-    throw new Error(result.error || "Notifikasi WhatsApp gagal dikirim.");
+    throw new Error(
+      result?.error || `Notifikasi WhatsApp gagal (${response.status})`
+    );
   }
 
   if (["failed", "retrying"].includes(String(result.status || "").toLowerCase())) {

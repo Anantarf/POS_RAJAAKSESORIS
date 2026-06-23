@@ -287,11 +287,12 @@ function AuthProvider({ children }) {
           "Login terlalu lama. Periksa koneksi internet."
         );
 
-        const data = await response.json();
-
         if (!response.ok) {
-          throw new Error(data.error || "Login gagal");
+          const errBody = await response.json().catch(() => ({}));
+          throw new Error(errBody.error || `Login gagal (${response.status})`);
         }
+
+        const data = await response.json();
 
         const token = data.token;
         commitToken(token);

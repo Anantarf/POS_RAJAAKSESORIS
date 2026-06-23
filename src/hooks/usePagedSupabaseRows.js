@@ -170,7 +170,7 @@ export function usePagedSupabaseRows({
   const to = Math.min(page * pageSize, count);
 
   useEffect(() => {
-    if (page > pageCount) {
+    if (page > pageCount && pageCount > 0) {
       setPage(pageCount);
     }
   }, [page, pageCount]);

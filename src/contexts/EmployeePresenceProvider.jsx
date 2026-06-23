@@ -373,11 +373,14 @@ export function EmployeePresenceProvider({ children }) {
       window.removeEventListener("focus", handleFocus);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       if (sessionRpcAvailable && sessionId) {
-        void supabase.rpc("end_employee_session", { p_session_id: sessionId });
+        void supabase.rpc("end_employee_session", { p_session_id: sessionId })
+          .catch(err => console.warn("end_employee_session failed:", err.message));
       }
       if (presenceChannel) {
-        void presenceChannel.untrack();
-        void supabase.removeChannel(presenceChannel);
+        void presenceChannel.untrack()
+          .catch(err => console.warn("untrack failed:", err.message));
+        void supabase.removeChannel(presenceChannel)
+          .catch(err => console.warn("removeChannel failed:", err.message));
       }
     };
   }, [logout, user]);
@@ -388,11 +391,14 @@ export function EmployeePresenceProvider({ children }) {
     const queueLargeRefresh = () => {
       if (largeRefreshTimerRef.current) return;
 
-      largeRefreshTimerRef.current = window.setTimeout(() => {
-        largeRefreshTimerRef.current = null;
-        refreshEmployeeRoster().catch((error) => {
+      largeRefreshTimerRef.current = window.setTimeout(async () => {
+        try {
+          await refreshEmployeeRoster();
+        } catch (error) {
           console.warn("Gagal refresh roster karyawan:", error.message || error);
-        });
+        } finally {
+          largeRefreshTimerRef.current = null;
+        }
       }, LARGE_REFRESH_THROTTLE_MS);
     };
 
@@ -411,7 +417,8 @@ export function EmployeePresenceProvider({ children }) {
                 ? window.sessionStorage?.getItem(SESSION_STORAGE_KEY)
                 : "")
           ) {
-            void logout();
+            void logout()
+              .catch(err => console.warn("logout on session revoke failed:", err.message));
           }
           setEmployeeRoster((rows) => patchRosterPresence(rows, sessionRow));
         }
@@ -425,7 +432,8 @@ export function EmployeePresenceProvider({ children }) {
         window.clearTimeout(largeRefreshTimerRef.current);
         largeRefreshTimerRef.current = null;
       }
-      void supabase.removeChannel(presenceSyncChannel);
+      void supabase.removeChannel(presenceSyncChannel)
+        .catch(err => console.warn("removeChannel presenceSync failed:", err.message));
     };
   }, [logout, refreshEmployeeRoster, user]);
 

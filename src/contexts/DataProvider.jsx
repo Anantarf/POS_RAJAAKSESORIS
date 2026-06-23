@@ -190,6 +190,7 @@ async function runDataStage(stageName, task, { severity = "warning" } = {}) {
     instrumentRequestEnd(reqCtx, true);
     return true;
   } catch (error) {
+    instrumentRequestEnd(reqCtx, false);
     console.warn("DATA STAGE FAILED", {
       stage: stageName,
       elapsedMs: Date.now() - startedAt,
@@ -1484,7 +1485,9 @@ export function DataProvider({
   ]);
 
   useEffect(() => {
-    loadData();
+    loadData().catch((error) => {
+      console.error("loadData unhandled error:", error);
+    });
   }, [loadData]);
 
   useEffect(() => {
@@ -2271,15 +2274,20 @@ export function DataProvider({
       }
 
       const token = await getAccessToken();
-      const response = await fetch("/api/employees", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-      const result = await response.json().catch(() => ({}));
+      let response, result;
+      try {
+        response = await fetch("/api/employees", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+        result = await response.json().catch(() => ({}));
+      } catch (networkError) {
+        throw new Error("Tidak dapat terhubung ke server. Periksa koneksi internet.");
+      }
 
       if (!response.ok || result.ok === false) {
         throw new Error(result.error || "Gagal membuat karyawan.");
