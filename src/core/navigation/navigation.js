@@ -14,60 +14,24 @@ export { filterNavigationByFeatureFlags, filterNavigationByPermissions };
 
 export const ownerNavigationSections = [
   {
-    title: "Operasional",
+    title: "Menu",
     items: [
-      { to: "/dashboard", label: "Dashboard", icon: "chart", feature: "reports" },
       { to: "/kasir", label: "Kasir", icon: "pos", feature: "cashier" },
-      {
-        to: "/inventory",
-        label: "Inventory",
-        icon: "box",
-        feature: "products",
-        children: [
-          { to: "/inventory?tab=fisik", label: "Item fisik", feature: "products" },
-          { to: "/inventory?tab=digital", label: "Item digital", feature: "serviceProducts" },
-          { to: "/inventory?tab=opname", label: "Cek stok fisik", feature: "stockOpname" },
-          { to: "/inventory?tab=retur", label: "Retur", feature: "returns" },
-          { to: "/inventory?tab=saldo", label: "Saldo toko", feature: "wallet" },
-        ],
-      },
-      {
-        to: "/riwayat-transaksi",
-        label: "Riwayat Transaksi",
-        icon: "history",
-        feature: "history",
-        children: [
-          { to: "/riwayat-transaksi", label: "Riwayat", feature: "history" },
-          { to: "/riwayat-transaksi?tab=laporan", label: "Laporan penjualan", feature: "reports" },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Admin",
-    items: [
-      {
-        to: "/admin/users",
-        label: "User & Audit",
-        icon: "users",
-        feature: "employees",
-        children: [
-          { to: "/admin/users", label: "Manajemen user", feature: "employees" },
-          { to: "/karyawan", label: "Karyawan", feature: "employees" },
-          { to: "/admin/audit", label: "Audit log", feature: "audit" },
-        ],
-      },
+      { to: "/dashboard", label: "Dashboard", icon: "chart", feature: "reports" },
+      { to: "/inventory", label: "Inventory", icon: "box", feature: "products" },
+      { to: "/riwayat-transaksi", label: "Riwayat", icon: "history", feature: "history" },
+      { to: "/karyawan", label: "Admin", icon: "users", feature: "employees" },
     ],
   },
 ];
 
 export const cashierNavigationSections = [
   {
-    title: "MVP",
+    title: "Menu",
     items: [
       { to: "/kasir", label: "Kasir", icon: "pos", feature: "cashier" },
       { to: "/inventory", label: "Inventory", icon: "box", feature: "products" },
-      { to: "/riwayat-transaksi", label: "Riwayat Transaksi", icon: "history", feature: "history" },
+      { to: "/riwayat-transaksi", label: "Riwayat", icon: "history", feature: "history" },
     ],
   },
 ];

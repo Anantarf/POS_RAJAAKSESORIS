@@ -1,7 +1,6 @@
 import { lazy, Suspense, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import Panel from "../components/app/Panel";
-import AppIcon from "../components/app/AppIcon";
 import { useProducts } from "../hooks/useProducts";
 import { useReports } from "../hooks/useReports";
 import { useShift } from "../hooks/useShift";
@@ -54,21 +53,6 @@ function KpiCard({ label, value, trend, accent = "default" }) {
         {trend?.detail ? <span className="font-medium text-slate-500"> - {trend.detail}</span> : null}
       </p>
     </Panel>
-  );
-}
-
-function RadarItem({ label, value, detail, badge, badgeClass = "brand-badge-neutral" }) {
-  return (
-    <div className="min-w-0 rounded-lg border border-slate-200 bg-slate-50 px-3 py-3">
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-xs font-semibold text-slate-500">
-          {label}
-        </p>
-        {badge ? <span className={`${badgeClass} shrink-0`}>{badge}</span> : null}
-      </div>
-      <p className="mt-2 truncate text-base font-bold text-slate-950">{value}</p>
-      {detail ? <p className="mt-1 truncate text-xs text-slate-500">{detail}</p> : null}
-    </div>
   );
 }
 
@@ -281,36 +265,6 @@ export default function Dashboard() {
         }
       : null,
   ].filter(Boolean);
-  const ownerQuickActions = [
-    {
-      to: "/shift",
-      icon: "history",
-      label: "Shift",
-      detail: pendingShiftCount ? `${pendingShiftCount} perlu review` : activeShifts.length ? `${activeShifts.length} kasir aktif` : "Buka shift",
-      urgent: pendingShiftCount > 0,
-    },
-    {
-      to: "/stok-barang",
-      icon: "box",
-      label: "Stok",
-      detail: lowStockProducts.length ? `${lowStockProducts.length} perlu dicek` : "Stok aman",
-      urgent: lowStockProducts.length > 0,
-    },
-    {
-      to: "/saldo",
-      icon: "wallet",
-      label: "Kas dan saldo",
-      detail: criticalWallets.length ? `${criticalWallets.length} saldo kritis` : formatRupiah(cashWalletBalance),
-      urgent: criticalWallets.length > 0,
-    },
-    {
-      to: "/retur-supplier",
-      icon: "return",
-      label: "Retur",
-      detail: pendingReturnCount ? `${pendingReturnCount} pending` : "Tidak ada pending",
-      urgent: pendingReturnCount > 0,
-    },
-  ];
   const operationalInsights = useMemo(
     () =>
       buildOperationalInsights({
@@ -322,6 +276,8 @@ export default function Dashboard() {
       }),
     [criticalWallets, lowStockProducts, pendingReturnCount, shiftDifferenceAlerts, summary]
   );
+  const insightAttention = operationalInsights.filter((insight) => insight.tone !== "success");
+  const attentionItems = ownerAlerts.length ? ownerAlerts : insightAttention;
 
   return (
     <div className="space-y-5">
@@ -399,152 +355,57 @@ export default function Dashboard() {
         </Panel>
       ) : null}
 
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="Ringkasan hari ini">
+        <KpiCard label="Omzet Hari Ini" value={formatRupiah(todaySummary.omzet)} />
+        <KpiCard label="Transaksi" value={formatCount(todaySummary.totalTransaksi)} accent="info" />
+        <KpiCard
+          label="Laba Bersih"
+          value={formatRupiah(todaySummary.labaBersih)}
+          accent={todaySummary.labaBersih >= 0 ? "success" : "danger"}
+        />
+        <KpiCard label="Saldo Kas" value={formatRupiah(cashWalletBalance)} />
+      </section>
+
       <Panel variant="strong" className="p-4">
         <div className="flex flex-col gap-1 border-b border-slate-200 pb-3 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm font-bold text-slate-950">Kontrol Pemilik</p>
-            <p className="text-xs text-slate-500">
-              Alert yang langsung perlu keputusan operasional.
-            </p>
+            <p className="text-sm font-bold text-slate-950">Perlu Dicek</p>
+            <p className="text-xs text-slate-500">Prioritas owner hari ini.</p>
           </div>
-          <span className={ownerAlerts.length ? "brand-badge-danger" : "brand-badge-success"}>
-            {ownerAlerts.length ? `${ownerAlerts.length} perlu dicek` : "Aman"}
+          <span className={attentionItems.length ? "brand-badge-warning" : "brand-badge-success"}>
+            {attentionItems.length ? `${attentionItems.length} item` : "Aman"}
           </span>
         </div>
 
-        {ownerAlerts.length ? (
-          <div className="mt-3 space-y-3">
-            {ownerAlerts.map((alert, index) => (
+        {attentionItems.length ? (
+          <div className="mt-3 grid gap-3 xl:grid-cols-2">
+            {attentionItems.map((item) => (
               <div
-                key={alert.title}
-                className={`brand-alert-command brand-alert-command-${alert.tone}`}
+                key={item.title}
+                className={`brand-control-alert brand-control-alert-${item.tone || "warning"}`}
               >
-                <div className="flex min-w-0 items-start gap-3">
-                  <span className={alert.tone === "danger" ? "brand-badge-danger" : "brand-badge-warning"}>
-                    {index + 1}. {alert.urgency}
-                  </span>
+                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                   <div className="min-w-0">
-                    <p className="text-sm font-bold text-slate-950">{alert.title}</p>
-                    <p className="mt-1 text-xl font-black text-slate-950">{alert.value}</p>
-                    <p className="mt-1 text-sm leading-6 text-slate-600">{alert.detail}</p>
+                    <p className="text-sm font-bold text-slate-950">{item.title}</p>
+                    {item.value ? (
+                      <p className="mt-1 text-lg font-black text-slate-950">{item.value}</p>
+                    ) : null}
+                    <p className="mt-1 text-sm leading-6 text-slate-600">{item.detail}</p>
                   </div>
+                  {item.to ? (
+                    <Link to={item.to} className="brand-button-secondary shrink-0 px-4 py-2 text-xs">
+                      {item.action}
+                    </Link>
+                  ) : null}
                 </div>
-                <Link to={alert.to} className="brand-button-primary shrink-0">
-                  {alert.action}
-                </Link>
               </div>
             ))}
           </div>
         ) : (
           <div className="mt-3 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm font-semibold text-emerald-700">
-            Semua aman. Tidak ada alert aktif.
+            Semua aman. Tidak ada prioritas aktif.
           </div>
         )}
-      </Panel>
-
-      <section className="space-y-3" aria-label="Snapshot hari ini">
-        <div>
-          <p className="text-sm font-bold text-slate-950">Snapshot Hari Ini</p>
-          <p className="text-xs text-slate-500">Angka utama untuk pengecekan hari ini.</p>
-        </div>
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-          <KpiCard label="Omzet Hari Ini" value={formatRupiah(todaySummary.omzet)} />
-          <KpiCard label="Transaksi" value={formatCount(todaySummary.totalTransaksi)} accent="info" />
-          <KpiCard label="Laba Bersih" value={formatRupiah(todaySummary.labaBersih)} accent={todaySummary.labaBersih >= 0 ? "success" : "danger"} />
-          <KpiCard label="Saldo Kas" value={formatRupiah(cashWalletBalance)} />
-          <KpiCard label="Kasir Aktif" value={String(activeShifts.length)} accent="success" />
-        </div>
-      </section>
-
-      <section className="space-y-3" aria-label="Tindakan cepat pemilik">
-        <div className="flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-sm font-bold text-slate-950">Tindakan Cepat</p>
-            <p className="text-xs text-slate-500">Buka area yang perlu diselesaikan sekarang.</p>
-          </div>
-        </div>
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          {ownerQuickActions.map((action) => (
-            <Link
-              key={action.to}
-              to={action.to}
-              className={`flex min-h-[72px] items-center gap-3 rounded-lg border bg-white px-4 py-3 transition hover:border-[var(--brand-gold)]/45 hover:bg-[var(--brand-surface-tint)] ${
-                action.urgent ? "border-amber-200" : "border-slate-200"
-              }`}
-            >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
-                <AppIcon name={action.icon} className="h-5 w-5" />
-              </span>
-              <span className="min-w-0">
-                <span className="block text-sm font-bold text-slate-950">{action.label}</span>
-                <span className={`block truncate text-xs font-semibold ${action.urgent ? "text-amber-700" : "text-slate-500"}`}>
-                  {action.detail}
-                </span>
-              </span>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <Panel className="p-4">
-        <div className="flex flex-col gap-1 border-b border-slate-200 pb-3 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-sm font-bold text-slate-950">Radar Operasional</p>
-            <p className="text-xs text-slate-500">Ringkasan cepat untuk keputusan harian.</p>
-          </div>
-        </div>
-
-        <div className="mt-3 grid gap-2 md:grid-cols-2 xl:grid-cols-[repeat(4,minmax(0,1fr))]">
-          <RadarItem
-            label="Kasir Aktif"
-            value={shiftValue}
-            detail={shiftDetail}
-            badge={activeShifts.length ? "Aktif" : "Belum aktif"}
-            badgeClass={activeShifts.length ? "brand-badge-success" : "brand-badge-neutral"}
-          />
-          <RadarItem
-            label="Alert stok"
-            value={stockAlertValue}
-            detail={lowStockProducts.length ? `${lowStockProducts.length} item perlu dicek` : "Di atas batas minimum"}
-            badge={lowStockProducts.length ? `${lowStockProducts.length} item` : "Aman"}
-            badgeClass={lowStockProducts.length ? "brand-badge-danger" : "brand-badge-success"}
-          />
-          <RadarItem
-            label="Kategori terkuat"
-            value={bestCategory ? bestCategory.nama : "-"}
-            detail={bestCategory ? `${bestCategory.kontribusi}% kontribusi pcs` : "Belum ada data"}
-          />
-          <RadarItem
-            label="Rata-rata transaksi"
-            value={averageTransaction}
-            detail={`${formatCount(summary.totalTransaksi)} transaksi`}
-          />
-        </div>
-      </Panel>
-
-      <Panel className="p-4">
-        <div className="mb-4 flex flex-col gap-1 border-b border-slate-200 pb-3 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="brand-kicker">Catatan hari ini</p>
-            <h3 className="mt-1 text-lg font-bold tracking-tight text-slate-950">
-              Hal yang perlu dicek
-            </h3>
-          </div>
-          <span className="brand-badge-neutral">Dari data toko</span>
-        </div>
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {operationalInsights.map((insight) => (
-            <div
-              key={insight.title}
-              className={`brand-control-alert brand-control-alert-${insight.tone}`}
-            >
-              <p className="text-xs font-bold text-slate-500">
-                {insight.title}
-              </p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">{insight.detail}</p>
-            </div>
-          ))}
-        </div>
       </Panel>
 
       <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
