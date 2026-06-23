@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import FeatureLoadPanel from "../components/FeatureLoadPanel";
 import PageHeader from "../components/app/PageHeader";
 import Panel from "../components/app/Panel";
+import InfoTip from "../components/app/InfoTip";
 import { useAuth } from "../contexts/useAuth";
 import { showNotification } from "../contexts/NotificationContext";
 import { useShift } from "../hooks/useShift";
@@ -303,7 +304,7 @@ export default function ShiftPage() {
       setPin("");
       showNotification(
         "success",
-        `Closing shift sudah dicatat. Statusnya ${getShiftStatusLabel(shift.status).toLowerCase()}.`
+        `Tutup shift sudah dicatat. Statusnya ${getShiftStatusLabel(shift.status).toLowerCase()}.`
       );
       showWhatsappStatus(shift, "closing");
     } catch (error) {
@@ -466,7 +467,9 @@ export default function ShiftPage() {
               </select>
             </div>
             <div>
-              <label className="mb-2 block text-sm font-semibold text-slate-700">Jenis Shift</label>
+              <label className="mb-2 flex items-center gap-1 text-sm font-semibold text-slate-700">
+                Jenis shift <InfoTip text="Sesi kerja kasir. Dibuka saat mulai kerja, ditutup saat selesai. Pemilik mengecek selisih saldo setelah tutup." />
+              </label>
               <select
                 value={selectedShiftType}
                 onChange={(event) => setSelectedShiftType(event.target.value)}
@@ -498,10 +501,10 @@ export default function ShiftPage() {
             <p className="font-semibold text-slate-950">Aturan waktu</p>
             <div className="mt-3 space-y-2">
               <p>
-                Mulai shift: {isOwner ? "owner bisa kapan saja, kasir setelah jam 07:00" : "setelah jam 07:00"}
+                Mulai shift: {isOwner ? "pemilik bisa kapan saja, kasir setelah jam 07:00" : "setelah jam 07:00"}
               </p>
               <p>
-                Closing shift: {isOwner ? "owner bisa kapan saja, kasir setelah jam 20:00" : "setelah jam 20:00"}
+                Tutup shift: {isOwner ? "pemilik bisa kapan saja, kasir setelah jam 20:00" : "setelah jam 20:00"}
               </p>
               <p>Lewat jam 05:00 WIB, shift perlu dibuka ulang</p>
             </div>
@@ -512,17 +515,17 @@ export default function ShiftPage() {
           {!currentShift ? (
             <>
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--brand-gold)]">
-                Opening Shift
+                Buka shift
               </p>
-              <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-slate-950">
+              <h2 className="mt-3 text-2xl font-bold tracking-tight text-slate-950">
                 Siap mulai kerja
               </h2>
               <div className="mt-5 grid gap-3 lg:grid-cols-2">
                 <div className="rounded-lg border border-[var(--brand-gold)]/20 bg-white px-5 py-5">
                   <p className="text-sm font-semibold text-slate-700">Cash laci shift</p>
-                  <p className="mt-2 text-4xl font-black text-slate-950">Rp 0</p>
+                  <p className="mt-2 text-3xl font-extrabold text-slate-950">Rp 0</p>
                   <p className="mt-2 text-sm text-slate-600">
-                    Yang mulai dari nol hanya cash saat opening.
+                    Yang mulai dari nol hanya cash saat buka shift.
                   </p>
                 </div>
                 <WalletBalanceSnapshotCard walletBalances={walletBalances} />
@@ -553,9 +556,9 @@ export default function ShiftPage() {
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--brand-gold)]">
-                    Shift Aktif
+                    Shift aktif
                   </p>
-                  <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-slate-950">
+                  <h2 className="mt-3 text-2xl font-bold tracking-tight text-slate-950">
                     Tutup shift saat kas sudah dihitung
                   </h2>
                 </div>
@@ -588,21 +591,21 @@ export default function ShiftPage() {
                 <SummaryItem label="Cash tercatat" value={formatRupiah(currentShift.total_cash || 0)} />
                 <DigitalPaymentBreakdownCard shift={currentShift} walletBalances={walletBalances} />
                 <SummaryItem
-                  label="Expected cash"
+                  label="Cash sistem"
                   value={formatRupiah(currentShift.expected_cash || 0)}
                 />
               </div>
 
               {!canCloseNow && !isOwner ? (
                 <p className="mt-5 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-700">
-                  Kasir hanya bisa closing setelah jam 20:00
+                  Kasir hanya bisa tutup shift setelah jam 20:00
                 </p>
               ) : null}
 
               <div className="mt-6 grid gap-4 md:grid-cols-2">
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-slate-700">
-                    Actual cash
+                    Cash fisik
                   </label>
                   <CurrencyInput
                     value={actualCash}
@@ -626,7 +629,7 @@ export default function ShiftPage() {
                     onChange={(event) => setNotes(event.target.value)}
                     className="brand-textarea"
                     rows={4}
-                    placeholder="Contoh: ada selisih kecil, pemilik toko bantu closing, atau shift sepi."
+                    placeholder="Contoh: ada selisih kecil, pemilik toko bantu tutup shift, atau shift sepi."
                   />
                 </div>
                 {!isOwner && pinRequiredEnabled ? (
@@ -659,7 +662,7 @@ export default function ShiftPage() {
                 }
                 className="brand-button-primary mt-6 h-16 w-full text-lg disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {submitting ? "Menyimpan closing..." : "Tutup Shift"}
+                {submitting ? "Menyimpan tutup shift..." : "Tutup Shift"}
               </button>
             </>
           )}
@@ -809,7 +812,7 @@ export default function ShiftPage() {
 
                   {shift.notes ? (
                     <div className="mt-4 rounded-lg border border-slate-200 bg-white px-4 py-4 text-sm text-slate-700">
-                      <p className="font-semibold text-slate-950">Catatan closing</p>
+                      <p className="font-semibold text-slate-950">Catatan tutup shift</p>
                       <p className="mt-2 whitespace-pre-line">{shift.notes}</p>
                     </div>
                   ) : null}
@@ -836,7 +839,7 @@ export default function ShiftPage() {
                       disabled={submitting || Number(shift.difference || 0) !== 0}
                       className="brand-button-success disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                      Setujui Shift
+                      Setujui shift
                     </button>
                     <button
                       type="button"
@@ -844,7 +847,7 @@ export default function ShiftPage() {
                       disabled={submitting || Number(shift.difference || 0) === 0}
                       className="brand-button-primary disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                      Setujui dengan Koreksi
+                      Setujui dengan koreksi
                     </button>
                     <button
                       type="button"
@@ -852,7 +855,7 @@ export default function ShiftPage() {
                       disabled={submitting}
                       className="brand-button-secondary"
                     >
-                      Tandai Perlu Dicek
+                      Tandai perlu dicek
                     </button>
                   </div>
 

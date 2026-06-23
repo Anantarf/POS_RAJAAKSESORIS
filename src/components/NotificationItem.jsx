@@ -25,7 +25,7 @@ const typeConfigMap = {
     Icon: XCircle,
   },
   warning: {
-    title: "Perlu Dicek",
+    title: "Perlu dicek",
     accentClass: "border-[#D4AF37]",
     iconWrapperClass: "border-[#F1E0A6] bg-[#FFF8E1]",
     iconClass: "text-[#B8921F]",

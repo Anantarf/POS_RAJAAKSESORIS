@@ -526,7 +526,7 @@ export default function FinanceReportPage() {
       <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
         <Panel className="p-6">
           <h3 className="font-display text-2xl font-bold tracking-tight text-slate-950">
-            Rincian kanal
+            Rincian penjualan
           </h3>
           <div className="mt-5 space-y-3">
             {summary.breakdown.map((item) => (

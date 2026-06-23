@@ -778,18 +778,18 @@ export default function CashierPage() {
           deleteTransactionHistory({
             source: "aksesoris",
             id: target.id,
-            reason: `Void dari command strip kasir: ${target.no_transaksi || target.id}`,
+            reason: `Pembatalan dari kasir: ${target.no_transaksi || target.id}`,
           }),
         "TRANSACTION.DELETE"
       );
       setLastCompletedTransaction(null);
       showNotification(
         "success",
-        `Transaksi ${target.no_transaksi || target.id} di-void. Reversal stok/wallet tercatat.`
+        `Transaksi ${target.no_transaksi || target.id} dibatalkan. Stok dan saldo sudah dikembalikan.`
       );
     } catch (error) {
       if (isPinActionCancelledError(error)) return;
-      showNotification("error", error.message || "Void transaksi gagal.");
+      showNotification("error", error.message || "Pembatalan transaksi gagal.");
     }
   };
 
@@ -1157,7 +1157,7 @@ export default function CashierPage() {
                   type="button"
                   onClick={() => setVoidTarget(lastCompletedTransaction)}
                   disabled={!lastCompletedTransaction || user?.role !== "pemilik"}
-                  title={user?.role !== "pemilik" ? "Hanya owner yang bisa membatalkan transaksi." : ""}
+                  title={user?.role !== "pemilik" ? "Hanya pemilik yang bisa membatalkan transaksi." : ""}
                   className="brand-button-danger disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Batalkan Transaksi
@@ -1689,7 +1689,7 @@ export default function CashierPage() {
         isOpen={isPinModalOpen}
         onClose={closePinModal}
         onConfirm={executeConfirmedAction}
-        title="PIN untuk void transaksi"
+        title="PIN untuk batalkan transaksi"
         message={`Verifikasi aksi sensitif: ${actionDescription}`}
       />
 

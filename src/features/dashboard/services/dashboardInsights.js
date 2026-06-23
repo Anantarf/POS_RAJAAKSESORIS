@@ -131,8 +131,8 @@ export function buildOperationalInsights({
   if (shiftDifferenceAlerts.length) {
     insights.push({
       tone: "danger",
-      title: "Aktivitas kasir perlu audit",
-      detail: `${shiftDifferenceAlerts.length} shift memiliki selisih kas besar. Review closing dan otorisasi PIN.`,
+      title: "Aktivitas kasir perlu dicek",
+      detail: `${shiftDifferenceAlerts.length} shift memiliki selisih kas besar. Cek tutup shift dan otorisasi PIN.`,
     });
   }
 

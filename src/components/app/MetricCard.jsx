@@ -38,7 +38,7 @@ export default function MetricCard({
   return (
     <Panel className={`overflow-hidden p-4 ${className}`.trim()}>
       <div className="flex items-start justify-between gap-3">
-        <span className="text-[11px] font-black uppercase leading-5 tracking-[0.12em] text-slate-500">{label}</span>
+        <span className="text-xs font-semibold leading-5 text-slate-500">{label}</span>
         {icon ? (
           <span className={`flex h-9 w-9 items-center justify-center rounded-md border border-slate-200/70 ${styles.icon}`}>
             <AppIcon name={icon} className="h-4 w-4" />
@@ -49,7 +49,7 @@ export default function MetricCard({
           </span>
         ) : null}
       </div>
-      <p className={`mt-4 text-2xl font-black tracking-tight ${styles.value}`}>{value}</p>
+      <p className={`mt-4 text-xl font-bold tracking-tight ${styles.value}`}>{value}</p>
       {helper || (icon && trend) ? (
         <div className="mt-2 flex flex-wrap items-center gap-2">
           {icon && trend ? (

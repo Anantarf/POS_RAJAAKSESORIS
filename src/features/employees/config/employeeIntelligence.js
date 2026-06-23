@@ -5,7 +5,7 @@ export { EMPLOYEE_PERMISSIONS } from "../../../core/permissions/employeePermissi
 export const EMPLOYEE_ACTIVITY_STATUS = Object.freeze({
   CHECKOUT: "Sedang checkout",
   STOCK_INPUT: "Sedang input stok",
-  SHIFT_CLOSING: "Sedang closing shift",
+  SHIFT_CLOSING: "Sedang tutup shift",
   REPORT_VIEW: "Sedang lihat laporan",
   IDLE: "Idle",
   OFFLINE: "Offline",
@@ -32,13 +32,13 @@ export const EMPLOYEE_PERMISSION_GROUPS = [
       },
       {
         key: EMPLOYEE_PERMISSIONS.TRANSACTION_VOID,
-        label: "Void transaksi",
-        helper: "Boleh membatalkan transaksi sebelum final.",
+        label: "Batalkan transaksi",
+        helper: "Boleh membatalkan transaksi sebelum selesai.",
       },
       {
         key: EMPLOYEE_PERMISSIONS.TRANSACTION_DELETE,
-        label: "Delete transaksi",
-        helper: "Boleh menghapus atau mengarsip transaksi.",
+        label: "Hapus transaksi",
+        helper: "Boleh menghapus atau mengarsipkan transaksi.",
         danger: true,
       },
     ],
@@ -46,7 +46,7 @@ export const EMPLOYEE_PERMISSION_GROUPS = [
   {
     id: "stock",
     label: "Stok",
-    helper: "Perubahan inventory dan harga produk.",
+    helper: "Perubahan stok dan harga produk.",
     permissions: [
       {
         key: EMPLOYEE_PERMISSIONS.PRODUCT_STOCK_EDIT,
@@ -63,11 +63,11 @@ export const EMPLOYEE_PERMISSION_GROUPS = [
   {
     id: "shift",
     label: "Shift",
-    helper: "Kontrol opening dan closing operasional kasir.",
+    helper: "Kontrol buka dan tutup shift kasir.",
     permissions: [
       {
         key: EMPLOYEE_PERMISSIONS.SHIFT_CLOSE,
-        label: "Closing shift",
+        label: "Tutup shift",
         helper: "Boleh menutup shift kasir.",
       },
     ],
@@ -75,42 +75,42 @@ export const EMPLOYEE_PERMISSION_GROUPS = [
   {
     id: "finance",
     label: "Keuangan",
-    helper: "Akses perubahan kas dan wallet operasional.",
+    helper: "Akses perubahan kas dan saldo operasional.",
     permissions: [
       {
         key: EMPLOYEE_PERMISSIONS.FINANCE_CASH_WALLET,
-        label: "Kas dan wallet",
-        helper: "Boleh input kas/wallet operasional.",
+        label: "Kas dan saldo",
+        helper: "Boleh input kas dan saldo operasional.",
       },
     ],
   },
   {
     id: "security",
-    label: "Security",
+    label: "Keamanan",
     helper: "Aksi keamanan akun dan sesi.",
     permissions: [
       {
         key: EMPLOYEE_PERMISSIONS.EMPLOYEE_PIN_RESET,
-        label: "Reset PIN",
-        helper: "Boleh meminta reset PIN staff.",
+        label: "Atur ulang PIN",
+        helper: "Boleh meminta atur ulang PIN karyawan.",
         danger: true,
       },
       {
         key: EMPLOYEE_PERMISSIONS.EMPLOYEE_SESSION_REVOKE,
-        label: "Revoke session",
-        helper: "Boleh memutus sesi aktif staff.",
+        label: "Putus sesi",
+        helper: "Boleh memutus sesi aktif karyawan.",
         danger: true,
       },
     ],
   },
   {
     id: "owner",
-    label: "Owner Actions",
-    helper: "Aksi konfigurasi yang tetap perlu supervisi owner.",
+    label: "Aksi pemilik",
+    helper: "Aksi konfigurasi yang tetap perlu pengawasan pemilik.",
     permissions: [
       {
         key: EMPLOYEE_PERMISSIONS.SETTINGS_SECURITY_MANAGE,
-        label: "Atur security",
+        label: "Atur keamanan",
         helper: "Boleh mengubah kebijakan PIN dan akses.",
         danger: true,
       },

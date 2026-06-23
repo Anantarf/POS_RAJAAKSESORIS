@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import AppIcon from "../components/app/AppIcon";
@@ -9,6 +9,7 @@ import {
 } from "../core/navigation/navigation";
 import { getRuntimeFlags } from "../core/runtime/runtimeFlags";
 import { useAuth } from "../contexts/useAuth";
+import { useData } from "../contexts/useData";
 
 function getPathname(to) {
   return normalizePathname(to);
@@ -27,8 +28,16 @@ const mobilePrimaryRoutes = {
 export default function AppShell() {
   const { user } = useAuth();
   const location = useLocation();
+  const { loading } = useData();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => window.innerWidth < 1536);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [lastSyncedAt, setLastSyncedAt] = useState(null);
+
+  useEffect(() => {
+    if (!loading) {
+      setLastSyncedAt(new Date());
+    }
+  }, [loading]);
 
   const meta = getRouteMeta(location.pathname);
   const sections = buildNavigationSections(user.role, getRuntimeFlags(), user.permissions);
@@ -49,6 +58,13 @@ export default function AppShell() {
     month: "long",
     year: "numeric",
   }).format(new Date());
+
+  const syncStatusLabel = lastSyncedAt
+    ? new Intl.DateTimeFormat("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }).format(lastSyncedAt)
+    : null;
 
   return (
     <div
@@ -83,7 +99,23 @@ export default function AppShell() {
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-wrap items-center justify-end gap-4">
+              {loading ? (
+                <div className="flex items-center gap-2 text-sm">
+                  <svg className="h-3.5 w-3.5 animate-spin text-[var(--brand-gold)]" fill="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.25" />
+                    <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  <span className="font-medium text-slate-600">Sinkronisasi...</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-sm">
+                  <svg className="h-3.5 w-3.5 text-slate-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="font-medium text-slate-500">Diperbarui {syncStatusLabel}</span>
+                </div>
+              )}
               <div className="flex items-center gap-2 text-sm">
                 <span className="font-medium text-slate-500">User aktif:</span>
                 <span className="font-semibold text-slate-950">{user.nama}</span>

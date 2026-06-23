@@ -617,6 +617,19 @@ export default function ProductsPage() {
     });
   };
 
+  const openQuickStockDrawer = (product) => {
+    if (!canAddStock) return;
+    setOpenActionProductId(null);
+    setLastQuickMutationAmount(null);
+    setMutation({
+      productId: product.id,
+      tipe: "masuk",
+      jumlah: "",
+      referensi: "",
+      catatan: "",
+    });
+  };
+
   const prepareStockMutation = (product) => {
     if (!canAddStock) return;
     setOpenActionProductId(null);
@@ -1615,7 +1628,7 @@ export default function ProductsPage() {
                               {canAddStock ? (
                                 <button
                                   type="button"
-                                  onClick={() => prepareStockMutation(product)}
+                                  onClick={() => openQuickStockDrawer(product)}
                                   className="brand-button-success min-h-[36px] px-3 py-2 text-xs"
                                 >
                                   <AppIcon name="package-plus" className="h-3.5 w-3.5" />
@@ -1921,7 +1934,7 @@ export default function ProductsPage() {
                               current === product.id ? null : product.id
                             )
                           }
-                          onAddStock={() => prepareStockMutation(product)}
+                          onAddStock={() => openQuickStockDrawer(product)}
                           onEdit={() => {
                             setOpenActionProductId(null);
                             editProduct(product);
@@ -2203,6 +2216,107 @@ export default function ProductsPage() {
         title="Konfirmasi PIN"
         message={`Masukkan PIN untuk lanjut: ${actionDescription}`}
       />
+
+      {quickStockProduct ? (
+        <Drawer
+          open={Boolean(quickStockProduct)}
+          title={`Tambah Stok — ${quickStockProduct.nama}`}
+          onClose={() => {
+            setQuickStockProduct(null);
+            setMutation(emptyMutation);
+            setLastQuickMutationAmount(null);
+          }}
+        >
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              if (!mutation.jumlah) {
+                showNotification("warning", "Masukkan jumlah stok.");
+                return;
+              }
+              saveStockMutation({
+                productId: mutation.productId,
+                tipe: "masuk",
+                jumlah: Number(mutation.jumlah),
+                referensi: "",
+                catatan: "",
+              })
+                .then(() => {
+                  showNotification("success", `Stok ${quickStockProduct.nama} bertambah ${mutation.jumlah} ${quickStockProduct.satuan || "pcs"}.`);
+                  setQuickStockProduct(null);
+                  setMutation(emptyMutation);
+                  setLastQuickMutationAmount(null);
+                })
+                .catch((error) => {
+                  showNotification("error", error.message || "Gagal simpan mutasi stok.");
+                });
+            }}
+            className="space-y-5 p-6"
+          >
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-slate-700">Produk</label>
+              <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
+                <p className="text-sm font-semibold text-slate-950">{quickStockProduct.nama}</p>
+                <p className="mt-1 text-xs text-slate-500">{quickStockProduct.kategori || "Tanpa kategori"}</p>
+              </div>
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-slate-700">Jumlah Tambah</label>
+              <input
+                ref={mutationQuantityRef}
+                type="number"
+                min="0"
+                step="1"
+                value={mutation.jumlah}
+                onChange={(event) =>
+                  setMutation((prev) => ({ ...prev, jumlah: event.target.value }))
+                }
+                className="brand-input text-2xl font-black"
+                placeholder="0"
+                autoFocus
+              />
+              <p className="mt-2 text-xs text-slate-500">
+                Stok sekarang: <strong>{quickStockProduct.stok} {quickStockProduct.satuan || "pcs"}</strong>
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {quickMutationAmounts.map((amount) => (
+                <button
+                  key={amount}
+                  type="button"
+                  onClick={() => applyQuickMutationAmount(amount)}
+                  className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
+                    lastQuickMutationAmount === amount
+                      ? "bg-[var(--brand-gold)]/14 text-slate-950"
+                      : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                  }`}
+                >
+                  +{amount}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex gap-2 pt-4">
+              <button
+                type="button"
+                onClick={() => {
+                  setQuickStockProduct(null);
+                  setMutation(emptyMutation);
+                  setLastQuickMutationAmount(null);
+                }}
+                className="brand-button-secondary flex-1"
+              >
+                Batal
+              </button>
+              <button type="submit" className="brand-button-success flex-1">
+                Simpan
+              </button>
+            </div>
+          </form>
+        </Drawer>
+      ) : null}
     </div>
   );
 }

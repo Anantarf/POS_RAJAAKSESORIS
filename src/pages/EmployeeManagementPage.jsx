@@ -246,7 +246,7 @@ export default function EmployeeManagementPage() {
           <SummaryTile
             label="Kasir"
             value={cashierCount}
-            helper={`${ownerCount} owner terdaftar`}
+            helper={`${ownerCount} pemilik terdaftar`}
             icon={UserRound}
           />
           <SummaryTile

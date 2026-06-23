@@ -173,7 +173,7 @@ export function buildEmployees(staffUsers, user, activeShifts, payrolls = [], ro
     const activityStatus = status === "online" ? roster.activity_status || "" : "";
     const securityLevel =
       role === "pemilik"
-        ? "Owner"
+        ? "Pemilik"
         : roster.pin_enabled || row.pin_hash || row.pinHash
           ? "PIN aktif"
           : "Perlu setup PIN";

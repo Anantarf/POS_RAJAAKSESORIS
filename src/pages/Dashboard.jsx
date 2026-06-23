@@ -204,7 +204,7 @@ export default function Dashboard() {
           detail: "Ada selisih saldo. Perlu keputusan sebelum laporan dikunci.",
           tone: "danger",
           urgency: "BLOCKER",
-          action: "Review shift",
+          action: "Cek shift",
           to: "/shift?status=pending&risk=mismatch",
         }
       : null,
@@ -226,10 +226,10 @@ export default function Dashboard() {
       ? {
           title: "Shift menunggu persetujuan",
           value: `${pendingShiftCount} shift`,
-          detail: "Review closing shift sebelum laporan harian dikunci.",
+          detail: "Cek tutup shift sebelum laporan harian dikunci.",
           tone: "warning",
           urgency: "FINANCE",
-          action: "Review shift",
+          action: "Cek shift",
           to: "/shift?status=pending",
         }
       : null,
@@ -273,7 +273,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-3xl font-black tracking-tight text-slate-950">Dashboard Toko</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-950">Dashboard Toko</h1>
       </div>
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -352,8 +352,8 @@ export default function Dashboard() {
 
       <section className="grid gap-4 md:grid-cols-[1.5fr_1fr_1fr]" aria-label="Ringkasan hari ini">
         <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-          <p className="text-xs font-semibold text-slate-500">Omzet Hari Ini</p>
-          <p className="mt-3 text-4xl font-black tracking-tight text-[var(--brand-gold)]">
+          <p className="text-xs font-semibold text-slate-500">Omzet hari ini</p>
+          <p className="mt-3 text-3xl font-extrabold tracking-tight text-[var(--brand-gold)]">
             {formatRupiah(todaySummary.omzet)}
           </p>
           <p className="mt-2 text-sm text-slate-600">{formatCount(todaySummary.totalTransaksi)} transaksi</p>
@@ -369,7 +369,7 @@ export default function Dashboard() {
       <Panel variant={attentionItems.length ? "warning" : "success"} className="p-4">
         <div className="flex flex-col gap-1 border-b border-slate-200 pb-3 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm font-bold text-slate-950">Perlu Dicek</p>
+            <p className="text-sm font-bold text-slate-950">Perlu dicek</p>
             <p className="text-xs text-slate-500">Yang perlu dicek hari ini.</p>
           </div>
           <span className={attentionItems.length ? "brand-badge-warning" : "brand-badge-success"}>

@@ -3,6 +3,7 @@ import MetricCard from "../components/app/MetricCard";
 import PaginationBar from "../components/PaginationBar";
 import PageHeader from "../components/app/PageHeader";
 import Panel from "../components/app/Panel";
+import InfoTip from "../components/app/InfoTip";
 import PinConfirmationModal from "../components/PinConfirmationModal";
 import { useAuth } from "../contexts/useAuth";
 import { showNotification } from "../contexts/NotificationContext";
@@ -51,8 +52,8 @@ const SOURCE_OPTIONS = [
   { value: "aksesoris", label: "Kasir Aksesoris" },
   { value: "digital", label: "Layanan Digital" },
   { value: "logistik", label: "Logistik" },
-  { value: "saldo", label: "Saldo Internal" },
-  { value: "operasional", label: "Kas Operasional" },
+  { value: "saldo", label: "Saldo aplikasi" },
+  { value: "operasional", label: "Kas toko" },
 ];
 
 const FLOW_OPTIONS = [
@@ -795,46 +796,62 @@ export default function RiwayatTransaksiPage() {
       </div>
 
       <Panel className="p-6">
-        <div className="grid gap-4 xl:grid-cols-[1.4fr_220px_220px_220px]">
-          <input
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            placeholder="Cari no transaksi, produk, provider, resi, catatan, atau tujuan..."
-            className="brand-input"
-          />
-          <select
-            value={sourceFilter}
-            onChange={(event) => setSourceFilter(event.target.value)}
-            className="brand-select"
-          >
-            {SOURCE_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value} className="bg-white">
-                {option.label}
-              </option>
-            ))}
-          </select>
-          <select
-            value={flowFilter}
-            onChange={(event) => setFlowFilter(event.target.value)}
-            className="brand-select"
-          >
-            {FLOW_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value} className="bg-white">
-                {option.label}
-              </option>
-            ))}
-          </select>
-          <select
-            value={paymentFilter}
-            onChange={(event) => setPaymentFilter(event.target.value)}
-            className="brand-select"
-          >
-            {paymentOptions.map((option) => (
-              <option key={option.value} value={option.value} className="bg-white">
-                {option.label}
-              </option>
-            ))}
-          </select>
+        <div className="mb-4 grid gap-2 xl:grid-cols-[1.4fr_220px_220px_220px]">
+          <div>
+            <label className="mb-2 block text-xs font-semibold text-slate-500">Cari</label>
+            <input
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="No transaksi, produk, provider, resi..."
+              className="brand-input w-full"
+            />
+          </div>
+          <div>
+            <label className="mb-2 flex items-center gap-1 text-xs font-semibold text-slate-500">
+              Kanal <InfoTip text="Sumber transaksi: Aksesoris (kasir), Digital (pulsa/data), Logistik (paket), Saldo (dompet), Operasional (kas)" />
+            </label>
+            <select
+              value={sourceFilter}
+              onChange={(event) => setSourceFilter(event.target.value)}
+              className="brand-select w-full"
+            >
+              {SOURCE_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value} className="bg-white">
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="mb-2 flex items-center gap-1 text-xs font-semibold text-slate-500">
+              Arus <InfoTip text="Arah uang: Masuk = pemasukan, Keluar = pengeluaran, Internal = transfer antar saldo" />
+            </label>
+            <select
+              value={flowFilter}
+              onChange={(event) => setFlowFilter(event.target.value)}
+              className="brand-select w-full"
+            >
+              {FLOW_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value} className="bg-white">
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="mb-2 block text-xs font-semibold text-slate-500">Metode</label>
+            <select
+              value={paymentFilter}
+              onChange={(event) => setPaymentFilter(event.target.value)}
+              className="brand-select w-full"
+            >
+              {paymentOptions.map((option) => (
+                <option key={option.value} value={option.value} className="bg-white">
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="mt-4 grid gap-4 xl:grid-cols-[220px_220px_1fr_auto]">
@@ -867,7 +884,7 @@ export default function RiwayatTransaksiPage() {
               </span>
             ))}
             <span className="rounded-full border border-[var(--brand-gold)]/18 bg-[var(--brand-gold)]/10 px-3 py-2 text-xs font-semibold text-slate-700">
-              Mutasi internal: {formatRupiah(summary.internal)}
+              Perpindahan saldo: {formatRupiah(summary.internal)}
             </span>
           </div>
 
@@ -1146,7 +1163,7 @@ export default function RiwayatTransaksiPage() {
               helper="Transaksi batal tetap tersimpan."
             />
             <MetricCard
-              label="Perlu review"
+              label="Perlu dicek"
               value={String(deletedStats.expiringSoon)}
               helper="Transaksi batal yang perlu dicek."
               accent="gold"
@@ -1175,7 +1192,7 @@ export default function RiwayatTransaksiPage() {
                 disabled={processingCleanup}
                 className="brand-button-secondary disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {processingCleanup ? "Mengecek..." : "Cek data terhapus"}
+                {processingCleanup ? "Mengecek..." : "Cek transaksi batal"}
               </button>
             </div>
 

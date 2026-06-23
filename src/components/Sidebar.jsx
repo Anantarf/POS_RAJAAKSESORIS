@@ -222,7 +222,7 @@ export default function Sidebar({
               <p className="mt-2 truncate text-sm font-bold text-slate-950">{user.nama}</p>
               <div className="mt-3 flex items-center justify-between gap-3">
                 <span className="brand-badge">
-                  {user.role === "pemilik" ? "Owner" : "Kasir"}
+                  {user.role === "pemilik" ? "Pemilik" : "Kasir"}
                 </span>
                 <button
                   type="button"

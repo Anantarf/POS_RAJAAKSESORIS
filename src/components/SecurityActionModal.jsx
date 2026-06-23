@@ -84,14 +84,14 @@ export default function SecurityActionModal({
               )}
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--brand-gold-strong)]">
-                Security Check
+              <p className="text-xs font-semibold text-[var(--brand-gold-strong)]">
+                Cek keamanan
               </p>
-              <h3 className="mt-1 truncate text-xl font-black tracking-tight text-slate-950">
+              <h3 className="mt-1 truncate text-lg font-bold tracking-tight text-slate-950">
                 {request.label || "Verifikasi Aksi"}
               </h3>
               <p className="mt-1 text-sm leading-6 text-slate-600">
-                {request.message || "Masukkan PIN owner untuk melanjutkan aksi sensitif."}
+                {request.message || "Masukkan PIN pemilik untuk melanjutkan aksi penting."}
               </p>
             </div>
           </div>
@@ -111,7 +111,7 @@ export default function SecurityActionModal({
               {detailRows.map(([label, value]) => (
                 <div key={label} className="flex items-center justify-between gap-3 text-sm">
                   <span className="font-semibold text-slate-500">{label}</span>
-                  <span className="truncate font-black text-slate-950">{value}</span>
+                  <span className="truncate font-semibold text-slate-950">{value}</span>
                 </div>
               ))}
             </div>
@@ -119,8 +119,8 @@ export default function SecurityActionModal({
 
           {requireCurrentPin ? (
             <label className="block">
-              <span className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">
-                PIN Owner
+              <span className="text-xs font-semibold text-slate-500">
+                PIN pemilik
               </span>
               <input
                 type="password"
@@ -150,7 +150,7 @@ export default function SecurityActionModal({
                   key={digit}
                   type="button"
                   onClick={() => setPin((current) => `${current}${digit}`.slice(0, 8))}
-                  className={`rounded-lg border border-slate-200 bg-slate-50 py-3 text-base font-black text-slate-800 transition hover:bg-[var(--brand-gold)]/10 ${
+                  className={`rounded-lg border border-slate-200 bg-slate-50 py-3 text-base font-bold text-slate-800 transition hover:bg-[var(--brand-gold)]/10 ${
                     digit === "0" ? "col-start-2" : ""
                   }`}
                 >
@@ -162,7 +162,7 @@ export default function SecurityActionModal({
 
           {request.kind === "reset-pin" ? (
             <label className="block">
-              <span className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">
+              <span className="text-xs font-semibold text-slate-500">
                 PIN baru karyawan
               </span>
               <input
@@ -183,14 +183,14 @@ export default function SecurityActionModal({
 
           {collectReason ? (
             <label className="block">
-              <span className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">
+              <span className="text-xs font-semibold text-slate-500">
                 Alasan / catatan
               </span>
               <textarea
                 value={reason}
                 onChange={(event) => setReason(event.target.value)}
                 className="brand-textarea mt-2 min-h-[84px] resize-none text-sm"
-                placeholder="Opsional, tapi berguna untuk audit."
+                placeholder="Opsional, tapi berguna untuk catatan aktivitas."
               />
             </label>
           ) : null}
@@ -228,7 +228,7 @@ export default function SecurityActionModal({
 
           <div className="flex items-center justify-center gap-2 text-[11px] font-semibold text-slate-500">
             <KeyRound className="h-3.5 w-3.5" />
-            Aksi sensitif dicatat ke audit operasional.
+            Aksi penting dicatat ke riwayat aktivitas.
           </div>
         </form>
       </div>

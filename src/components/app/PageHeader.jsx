@@ -2,7 +2,7 @@ export default function PageHeader({ title, description, actions }) {
   return (
     <div className="mb-6 flex flex-col gap-5 border-b border-[var(--brand-border)] pb-5 lg:flex-row lg:items-end lg:justify-between">
       <div className="max-w-3xl">
-        <h1 className="font-display text-3xl font-black tracking-tight text-slate-950 sm:text-[40px]">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
           {title}
         </h1>
         {description ? (

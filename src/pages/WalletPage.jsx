@@ -520,7 +520,7 @@ export default function WalletPage() {
             <MutationFormSection
               step="3"
               title="Keterangan"
-              helper="Catatan pendek agar riwayat mudah dicek saat closing."
+              helper="Catatan pendek agar riwayat mudah dicek saat tutup shift."
             >
               <textarea
                 value={form.keterangan}
