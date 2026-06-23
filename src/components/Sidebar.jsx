@@ -1,4 +1,4 @@
-﻿import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/useAuth";
 import {
   buildNavigationSections,
@@ -122,8 +122,8 @@ export default function Sidebar({
   const sections = buildNavigationSections(user.role, runtimeFlags, user.permissions);
   const quickActions = [
     { to: "/kasir", label: "Kasir", icon: "pos", feature: "cashier" },
-    { to: "/inventory", label: "Inventory", icon: "box", feature: "products" },
-    { to: "/riwayat-transaksi", label: "Riwayat", icon: "history", feature: "history" },
+    { to: "/inventory", label: "Stok", icon: "box", feature: "products" },
+    { to: "/riwayat-transaksi", label: "Riwayat Aktivitas", icon: "history", feature: "history" },
   ].filter((action) => isFeatureEnabled(runtimeFlags, action.feature));
   const isMobile = mode === "mobile";
 
@@ -175,7 +175,7 @@ export default function Sidebar({
           ) : null}
         </div>
 
-        {(!collapsed || isMobile) ? (
+        {isMobile ? (
           <div className="mt-4 grid grid-cols-3 gap-2">
             {quickActions.map((action) => (
               <NavLink
@@ -232,7 +232,7 @@ export default function Sidebar({
                   }}
                   className="text-xs font-semibold text-slate-700 transition hover:text-slate-950"
                 >
-                  Home
+                  Beranda
                 </button>
               </div>
             </div>
@@ -246,10 +246,10 @@ export default function Sidebar({
               onNavigate?.();
             }}
             className={`brand-button-secondary w-full ${collapsed && !isMobile ? "px-0" : "gap-2"}`}
-            aria-label="Logout"
+            aria-label="Keluar"
           >
             <AppIcon name="logout" className="h-4 w-4" />
-            {(!collapsed || isMobile) ? "Logout" : null}
+            {(!collapsed || isMobile) ? "Keluar" : null}
           </button>
         </div>
       </div>

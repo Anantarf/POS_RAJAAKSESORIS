@@ -145,7 +145,7 @@ import { recordOperationalEventSoon } from "../services/observability";
 import { callAtomicRpc, callOptionalAtomicRpc } from "../services/rpc/supabaseRpc";
 import { instrumentRequestStart, instrumentRequestEnd } from "../utils/debugRuntime";
 
-const todayDate = formatDateInput(new Date());
+const getTodayDate = () => formatDateInput(new Date());
 const DATA_LOAD_LIMITS = {
   shifts: 240,
   transactions: 600,
@@ -893,6 +893,9 @@ export function DataProvider({
         .is("archived_at", null)
         .order("nama", { ascending: true });
     }
+    if (usersRes.error && !isMissingColumnError(usersRes.error, ["cashier_station", "station_code", "station_name"])) {
+      throw usersRes.error;
+    }
     if (requestVersion !== shiftRefreshVersionRef.current || !mountedRef.current) return;
 
     let shiftsRes = await supabase
@@ -915,6 +918,9 @@ export function DataProvider({
         .select(SHIFT_SELECT_FALLBACK)
         .order("start_time", { ascending: false })
         .limit(DATA_LOAD_LIMITS.shifts);
+    }
+    if (shiftsRes.error && !isMissingColumnError(shiftsRes.error, ["employee_id", "employee_name", "cashier_station", "station_code", "station_name", "shift_type"])) {
+      throw shiftsRes.error;
     }
 
     if (requestVersion !== shiftRefreshVersionRef.current || !mountedRef.current) return;
@@ -1000,7 +1006,8 @@ export function DataProvider({
 
     if (
       requestVersion !== productRefreshVersionRef.current ||
-      !hasDataDomain(activeDomainsRef.current, DATA_DOMAINS.INVENTORY)
+      !hasDataDomain(activeDomainsRef.current, DATA_DOMAINS.INVENTORY) ||
+      !mountedRef.current
     ) {
       return [];
     }
@@ -2410,7 +2417,7 @@ export function DataProvider({
 
       const { data, error } = await supabase.rpc("owner_save_employee_payroll", {
         p_employee_id: employeeId,
-        p_period_month: payload.periodMonth || payload.period_month || todayDate,
+        p_period_month: payload.periodMonth || payload.period_month || getTodayDate(),
         p_base_salary: Number(payload.baseSalary ?? payload.base_salary ?? 0),
         p_bonus: Number(payload.bonus || 0),
         p_deduction: Number(payload.deduction || 0),
@@ -2638,6 +2645,10 @@ export function DataProvider({
         return result;
       });
 
+      if (!data) {
+        throw new Error("Shift tidak ditemukan atau sudah diproses oleh kasir lain.");
+      }
+
       if (financialLog) {
         const { error } = await supabase.from("financial_logs").insert(financialLog);
         if (error && !isOptionalResetTableError(error)) {
@@ -2813,13 +2824,16 @@ export function DataProvider({
         });
       }
 
-      const savedTransaction = await callAtomicRpc("create_digital_transaction_atomic", {
-        p_transaction: { ...transaction, request_id: requestId },
-      });
-      await loadData();
-      const savedResult = normalizeDigitalTransaction(savedTransaction || transaction);
-      completeMoneyRequest("digital_sale", requestIntent, requestId);
-      return savedResult;
+      try {
+        const savedTransaction = await callAtomicRpc("create_digital_transaction_atomic", {
+          p_transaction: { ...transaction, request_id: requestId },
+        });
+        await loadData();
+        const savedResult = normalizeDigitalTransaction(savedTransaction || transaction);
+        return savedResult;
+      } finally {
+        completeMoneyRequest("digital_sale", requestIntent, requestId);
+      }
     },
     [
       completeMoneyRequest,
@@ -2925,11 +2939,11 @@ export function DataProvider({
       const transactionAmount = Number(transaction.price || transaction.harga_jual || 0);
       const paymentMethod = transaction.paymentMethod || transaction.payment_method;
 
-      if (!transaction.receiver.trim()) {
+      if (!(transaction.receiver?.trim())) {
         throw new Error("Nama penerima wajib diisi.");
       }
 
-      if (!transaction.destination.trim()) {
+      if (!(transaction.destination?.trim())) {
         throw new Error("Tujuan wajib diisi.");
       }
 
@@ -2995,7 +3009,7 @@ export function DataProvider({
         id: requestId,
         kasir_id: user?.id || null,
         ...payload,
-        tanggal: payload.tanggal || todayDate,
+        tanggal: payload.tanggal || getTodayDate(),
         created_at: new Date().toISOString(),
       });
 

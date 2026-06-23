@@ -1,10 +1,16 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 
 export function useFormValidation(initialValues, onSubmit, validate) {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
+  const initialValuesRef = useRef(initialValues);
+
+  useEffect(() => {
+    initialValuesRef.current = initialValues;
+  }, [initialValues]);
 
   const getFieldError = useCallback((fieldName) => {
     return touched[fieldName] ? errors[fieldName] : null;
@@ -88,8 +94,10 @@ export function useFormValidation(initialValues, onSubmit, validate) {
       }
 
       try {
+        setSubmitError(null);
         await onSubmit(values);
       } catch (err) {
+        setSubmitError(err.message || "Form submission failed");
         console.error("Form submission error:", err);
       } finally {
         setIsSubmitting(false);
@@ -99,10 +107,11 @@ export function useFormValidation(initialValues, onSubmit, validate) {
   );
 
   const resetForm = useCallback(() => {
-    setValues(initialValues);
+    setValues(initialValuesRef.current);
     setErrors({});
     setTouched({});
-  }, [initialValues]);
+    setSubmitError(null);
+  }, []);
 
   return {
     values,
@@ -110,6 +119,7 @@ export function useFormValidation(initialValues, onSubmit, validate) {
     errors,
     touched,
     isSubmitting,
+    submitError,
     getFieldError,
     getFieldState,
     handleChange,

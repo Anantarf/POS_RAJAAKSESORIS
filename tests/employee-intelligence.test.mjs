@@ -27,7 +27,7 @@ test("employee permission keys are unique and grouped", () => {
 test("employee route activity status uses whitelist", () => {
   assert.equal(getEmployeeRouteActivityStatus("/kasir"), "Sedang checkout");
   assert.equal(getEmployeeRouteActivityStatus("/stock-opname"), "Sedang input stok");
-  assert.equal(getEmployeeRouteActivityStatus("/shift"), "Sedang closing shift");
+  assert.equal(getEmployeeRouteActivityStatus("/shift"), "Sedang tutup shift");
   assert.equal(getEmployeeRouteActivityStatus("/laporan-keuangan"), "Sedang lihat laporan");
   assert.equal(getEmployeeRouteActivityStatus("/help"), "Idle");
 });

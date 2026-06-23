@@ -580,6 +580,32 @@ export default function CashierPage() {
     setStep("checkout");
   };
 
+  const buildTransactionPayload = () => {
+    return {
+      items: cart.filter((item) => !item.unavailableReason),
+      metodeBayar: isSplitPayment ? "split" : resolvedPaymentMethod,
+      uangDiterima: isSplitPayment ? splitPaidTotal : isCashPayment ? cashValue : cartTotal,
+      payments: isSplitPayment
+        ? normalizedSplitPayments
+        : [{ method: resolvedPaymentMethod, amount: cartTotal }],
+      catatan: note,
+    };
+  };
+
+  const resolveCheckoutError = (error, printWindow) => {
+    if (printWindow) {
+      printWindow.close();
+    }
+    if (String(error?.code || "") === "P0001") {
+      resetSale();
+      setStep("product");
+    }
+    showNotification(
+      "error",
+      getMoneySaveFailureMessage(error, "Gagal menyimpan transaksi.")
+    );
+  };
+
   const handleCheckout = async (event) => {
     event.preventDefault();
 
@@ -669,15 +695,7 @@ export default function CashierPage() {
 
     setProcessing(true);
     try {
-      const transaction = await createAccessoryTransaction({
-        items: cart.filter((item) => !item.unavailableReason),
-        metodeBayar: isSplitPayment ? "split" : resolvedPaymentMethod,
-        uangDiterima: isSplitPayment ? splitPaidTotal : isCashPayment ? cashValue : cartTotal,
-        payments: isSplitPayment
-          ? normalizedSplitPayments
-          : [{ method: resolvedPaymentMethod, amount: cartTotal }],
-        catatan: note,
-      });
+      const transaction = await createAccessoryTransaction(buildTransactionPayload());
 
       window.clearTimeout(successTimerRef.current);
       setSuccessFeedback({
@@ -733,17 +751,7 @@ export default function CashierPage() {
         );
       }
     } catch (error) {
-      if (printWindow) {
-        printWindow.close();
-      }
-      if (String(error?.code || "") === "P0001") {
-        resetSale();
-        setStep("product");
-      }
-      showNotification(
-        "error",
-        getMoneySaveFailureMessage(error, "Gagal menyimpan transaksi.")
-      );
+      resolveCheckoutError(error, printWindow);
     } finally {
       processingRef.current = false;
       setProcessing(false);

@@ -18,9 +18,9 @@ export const ownerNavigationSections = [
     items: [
       { to: "/kasir", label: "Kasir", icon: "pos", feature: "cashier" },
       { to: "/dashboard", label: "Dashboard", icon: "chart", feature: "reports" },
-      { to: "/inventory", label: "Inventory", icon: "box", feature: "products" },
-      { to: "/riwayat-transaksi", label: "Riwayat", icon: "history", feature: "history" },
-      { to: "/karyawan", label: "Admin", icon: "users", feature: "employees" },
+      { to: "/inventory", label: "Stok", icon: "box", feature: "products" },
+      { to: "/riwayat-transaksi", label: "Riwayat Aktivitas", icon: "history", feature: "history" },
+      { to: "/karyawan", label: "Karyawan & Akses", icon: "users", feature: "employees" },
     ],
   },
 ];
@@ -30,8 +30,8 @@ export const cashierNavigationSections = [
     title: "Menu",
     items: [
       { to: "/kasir", label: "Kasir", icon: "pos", feature: "cashier" },
-      { to: "/inventory", label: "Inventory", icon: "box", feature: "products" },
-      { to: "/riwayat-transaksi", label: "Riwayat", icon: "history", feature: "history" },
+      { to: "/inventory", label: "Stok", icon: "box", feature: "products" },
+      { to: "/riwayat-transaksi", label: "Riwayat Aktivitas", icon: "history", feature: "history" },
     ],
   },
 ];

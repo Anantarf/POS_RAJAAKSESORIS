@@ -142,10 +142,17 @@ export function usePinConfirmation() {
 
   const executeConfirmedAction = useCallback(async () => {
     const action = pendingAction?.action;
+    const reject = pendingAction?.reject;
     if (!action) return;
 
-    await action();
-    clearPinModal();
+    try {
+      await action();
+      clearPinModal();
+    } catch (error) {
+      clearPinModal();
+      if (reject) reject(error);
+      else throw error;
+    }
   }, [clearPinModal, pendingAction]);
 
   return {
