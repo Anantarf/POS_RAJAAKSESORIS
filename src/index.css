@@ -785,8 +785,8 @@
   }
 
   .brand-section-label {
-    @apply text-xs font-semibold leading-5;
-    color: var(--brand-text-muted);
+    @apply text-sm font-bold leading-6;
+    color: var(--brand-text);
   }
 
   .brand-metric-value {

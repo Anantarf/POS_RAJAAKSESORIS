@@ -272,6 +272,10 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-5">
+      <div>
+        <h1 className="text-3xl font-black tracking-tight text-slate-950">Dashboard Toko</h1>
+      </div>
+
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-xs font-semibold text-slate-500">
@@ -346,9 +350,14 @@ export default function Dashboard() {
         </Panel>
       ) : null}
 
-      <section className="grid gap-4 sm:grid-cols-2 md:grid-cols-4" aria-label="Ringkasan hari ini">
-        <KpiCard label="Omzet Hari Ini" value={formatRupiah(todaySummary.omzet)} />
-        <KpiCard label="Transaksi" value={formatCount(todaySummary.totalTransaksi)} accent="info" />
+      <section className="grid gap-4 md:grid-cols-[1.5fr_1fr_1fr]" aria-label="Ringkasan hari ini">
+        <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <p className="text-xs font-semibold text-slate-500">Omzet Hari Ini</p>
+          <p className="mt-3 text-4xl font-black tracking-tight text-[var(--brand-gold)]">
+            {formatRupiah(todaySummary.omzet)}
+          </p>
+          <p className="mt-2 text-sm text-slate-600">{formatCount(todaySummary.totalTransaksi)} transaksi</p>
+        </div>
         <KpiCard
           label="Laba Bersih"
           value={formatRupiah(todaySummary.labaBersih)}

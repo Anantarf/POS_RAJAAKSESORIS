@@ -323,9 +323,6 @@ export default function EmployeeManagementPage() {
                           Detail
                         </button>
                         <button type="button" onClick={() => openEdit(u)} className="brand-button-secondary text-xs">Edit</button>
-                        <button type="button" onClick={() => handleToggleStatus(u)} className={u.status === "active" ? "brand-button-danger text-xs" : "brand-button-success text-xs"}>
-                          {u.status === "active" ? "Nonaktifkan" : "Aktifkan"}
-                        </button>
                       </div>
                     </td>
                   </tr>
@@ -355,7 +352,14 @@ export default function EmployeeManagementPage() {
 
           {selectedEmployee ? (
             <>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => openEdit(selectedEmployee)}
+                  className="brand-button-primary text-xs"
+                >
+                  Edit Pengguna
+                </button>
                 <button
                   type="button"
                   onClick={() => void access.refresh()}
@@ -371,6 +375,13 @@ export default function EmployeeManagementPage() {
                   disabled={activity.loading}
                 >
                   {activity.loading ? "Memuat aktivitas..." : "Refresh aktivitas"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleToggleStatus(selectedEmployee)}
+                  className={selectedEmployee.status === "active" ? "brand-button-danger text-xs ml-auto" : "brand-button-success text-xs ml-auto"}
+                >
+                  {selectedEmployee.status === "active" ? "Nonaktifkan" : "Aktifkan"}
                 </button>
               </div>
 

@@ -1312,50 +1312,6 @@ export default function CashierPage() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-3 gap-2">
-                <div className="rounded-lg border border-slate-200 bg-white px-3 py-3">
-                  <p className="text-xs font-semibold text-slate-500">
-                    Tagihan
-                  </p>
-                  <p className="mt-1 text-sm font-bold text-slate-950">{formatRupiah(cartTotal)}</p>
-                </div>
-                <div className="rounded-lg border border-slate-200 bg-white px-3 py-3">
-                  <p className="text-xs font-semibold text-slate-500">
-                    Dibayar
-                  </p>
-                  <p className="mt-1 text-sm font-bold text-slate-950">{formatRupiah(paidTotal)}</p>
-                </div>
-                <div
-                  className={`rounded-lg border px-3 py-3 ${
-                    isSplitPayment && splitOverpay
-                      ? "border-red-200 bg-red-50"
-                      : amountShortage
-                        ? "border-amber-200 bg-amber-50"
-                        : "border-emerald-200 bg-emerald-50"
-                  }`}
-                >
-                  <p className="text-xs font-semibold text-slate-500">
-                    {isCashPayment ? "Kembali" : amountShortage ? "Sisa" : "Status"}
-                  </p>
-                  <p
-                    className={`mt-1 text-sm font-bold ${
-                      isSplitPayment && splitOverpay
-                        ? "text-red-700"
-                        : amountShortage
-                          ? "text-amber-700"
-                          : "text-emerald-700"
-                    }`}
-                  >
-                    {isCashPayment
-                      ? formatRupiah(cashChange)
-                      : splitOverpay
-                        ? `Lebih ${formatRupiah(splitOverpay)}`
-                        : amountShortage
-                          ? formatRupiah(amountShortage)
-                          : "Pas"}
-                  </p>
-                </div>
-              </div>
 
               <div>
                 <p className="brand-section-label">Mode pembayaran</p>
@@ -1614,74 +1570,49 @@ export default function CashierPage() {
                 </div>
               )}
 
-              <div className="brand-subtle-block">
-                <div className="flex items-center justify-between gap-4 text-sm text-slate-600">
-                  <span>Total item</span>
-                  <span className="font-semibold text-slate-950">{cartItemCount}</span>
-                </div>
-                <div className="mt-2 flex items-center justify-between gap-4 text-sm text-slate-600">
-                  <span>Metode</span>
-                  <span className="font-semibold text-slate-950">
-                    {isSplitPayment ? "Split Payment" : resolvedPaymentLabel}
-                  </span>
-                </div>
-                <div className="mt-2 flex items-center justify-between gap-4 text-sm text-slate-600">
-                  <span>Dibayar</span>
-                  <span className="font-semibold text-slate-950">{formatRupiah(paidTotal)}</span>
-                </div>
-                <div className="mt-2 flex items-center justify-between gap-4 text-sm text-slate-600">
-                  <span>{isCashPayment ? "Kembalian" : "Sisa"}</span>
-                  <span
-                    className={`font-semibold ${
-                      amountShortage ? "text-amber-700" : "text-slate-950"
-                    }`}
-                  >
-                    {isCashPayment ? formatRupiah(cashChange) : formatRupiah(amountShortage)}
-                  </span>
-                </div>
-              </div>
 
-              <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-700">
-                  Catatan
-                </label>
-                <div className="relative">
-                  <textarea
-                    value={note}
-                    onChange={(event) => setNote(event.target.value.slice(0, NOTE_MAX_LENGTH))}
-                    maxLength={NOTE_MAX_LENGTH}
-                    className="brand-textarea pb-8"
-                    placeholder="Opsional"
-                  />
-                  <span
-                    className={`pointer-events-none absolute bottom-2 right-3 text-[11px] font-bold ${
-                      note.length > NOTE_MAX_LENGTH - 20 ? "text-amber-700" : "text-slate-400"
-                    }`}
-                  >
-                    {note.length}/{NOTE_MAX_LENGTH}
-                  </span>
+              <details className="group">
+                <summary className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
+                  <span>+ Catatan (Opsional)</span>
+                </summary>
+                <div className="mt-3">
+                  <div className="relative">
+                    <textarea
+                      value={note}
+                      onChange={(event) => setNote(event.target.value.slice(0, NOTE_MAX_LENGTH))}
+                      maxLength={NOTE_MAX_LENGTH}
+                      className="brand-textarea pb-8"
+                      placeholder="Tambahkan catatan untuk transaksi ini..."
+                    />
+                    <span
+                      className={`pointer-events-none absolute bottom-2 right-3 text-[11px] font-bold ${
+                        note.length > NOTE_MAX_LENGTH - 20 ? "text-amber-700" : "text-slate-400"
+                      }`}
+                    >
+                      {note.length}/{NOTE_MAX_LENGTH}
+                    </span>
+                  </div>
                 </div>
-              </div>
+              </details>
 
-              <div className="grid gap-3 sm:grid-cols-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    resetCheckoutFields();
-                    showNotification("info", "Form pembayaran direset.");
-                  }}
-                  className="brand-button-secondary"
-                >
-                  Reset Pembayaran
-                </button>
-                <button
-                  type="submit"
-                  disabled={checkoutDisabled}
-                  className="brand-button-success disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {processing ? "Menyimpan..." : "Bayar & Cetak Struk"}
-                </button>
-              </div>
+              <button
+                type="submit"
+                disabled={checkoutDisabled}
+                className="brand-button-success w-full disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {processing ? "Menyimpan..." : "Bayar & Cetak Struk"}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  resetCheckoutFields();
+                  showNotification("info", "Form pembayaran direset.");
+                }}
+                className="brand-button-secondary w-full text-xs"
+              >
+                Reset Pembayaran
+              </button>
             </form>
           </Panel>
         </div>

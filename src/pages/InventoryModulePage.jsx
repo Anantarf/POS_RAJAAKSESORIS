@@ -81,10 +81,11 @@ export default function InventoryModulePage() {
   return (
     <div className="min-h-full bg-[var(--brand-bg)]">
       <div className="mx-auto max-w-[1600px] px-4 py-4 sm:px-6 lg:px-8">
-        <div className="mb-3 flex flex-col gap-3 rounded-lg border border-[var(--brand-border)] bg-white px-3 py-2 shadow-[var(--brand-shadow-sm)] lg:flex-row lg:items-center lg:justify-between">
-          <h1 className="min-w-0 truncate text-sm font-black text-slate-950">
-            Inventory {activeTabMeta.label}
-          </h1>
+        <h1 className="mb-4 text-3xl font-black tracking-tight text-slate-950">
+          Inventory — {activeTabMeta.label}
+        </h1>
+        <div className="mb-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className=""></div>
           <div
             className="brand-segmented w-full lg:w-auto"
             role="tablist"

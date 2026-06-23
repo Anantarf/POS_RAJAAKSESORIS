@@ -497,53 +497,29 @@ export default function FinanceReportPage() {
         </Panel>
       ) : null}
 
-      <div className="grid gap-4 xl:grid-cols-4">
+      <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+        <p className="text-sm font-semibold text-slate-500">Laba Bersih</p>
+        <p className="mt-3 text-4xl font-black tracking-tight text-[var(--brand-gold)]">
+          {formatRupiah(reportMetrics.labaBersih)}
+        </p>
+        <p className="mt-3 text-sm text-slate-600">
+          Omzet {formatRupiah(reportMetrics.omzet)} — Modal {formatRupiah(reportMetrics.modal)} — Kotor {formatRupiah(reportMetrics.keuntunganKotor)}
+        </p>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <MetricCard label="Total omzet" value={formatRupiah(reportMetrics.omzet)} />
         <MetricCard
           label="Total modal"
           value={formatRupiah(reportMetrics.modal)}
         />
-        <MetricCard label="Laba kotor" value={formatRupiah(reportMetrics.keuntunganKotor)} accent="success" />
-        <MetricCard label="Laba bersih" value={formatRupiah(reportMetrics.labaBersih)} accent="gold" />
-      </div>
-
-      <Panel className="px-5 py-4">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm font-semibold text-slate-700">
-            Sumber angka laporan:{" "}
-            <span className="text-slate-950">
-              {reportMetrics.source === "summary_view"
-                ? "ringkasan harian"
-                : "perhitungan langsung"}
-            </span>
-          </p>
-          {dailySalesSummary.loading ? <span className="brand-badge-neutral">Memuat ringkasan</span> : null}
-        </div>
-        {dailySalesSummary.error ? (
-          <p className="mt-2 text-sm text-amber-700">
-            Ringkasan harian belum tersedia; laporan tetap dihitung dari transaksi yang ada.
-          </p>
-        ) : null}
-      </Panel>
-
-      <div className="grid gap-4 xl:grid-cols-4">
         <MetricCard
           label="Retur supplier"
           value={formatRupiah(summary.returnSummary?.supplier?.estimatedValue || 0)}
         />
         <MetricCard
-          label="Qty retur supplier"
-          value={`${summary.returnSummary?.supplier?.quantity || 0} pcs`}
-          accent="gold"
-        />
-        <MetricCard
           label="Refund garansi"
           value={formatRupiah(summary.returnSummary?.customer?.refundAmount || 0)}
-        />
-        <MetricCard
-          label="Qty garansi konsumen"
-          value={`${summary.returnSummary?.customer?.quantity || 0} pcs`}
-          accent="success"
         />
       </div>
 
